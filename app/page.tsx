@@ -12,7 +12,7 @@ export default function Home() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            By{" "} Ads
+            By{" "} Ad
             <Image
               src="/vercel.svg"
               alt="Vercel Logo"
