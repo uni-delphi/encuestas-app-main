@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+
 import "./global.scss";
 import { Session, getServerSession } from "next-auth";
 import SessionProvider from "@/components/session-provider/session-provider";
@@ -25,6 +26,7 @@ export default async function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <SessionProvider session={session}>
+          
           {children}
         </SessionProvider>
       </body>
