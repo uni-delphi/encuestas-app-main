@@ -6,6 +6,7 @@ import { Session, getServerSession } from "next-auth";
 import SessionProvider from "@/components/session-provider/session-provider";
 import { authOptions } from "@/utils/auth-options";
 import { getUserByEmail } from "@/lib/api/users";
+import NavBar from "@/components/nav-bar/nav-bar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,13 +21,13 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await getServerSession(authOptions);
-  //const user = await getUserByEmail(session?.user?.email as string);
+  const user = await getUserByEmail(session?.user?.email as string);
 
   return (
     <html lang="en">
       <body className={inter.className}>
         <SessionProvider session={session}>
-          
+        <NavBar user={user} session={session as Session} />
           {children}
         </SessionProvider>
       </body>
