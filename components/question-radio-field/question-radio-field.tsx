@@ -80,7 +80,10 @@ export default function QuestionRadioField({ data }: { data: any }) {
                   >
                     {data &&
                       data.map((item: any) => (
-                        <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormItem
+                          key={item.id}
+                          className="flex items-center space-x-3 space-y-0"
+                        >
                           <FormControl>
                             <RadioGroupItem value={item.id} />
                           </FormControl>
