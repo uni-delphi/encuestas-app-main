@@ -21,7 +21,7 @@ import Link from "next/link";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 
-import { User } from "@/types/user";
+import { TUser } from "@/types/user";
 import { Loader2 } from "lucide-react";
 /**
  * name?: string | null;

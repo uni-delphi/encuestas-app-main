@@ -19,13 +19,13 @@ import {
 } from "../ui/tooltip";
 import { Button } from "../ui/button";
 import { Session } from "next-auth";
-import { User } from "@/types/user";
+import { TUser } from "@/types/user";
 
 export default function AdminDropDown({
   user,
   session,
 }: {
-  user: User;
+  user: TUser;
   session: Session;
 }) {
   return (

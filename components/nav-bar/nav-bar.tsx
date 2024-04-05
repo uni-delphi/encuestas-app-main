@@ -5,40 +5,35 @@ import { useSession, signIn } from "next-auth/react";
 import Link from "next/link";
 import { Button } from "../ui/button";
 
-import { User } from "@/types/user";
+import { TUser } from "@/types/user";
 import AdminDropDown from "../admin-dropdown/admin-dropdown";
 import { Session } from "next-auth";
+import TemasSelect from "../temas-select/temas-select";
 
 export default function NavBar({
   user,
   session,
 }: {
-  user?: User;
+  user?: TUser;
   session: Session;
 }) {
   return (
-    <header className="flex h-20 w-full items-center px-4 md:px-6 bg-neutral-950 text-white">
-      <Link className="mr-6" href="/">
-        <TicketIcon className="h-6 w-6" />
-        <span className="sr-only">Mega Archi ticket Inc</span>
-      </Link>
-      <nav className="ml-auto flex gap-4 sm:gap-6">
-        <Link
-          className="text-sm font-medium hover:underline underline-offset-4 hover:text-green-500"
-          href="#"
-        >
-          FAQ
-        </Link>
+    <header className="fixed grid bg-white h-20 w-full z-10">
+      <TemasSelect />
+      <nav className="flex w-full bg-blue-700 text-white justify-center items-center p-3">
+        <h1 className="scroll-m-20 text-2xl font-bold tracking-tight ">
+          Impresoras 3D
+        </h1>
+        {!session && (
+          <Button
+            className="ml-6"
+            onClick={() => signIn(undefined, { callbackUrl: "/dashboard" })}
+          >
+            Ingresar/Registrarse
+          </Button>
+        )}
+        {session && <AdminDropDown user={user as TUser} session={session} />}
       </nav>
-      {!session && (
-        <Button
-          className="ml-6"
-          onClick={() => signIn(undefined, { callbackUrl: "/dashboard" })}
-        >
-          Ingresar/Registrarse
-        </Button>
-      )}
-      {session && <AdminDropDown user={user as User} session={session} />}
     </header>
   );
 }

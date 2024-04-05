@@ -1,18 +1,22 @@
+import EncuestaForm from "@/components/encuesta-form/encuesta-form";
+import NavBar from "@/components/nav-bar/nav-bar";
 
-import Image from "next/image";
+import { TUser } from "@/types/user";
+import { Session } from "next-auth";
+
 
 export default async function Encuestas() {
   // const { events } = await getData() || {};
 
   return (
-    <main className="p-24">
-      <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-        PROXIMOS EVENTOS
-      </h1>
-      {/* {events &&
-        events.map((evento: Evento) => (
-          <EventCard evento={evento} key={evento.eventId} />
-        ))} */}
+    <main className="">
+      <NavBar user={{} as TUser} session={{} as Session} />
+
+      <div className="px-4 overflow-hidden">
+        <h2 className="pt-20 mt-5 pb-2 text-center mx-auto">Uso y aplicación de tecnologías 3D en producción y mantenimiento de repuestos o componentes</h2>
+        <hr />
+        <EncuestaForm />
+      </div>
     </main>
   );
 }

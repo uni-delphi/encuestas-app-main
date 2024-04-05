@@ -1,4 +1,4 @@
-export type User = {
+export type TUser = {
   name?: string | null;
   lastName?: string | null;
   country: string;
@@ -12,3 +12,8 @@ export type User = {
   password: string;
   validatedPassword: string;
 };
+
+export type TLoginUser = {
+  email: string;
+  password: string;
+}
