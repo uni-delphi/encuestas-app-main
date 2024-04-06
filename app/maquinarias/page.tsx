@@ -9,7 +9,7 @@ export default async function Encuestas() {
 
   return (
     <main className="">
-      <NavBar user={{} as TUser} session={{} as Session} />
+      {/* <NavBar user={{} as TUser} session={{} as Session} /> */}
 
       <div className="px-4 overflow-hidden">
         <h2 className="pt-20 mt-5 pb-2 text-center mx-auto">
