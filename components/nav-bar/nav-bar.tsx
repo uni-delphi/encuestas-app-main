@@ -13,16 +13,18 @@ import TemasSelect from "../temas-select/temas-select";
 export default function NavBar({
   user,
   session,
+  title,
 }: {
   user?: TUser;
   session: Session;
+  title: string;
 }) {
   return (
     <header className="fixed grid bg-white h-20 w-full z-10">
       <TemasSelect />
       <nav className="flex w-full bg-blue-700 text-white justify-center items-center p-3">
         <h1 className="scroll-m-20 text-2xl font-bold tracking-tight ">
-          Impresoras 3D
+          {title}
         </h1>
         {!session && (
           <Button

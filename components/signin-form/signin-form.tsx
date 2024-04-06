@@ -116,7 +116,7 @@ export default function SignInForm() {
         >
           <FormField
             control={form.control}
-            name="name"
+            name="name"            
             render={({ field }) => (
               <FormItem>
                 <FormControl>
@@ -263,7 +263,7 @@ export default function SignInForm() {
             )}
           />
 
-          <Button type="submit" disabled={isLoading}>
+          <Button type="submit" disabled={isLoading} className="block mx-auto">
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
