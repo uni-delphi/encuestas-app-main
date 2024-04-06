@@ -95,12 +95,12 @@ export default function EncuestaForm({ data }: { data: any }) {
           onSubmit={form.handleSubmit((values) => onSubmit(values))}
           className="w-[100%]"
         >
-          <QuestionRadioField data={nivel} />
-          <QuestionRadioField data={importancia} />
-          <QuestionRadioField data={difusion} />
-          <QuestionCheckboxField data={aceleran} />
-          <QuestionCheckboxField data={frenan} />
-          <QuestionCheckboxField data={impacto} />
+          <QuestionRadioField data={nivel.answers} />
+          <QuestionRadioField data={importancia.answers} />
+          <QuestionRadioField data={difusion.answers} />
+          <QuestionCheckboxField data={aceleran.answers} />
+          <QuestionCheckboxField data={frenan.answers} />
+          <QuestionCheckboxField data={impacto.answers} />
         </form>
 
         <Link className="" href="/bienvenido">
