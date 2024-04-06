@@ -40,7 +40,13 @@ const formSchema = z.object({
   validatedPassword: z.string(),
 });
 
-export default function QuestionRadioField({ data }: { data: any }) {
+export default function QuestionRadioField({
+  data,
+  statement,
+}: {
+  data: any;
+  statement: any;
+}) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -72,7 +78,7 @@ export default function QuestionRadioField({ data }: { data: any }) {
                 <div className="flex">
                   <FormLabel className="mx-4">1.a</FormLabel>
                   <FormDescription className="text-bold">
-                    asdasdasdas
+                    {statement}
                   </FormDescription>
                 </div>
                 <FormControl>
