@@ -5,8 +5,8 @@ import { TUser } from "@/types/user";
 import { Session } from "next-auth";
 interface IDATA {
   id: number;
-  title: string | undefined;
-  description: string | undefined;
+  title: string;
+  description: string;
   aceleran: IQUESTIONCHECKBOX[];
   frenan: IQUESTIONCHECKBOX[];
   impacto: IQUESTIONCHECKBOX[];
@@ -354,13 +354,19 @@ export default async function Encuestas({
     (item) => +params.slug === item.id
   );
   console.log(dataReal);
-  const { title, description, ...props } = dataReal;
+  const { ...props } = dataReal;
   return (
     <main className="">
-      <NavBar title={title} user={{} as TUser} session={{} as Session} />
+      <NavBar
+        title={dataReal?.title as string}
+        user={{} as TUser}
+        session={{} as Session}
+      />
 
       <div className="px-4 overflow-hidden">
-        <h2 className="pt-20 mt-5 pb-2 text-center mx-auto">{description}</h2>
+        <h2 className="pt-20 mt-5 pb-2 text-center mx-auto">
+          {dataReal?.description}
+        </h2>
         <hr />
         <EncuestaForm data={props} />
       </div>
