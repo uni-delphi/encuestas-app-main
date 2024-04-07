@@ -349,11 +349,11 @@ export default async function Encuestas({
   params: { slug: string };
 }) {
   // const { events } = await getData() || {};
-  console.log(params.slug);
+  
   const dataReal: IDATA | undefined = data.find(
     (item) => +params.slug === item.id
   );
-  console.log(dataReal);
+  
   const { ...props } = dataReal;
   return (
     <main className="">
