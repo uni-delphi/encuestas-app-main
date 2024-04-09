@@ -34,7 +34,7 @@ export default function AdminDropDown({
         <Avatar className="h-9 w-9 ml-4 cursor-pointer relative">
           <AvatarImage alt="@shadcn" src={session.user?.image as string} />
           <AvatarFallback>{session.user?.name?.charAt(0)}</AvatarFallback>
-          
+
           <span className="sr-only">Desplegar menú de usuario</span>
         </Avatar>
       </DropdownMenuTrigger>
@@ -61,7 +61,15 @@ export default function AdminDropDown({
         </DropdownMenuItem> */}
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <Button onClick={() => signOut()} className="cursor-pointer">
+          <Button
+            onClick={() =>
+              signOut({
+                redirect: true,
+                callbackUrl: "/",
+              })
+            }
+            className="cursor-pointer"
+          >
             Cerrar sesión
           </Button>
         </DropdownMenuItem>
