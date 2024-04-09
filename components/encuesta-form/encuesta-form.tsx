@@ -93,31 +93,37 @@ export default function EncuestaForm({ data }: { data: any }) {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit((values) => onSubmit(values))}
-          className="w-[100%]"
+          className="max-w-[80%] mx-auto"
         >
           <QuestionRadioField
             data={nivel.answers}
             statement={nivel.statement}
+            question_number={nivel.question_number}
           />
           <QuestionRadioField
             data={importancia.answers}
             statement={importancia.statement}
+            question_number={importancia.question_number}
           />
           <QuestionRadioField
             data={difusion.answers}
             statement={difusion.statement}
+            question_number={difusion.question_number}
           />
           <QuestionCheckboxField
             data={aceleran.answers}
             statement={aceleran.statement}
+            question_number={aceleran.question_number}
           />
           <QuestionCheckboxField
             data={frenan.answers}
             statement={frenan.statement}
+            question_number={frenan.question_number}
           />
           <QuestionCheckboxField
             data={impacto.answers}
             statement={impacto.statement}
+            question_number={impacto.question_number}
           />
         </form>
 

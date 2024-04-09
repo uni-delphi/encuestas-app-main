@@ -16,11 +16,13 @@ interface IDATA {
 }
 interface IQUESTIONCHECKBOX {
   statement?: string;
+  question_number: string;
   answers: { id: string; label: string }[];
 }
 
 interface IQUESTIONRADIO {
   statement?: string;
+  question_number: string;
   answers: { id: string; name: string }[];
 }
 
@@ -29,9 +31,11 @@ const data: IDATA[] = [
     id: 1,
     title: "Impresoras 3D",
     description:
-      "Uso y aplicación de tecnologías 3D en producción y mantenimiento de repuestos o componentes",
+      "Uso y aplicación de tecnologías 3D en producción y mantenimiento de repuestos o componentes.",
     aceleran: {
-      statement: "Vacio",
+      statement:
+        "Principales factores que aceleran la adopción de la tecnología",
+      question_number: "1.d",
       answers: [
         {
           id: "social",
@@ -60,7 +64,8 @@ const data: IDATA[] = [
       ],
     },
     frenan: {
-      statement: "Vacio",
+      statement: "Principales factores que frenan la adopción de la tecnología",
+      question_number: "1.e",
       answers: [
         {
           id: "social",
@@ -89,7 +94,8 @@ const data: IDATA[] = [
       ],
     },
     impacto: {
-      statement: "vacio",
+      statement: "Mayor impacto de la tecnología",
+      question_number: "1.f",
       answers: [
         {
           id: "social",
@@ -120,6 +126,7 @@ const data: IDATA[] = [
     nivel: {
       statement:
         "Nivel de conocimiento y/o experiencia sobre la tecnología en cuestión",
+      question_number: "1.a",
       answers: [
         {
           id: "alto",
@@ -145,7 +152,8 @@ const data: IDATA[] = [
     },
     importancia: {
       statement:
-        "Nivel de conocimiento y/o experiencia sobre la tecnología en cuestión",
+        "Importancia de esa tecnología para el desarrollo del sector de maquinaria agrícola de la provincia de Córdoba",
+      question_number: "1.b",
       answers: [
         {
           id: "alto",
@@ -171,7 +179,8 @@ const data: IDATA[] = [
     },
     difusion: {
       statement:
-        "Nivel de conocimiento y/o experiencia sobre la tecnología en cuestión",
+        "Tasa de difusión de esa tecnología en la provincia de Córdoba",
+      question_number: "1.c",
       answers: [
         {
           id: "alto",
@@ -202,7 +211,9 @@ const data: IDATA[] = [
     description:
       "Uso de sistemas automatizados para el manejo autónomo de vehículos e intercomunicación entre los mismos",
     aceleran: {
-      statement: "Vacio",
+      statement:
+        "Principales factores que aceleran la adopción de la tecnología",
+      question_number: "1.d",
       answers: [
         {
           id: "social",
@@ -231,7 +242,8 @@ const data: IDATA[] = [
       ],
     },
     frenan: {
-      statement: "Vacio",
+      statement: "Principales factores que frenan la adopción de la tecnología",
+      question_number: "1.e",
       answers: [
         {
           id: "social",
@@ -260,7 +272,8 @@ const data: IDATA[] = [
       ],
     },
     impacto: {
-      statement: "vacio",
+      statement: "Mayor impacto de la tecnología",
+      question_number: "1.f",
       answers: [
         {
           id: "social",
@@ -291,6 +304,7 @@ const data: IDATA[] = [
     nivel: {
       statement:
         "Nivel de conocimiento y/o experiencia sobre la tecnología en cuestión",
+      question_number: "1.a",
       answers: [
         {
           id: "alto",
@@ -316,7 +330,8 @@ const data: IDATA[] = [
     },
     importancia: {
       statement:
-        "Nivel de conocimiento y/o experiencia sobre la tecnología en cuestión",
+        "Importancia de esa tecnología para el desarrollo del sector de maquinaria agrícola de la provincia de Córdoba",
+      question_number: "1.b",
       answers: [
         {
           id: "alto",
@@ -342,7 +357,8 @@ const data: IDATA[] = [
     },
     difusion: {
       statement:
-        "Nivel de conocimiento y/o experiencia sobre la tecnología en cuestión",
+        "Tasa de difusión de esa tecnología en la provincia de Córdoba",
+      question_number: "1.c",
       answers: [
         {
           id: "alto",
@@ -389,11 +405,12 @@ export default async function Encuestas({
         session={{} as Session}
       />
 
-      <div className="px-4 overflow-hidden">
-        <h2 className="pt-20 mt-5 pb-2 text-center mx-auto">
-          {dataReal?.description}
-        </h2>
-        <hr />
+      <div className="py-5 overflow-hidden">
+        <div className="shadow-lg border-b-4 border-gray-300">
+          <h2 className="pt-20 mt-5 pb-2 text-center text-xl font-bold">
+            {dataReal?.description}
+          </h2>
+        </div>
         <EncuestaForm data={props} />
       </div>
     </main>
