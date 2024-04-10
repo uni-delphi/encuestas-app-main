@@ -40,7 +40,15 @@ const formSchema = z.object({
   validatedPassword: z.string(),
 });
 
-export default function QuestionCheckboxField({ data }: { data: any[] }) {
+export default function QuestionCheckboxField({
+  data,
+  statement,
+  question_number,
+}: {
+  data: any;
+  statement: any;
+  question_number: any;
+}) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -68,15 +76,16 @@ export default function QuestionCheckboxField({ data }: { data: any[] }) {
             name="items"
             render={() => (
               <FormItem>
-                <div className="mb-4">
-                  <FormLabel className="text-base">1.f</FormLabel>
-                  <FormDescription>
-                    Nivel de conocimiento y/o experiencia sobre la tecnologia en
-                    cuestion*
+                <div className="mb-4 flex">
+                  <FormLabel className="text-base mr-4 font-bold">
+                    {question_number}
+                  </FormLabel>
+                  <FormDescription className="font-bold w-[80%]">
+                    {statement}
                   </FormDescription>
                 </div>
                 {data &&
-                  data.map((item) => (
+                  data.map((item: any) => (
                     <FormField
                       key={item.id}
                       control={form.control}
