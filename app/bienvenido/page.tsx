@@ -1,10 +1,10 @@
 import React from "react";
 import Image from "next/image";
-import SignInForm from "@/components/signin-form/signin-form";
+import { Button } from "@/components/ui/button";
 
 export default function SignIn() {
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-2  h-screen">
+    <div className="grid grid-cols-1 xl:grid-cols-2 h-screen">
       <section className="w-full">
         <Image
           src={"/gente.jpg"}
@@ -17,7 +17,7 @@ export default function SignIn() {
           style={{ height: "100vh", width: "100%", objectFit: "cover" }}
         />
       </section>
-      <section className="w-full overflow-y-auto px-4 text-textColor">
+      <section className="w-full overflow-y-auto px-4 text-textColor my-4">
         <div>
           <Image
             src={"/logos-unc.png"}
@@ -125,6 +125,9 @@ export default function SignIn() {
             </div>
           </div>
         </div>
+        <Button className="bg-blue-600 text-white hover:bg-gray-200 block mx-auto my-4">
+          Empezá
+        </Button>
       </section>
     </div>
   );
