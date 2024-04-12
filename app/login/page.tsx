@@ -25,8 +25,8 @@ export default function LogIn() {
           <Image
             src={"/logos-unc.png"}
             alt="image"
-            width={200}
-            height={160}
+            width={500}
+            height="300"
             style={{
               height: "auto",
               width: "100%",
