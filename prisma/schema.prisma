@@ -69,8 +69,14 @@ model User {
   password          String
   validatedPassword String
   createdDate       DateTime @default(now())
+  role              RoleType @default(USER)
   accounts          Account[]
   sessions          Session[]
+}
+
+enum RoleType {
+  ADMIN
+  USER
 }
 
 model Account {
