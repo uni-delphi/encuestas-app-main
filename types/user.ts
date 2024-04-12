@@ -11,6 +11,7 @@ export type TUser = {
   email: string;
   password: string;
   validatedPassword: string;
+  role?: string;
 };
 
 export type TLoginUser = {
