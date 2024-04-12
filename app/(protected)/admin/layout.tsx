@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/utils/auth-options";
+import { authOptions } from "@/auth.config";
 import { redirect } from "next/navigation";
 import { Toaster } from "@/components/ui/toaster";
 

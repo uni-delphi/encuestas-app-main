@@ -1,8 +1,11 @@
+import { authOptions } from "@/auth.config";
 import EncuestaForm from "@/components/encuesta-form/encuesta-form";
 import NavBar from "@/components/nav-bar/nav-bar";
 
 import { TUser } from "@/types/user";
-import { Session } from "next-auth";
+import { Session, getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+
 interface IDATA {
   id: number;
   title: string;
@@ -390,19 +393,20 @@ export default async function Encuestas({
 }: {
   params: { slug: string };
 }) {
+  const session = await getServerSession(authOptions);
+  if (!session || !session.user) redirect("/");
   // const { events } = await getData() || {};
-  console.log(params.slug);
+
   const dataReal: IDATA | undefined = data.find(
     (item) => +params.slug === item.id
   );
-  console.log(dataReal);
+
   const { ...props } = dataReal;
   return (
     <main className="">
       <NavBar
         title={dataReal?.title as string}
-        user={{} as TUser}
-        session={{} as Session}
+        session={session as Session}
       />
 
       <div className="py-5 overflow-hidden">

@@ -1,6 +1,8 @@
 "use client";
 import React, { useState } from "react";
 
+import { useRouter } from 'next/navigation'
+
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -23,28 +25,19 @@ import { useToast } from "@/components/ui/use-toast";
 
 import { TUser } from "@/types/user";
 import { Loader2 } from "lucide-react";
-/**
- * name?: string | null;
-  lastName?: string | null;
-  country: string;
-  state: string;
-  education: string;
-  sector: string;
-  institution: string;
-  expertees: string;
-  years: number;
-  email: string;
-  password: string;
-  validatedPassword: string;
- */
+import { signIn } from "next-auth/react";
+
 const formSchema = z.object({
-  email: z.string(),
-  password: z.string()
+  email: z.string().email({ message: "Invalid email address" }),
+  password: z.string().min(1, {
+    message: "Password is required",
+  })
 });
 
 export default function LogInForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { toast } = useToast();
+  const router = useRouter()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -56,25 +49,22 @@ export default function LogInForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     
-    //setIsLoading(true);
-
-    loginUser({
+    setIsLoading(true);
+    const resp = await signIn('credentials', {
       email: values.email,
       password: values.password,
-    })
-      .then(() => {
-        toast({
-          title: "Evento editado!",
-        });
-        setIsLoading(false);
-      })
-      .catch((error: any) => {
-        console.log("error editando el evento", error);
-        toast({
-          variant: "destructive",
-          title: "Error editando el evento",
-        });
+      redirect: false
+    });
+
+    if (resp?.ok === false) { 
+      setIsLoading(false);
+      return toast({
+        variant: "destructive",
+        title: "Password o email son incorrectos.",
       });
+    }
+    
+    router.push(`/maquinarias/1`);
   }
 
   return (
@@ -94,6 +84,7 @@ export default function LogInForm() {
                 <FormControl>
                   <Input placeholder="" {...field} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -107,6 +98,7 @@ export default function LogInForm() {
                 <FormControl>
                   <Input placeholder="" {...field} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />

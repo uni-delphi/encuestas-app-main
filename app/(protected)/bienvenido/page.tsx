@@ -1,22 +1,27 @@
-import React from "react";
+import React from 'react';
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
 
-export default function SignIn() {
+import { getServerSession } from 'next-auth';
+import { authOptions } from "@/auth.config";
+import { redirect } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+
+export default async function Bienvenido() {
+  const session = await getServerSession(authOptions);  
+  if (!session || !session.user) redirect("/");
+
   return (
     <div className="grid grid-cols-1 xl:grid-cols-2 h-screen">
       <section className="w-full">
-        <Image
-          src={"/logos-unc.png"}
+      <Image
+          src={"/gente.jpg"}
           alt="image"
-          width={500}
-          height="300"
-          style={{
-            height: "auto",
-            width: "100%",
-            objectFit: "cover",
-            padding: "0 200px",
-          }}
+          width={200}
+          height={160}
+          sizes="(max-width: 768px) 100vw,
+              (max-width: 1200px) 50vw,
+              33vw"
+          style={{ height: "100vh", width: "100%", objectFit: "cover" }}
         />
       </section>
       <section className="w-full overflow-y-auto px-4 text-textColor my-4">
@@ -132,5 +137,5 @@ export default function SignIn() {
         </Button>
       </section>
     </div>
-  );
+  )
 }

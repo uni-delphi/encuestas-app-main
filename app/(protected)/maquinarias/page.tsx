@@ -1,10 +1,14 @@
+import { authOptions } from "@/auth.config";
 import EncuestaForm from "@/components/encuesta-form/encuesta-form";
 import NavBar from "@/components/nav-bar/nav-bar";
 
 import { TUser } from "@/types/user";
-import { Session } from "next-auth";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 
 export default async function Encuestas() {
+  const session = await getServerSession(authOptions);  
+  if (!session || !session.user) redirect("/");
   // const { events } = await getData() || {};
 
   return (

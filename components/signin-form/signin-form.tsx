@@ -23,33 +23,42 @@ import { useToast } from "@/components/ui/use-toast";
 
 import { TUser } from "@/types/user";
 import { Loader2 } from "lucide-react";
-/**
- * name?: string | null;
-  lastName?: string | null;
-  country: string;
-  state: string;
-  education: string;
-  sector: string;
-  institution: string;
-  expertees: string;
-  years: number;
-  email: string;
-  password: string;
-  validatedPassword: string;
- */
+import { signIn } from "next-auth/react";
+
 const formSchema = z.object({
   name: z.string(),
   lastName: z.string(),
-  country: z.string(),
-  state: z.string(),
-  education: z.string(),
-  sector: z.string(),
-  institution: z.string(),
-  expertees: z.string(),
-  years: z.string(),
-  email: z.string(),
-  password: z.string(),
-  validatedPassword: z.string(),
+  country: z.string().min(1, {
+    message: "country is required",
+  }),
+  state: z.string().min(1, {
+    message: "state is required",
+  }),
+  education: z.string().min(1, {
+    message: "education is required",
+  }),
+  sector: z.string().min(1, {
+    message: "sector is required",
+  }),
+  institution: z.string().min(1, {
+    message: "institution is required",
+  }),
+  expertees: z.string().min(1, {
+    message: "expertees is required",
+  }),
+  years: z.string().min(1, {
+    message: "years is required",
+  }),
+  email: z.string().email({ message: "Invalid email address" }),
+  password: z.string().min(1, {
+    message: "password is required",
+  }),
+  validatedPassword: z.string().min(1, {
+    message: "validatedPassword is required",
+  }),
+}).refine((values) => values.password === values.validatedPassword, {
+  message: "Confirme el password",
+  path: ["validatedPassword"],
 });
 
 export default function SignInForm() {
@@ -92,10 +101,11 @@ export default function SignInForm() {
       validatedPassword: values.validatedPassword,
     })
       .then(() => {
-        toast({
-          title: "Evento editado!",
-        });
-        setIsLoading(false);
+        signIn("credentials", {
+          email: values?.email,
+          password: values?.password,
+          callbackUrl: "/bienvenido",
+        })
       })
       .catch((error: any) => {
         console.log("error editando el evento", error);
@@ -143,6 +153,7 @@ export default function SignInForm() {
                 <FormControl>
                   <Input placeholder="País*" {...field} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -155,6 +166,7 @@ export default function SignInForm() {
                 <FormControl>
                   <Input placeholder="Provincia / Región*" {...field} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -170,6 +182,7 @@ export default function SignInForm() {
                 <FormControl>
                   <Input placeholder="Elige nivel" {...field} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -185,6 +198,7 @@ export default function SignInForm() {
                 <FormControl>
                   <Input placeholder="Elige sector" {...field} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -198,6 +212,7 @@ export default function SignInForm() {
                 <FormControl>
                   <Input placeholder="" {...field} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -211,6 +226,7 @@ export default function SignInForm() {
                 <FormControl>
                   <Input placeholder="" {...field} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -224,6 +240,7 @@ export default function SignInForm() {
                 <FormControl>
                   <Input placeholder="" {...field} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -236,6 +253,7 @@ export default function SignInForm() {
                 <FormControl>
                   <Input placeholder="Mail*" {...field} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -248,6 +266,7 @@ export default function SignInForm() {
                 <FormControl>
                   <Input placeholder="Contraseña*" {...field} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -260,6 +279,7 @@ export default function SignInForm() {
                 <FormControl>
                   <Input placeholder="Repetir contraseña*" {...field} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
