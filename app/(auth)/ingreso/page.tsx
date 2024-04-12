@@ -17,7 +17,7 @@ export default function LogIn() {
           sizes="(max-width: 768px) 100vw,
               (max-width: 1200px) 50vw,
               33vw"
-          style={{ height: "auto", width: "100%" }}
+          style={{ height: "100vh", width: "100%", objectFit: "cover" }}
         />
       </div>
       <div className="w-full text-center">
