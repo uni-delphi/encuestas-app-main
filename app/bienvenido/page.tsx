@@ -7,16 +7,14 @@ export default function SignIn() {
     <div className="grid grid-cols-1 xl:grid-cols-2 h-screen">
       <section className="w-full">
         <Image
-          src={"/logos-unc.png"}
+          src={"/gente.jpg"}
           alt="image"
           width={500}
-          height="300"
-          style={{
-            height: "auto",
-            width: "100%",
-            objectFit: "cover",
-            padding: "0 200px",
-          }}
+          height={960}
+          sizes="(max-width: 768px) 100vw,
+              (max-width: 1200px) 50vw,
+              33vw"
+          style={{ height: "100vh", width: "100%", objectFit: "cover" }}
         />
       </section>
       <section className="w-full overflow-y-auto px-4 text-textColor my-4">
@@ -24,7 +22,7 @@ export default function SignIn() {
           <Image
             src={"/logos-unc.png"}
             alt="image"
-            width={200}
+            width={500}
             height={160}
             style={{
               height: "auto",
