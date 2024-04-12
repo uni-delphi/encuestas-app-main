@@ -22,18 +22,19 @@ import { Session } from "next-auth";
 import { TUser } from "@/types/user";
 
 export default function AdminDropDown({
-  user,
   session,
 }: {
-  user: TUser;
   session: Session;
 }) {
+  console.log("session", session);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="relative" asChild>
         <Avatar className="h-9 w-9 ml-4 cursor-pointer relative">
-          <AvatarImage alt="@shadcn" src={session.user?.image as string} />
-          <AvatarFallback>{session.user?.name?.charAt(0)}</AvatarFallback>
+          {/* <AvatarImage alt="@shadcn" src={session.user?.image as string} /> */}
+          <AvatarFallback className="text-blue-700">
+            {session.user?.name?.charAt(0)}
+          </AvatarFallback>
 
           <span className="sr-only">Desplegar menú de usuario</span>
         </Avatar>
@@ -47,19 +48,6 @@ export default function AdminDropDown({
             {session.user?.name}
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link href={"/dashboard"} className="cursor-pointer">
-            Panel
-          </Link>
-        </DropdownMenuItem>
-        {/* <DropdownMenuItem asChild>
-          <Link href={"/dashboard/integraciones"} className="relative">
-            Integraciones
-            {!user?.mpAccessToken && <div className="dot-notification"></div>}
-          </Link>
-        </DropdownMenuItem> */}
-        <DropdownMenuSeparator />
         <DropdownMenuItem>
           <Button
             onClick={() =>
