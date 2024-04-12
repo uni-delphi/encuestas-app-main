@@ -1,0 +1,136 @@
+import React from "react";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+
+export default function SignIn() {
+  return (
+    <div className="grid grid-cols-1 xl:grid-cols-2 h-screen">
+      <section className="w-full">
+        <Image
+          src={"/logos-unc.png"}
+          alt="image"
+          width={500}
+          height="300"
+          style={{
+            height: "auto",
+            width: "100%",
+            objectFit: "cover",
+            padding: "0 200px",
+          }}
+        />
+      </section>
+      <section className="w-full overflow-y-auto px-4 text-textColor my-4">
+        <div>
+          <Image
+            src={"/logos-unc.png"}
+            alt="image"
+            width={200}
+            height={160}
+            style={{
+              height: "auto",
+              width: "100%",
+              objectFit: "cover",
+              padding: "0 200px",
+            }}
+          />
+          <h2 className="font-bold text-center my-10 text-2xl ">
+            <span className="block line-clamp-2">Estudio de</span>
+            <span className="block line-clamp-2">
+              Prospectiva tecnológica-ocupacional
+            </span>
+          </h2>
+          <div className="max-w-[80%] mx-auto">
+            <p className="pb-4 mb-4">
+              Tenemos el agrado de dirigirnos a usted a fin de informarle que
+              Campus Norte, UNC, a través de su Dirección de Prospectiva
+              Institucional, junto al INTA Córdoba han puesto en marcha{" "}
+              <b>
+                el estudio de prospectiva tecnológica-ocupacional del sector de
+                la agrobioindustria alimentaria de la provincia de Córdoba al
+                2035.
+              </b>
+            </p>
+            <p className="pb-4 mb-4">
+              El estudio se focaliza en construir conocimiento prospectivo sobre
+              las demandas de competencias profesionales del sector de la
+              agrobioindustria alimentaria, priorizado por Campus Norte de la
+              Universidad Nacional de Córdoba en la pluri-temporalidad de 1, 3,
+              5, 7 y 10 años, a través del análisis tecnológico e impactos
+              ocupacionales de acuerdo con el modelo prospectivo del SENAI-
+              Brasil.
+            </p>
+            <p className="pb-4 mb-4">
+              La encuesta Delphi apunta a la exploración y anticipación de
+              tecnologías críticas del sector de maquinaria agrícola y sus
+              implicancias, actuales y potenciales, en el empleo.
+            </p>
+            <p className="pb-4 mb-4">
+              En este marco, lo invitamos y agradecemos su valiosa
+              participación, que será de gran utilidad para priorizar las
+              tecnológicas emergentes específicas.
+            </p>
+            <p className="pb-4 mb-4">
+              La encuesta demora unos 20 minutos en ser finalizada totalmente y
+              deberá ser completada antes del 17 de mayo de 2024 (fecha límite)
+              para ser incorporada en el procesamiento general y, por ende, en
+              los resultados del Estudio.
+            </p>
+            <p className="pb-4 mb-4">
+              Solo debe responder aquellas preguntas que considere puede
+              contestar en función de sus conocimientos y/o experiencias. Se
+              acepta dejar preguntas sin contestar. Siéntase libre de compartir
+              las argumentaciones o justificaciones que estime pertinente en
+              cada enunciado.
+            </p>
+            <p className="pb-4 mb-4">
+              Asimismo, conforme a las previsiones de la Ley 17.622 se garantiza
+              el secreto de informante, estableciendo que toda la información
+              provista será considera estrictamente confidencial. Los datos
+              serán ingresados en una base sin realizar ninguna atribución
+              personal, pero los expertos que respondan el cuestionario serán
+              listados como participantes (a menos que explícitamente soliciten
+              lo contrario).
+            </p>
+            <p className="pb-4 mb-4">
+              Esperamos contar con sus opiniones, compartiendo los resultados
+              finales una vez que el estudio sea publicado. Asimismo, siéntase
+              libre de compartir está invitación con otros expertos que pudieran
+              estar interesados.
+            </p>
+            <p className="pb-4 mb-4">
+              Nuevamente agradecemos su participación y saludamos a usted con
+              nuestra mayor consideración.
+            </p>
+          </div>
+          <div className="flex flex-col lg:flex-row max-w-[80%] mx-auto">
+            <div className="w-full lg:w-1/2">
+              <p>
+                <b>Juan Marcelo CONRERO</b>
+                <br />
+                Prorrector de Desarrollo Territorial
+                <br />
+                Responsable de Campus Norte
+                <br />
+                Universidad Nacional de Córdoba
+              </p>
+            </div>
+            <div className="w-full lg:w-1/2">
+              <p>
+                <b>Aquiles SALINAS</b>
+                <br />
+                Director Centro Regional
+                <br />
+                Córdoba
+                <br />
+                INTA
+              </p>
+            </div>
+          </div>
+        </div>
+        <Button className="bg-blue-600 text-white hover:bg-gray-200 block mx-auto my-4">
+          Empezá
+        </Button>
+      </section>
+    </div>
+  );
+}
