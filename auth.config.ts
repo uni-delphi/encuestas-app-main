@@ -26,9 +26,10 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials: any, req) {
-        console.log("🚀 ~ authorize ~ credentials:", credentials);
+        
+        //console.log("🚀 ~ authorize ~ credentials:", credentials);
         // Add logic here to look up the user from the credentials supplied
-        const user = await db.user.findUnique({
+        const user: any = await db.user.findUnique({
           where: {
             email: credentials.email,
           },
@@ -50,13 +51,29 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   pages: {
-    signIn: '/',
-    signOut: '/',
-    error: '/auth/error', // Error code passed in query string as ?error=
-    verifyRequest: '/auth/verify-request', // (used for check email message)
+    signIn: "/",
+    signOut: "/",
+    error: "/auth/error", // Error code passed in query string as ?error=
+    verifyRequest: "/auth/verify-request", // (used for check email message)
   },
   session: {
     strategy: "jwt",
+  },
+  callbacks: {
+    async jwt({ token, user }) {
+      //console.log('token: ', token)
+      //console.log('user: ', user)
+
+      if (user) token.user = user?.role;
+      return token;
+    },
+    async session({ session, token }) {
+      //console.log('session: ', session.user)
+      //console.log('token: ', token.user)
+
+      if (session?.user) session.user.role = token.user as string;
+      return session;
+    },
   },
   secret: process.env.NEXTAUTH_SECRET,
   debug: process.env.NODE_ENV === "development",
