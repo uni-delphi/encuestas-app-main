@@ -30,7 +30,7 @@ export default async function Bienvenido() {
           <Image
             src={"/logos-unc.png"}
             alt="image"
-            width={200}
+            width={500}
             height={160}
             style={{
               height: "auto",
