@@ -4,9 +4,10 @@ import { Inter } from "next/font/google";
 import "./global.scss";
 import { Session, getServerSession } from "next-auth";
 import SessionProvider from "@/components/session-provider/session-provider";
-import { authOptions } from "@/utils/auth-options";
+import { authOptions } from "@/auth.config";
 import { getUserByEmail } from "@/lib/api/users";
 import NavBar from "@/components/nav-bar/nav-bar";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,6 +31,7 @@ export default async function RootLayout({
         {/*<NavBar user={user} session={session as Session} />*/}
           {children}
         </SessionProvider>
+        <Toaster />
       </body>
     </html>
   );

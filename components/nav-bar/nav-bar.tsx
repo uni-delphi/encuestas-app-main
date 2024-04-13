@@ -19,6 +19,7 @@ export default function NavBar({
   session: Session;
   title: string;
 }) {
+
   return (
     <header className="fixed grid bg-white h-20 w-full z-10">
       <TemasSelect />
@@ -34,7 +35,7 @@ export default function NavBar({
             Ingresar/Registrarse
           </Button>
         )}
-        {session && <AdminDropDown user={user as TUser} session={session} />}
+        {session && <AdminDropDown session={session} />}
       </nav>
     </header>
   );
