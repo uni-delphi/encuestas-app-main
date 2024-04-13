@@ -9,8 +9,8 @@ export default function SignIn() {
         <Image
           src={"/gente.jpg"}
           alt="image"
-          width={200}
-          height={160}
+          width={650}
+          height={960}
           sizes="(max-width: 768px) 100vw,
               (max-width: 1200px) 50vw,
               33vw"
@@ -22,7 +22,7 @@ export default function SignIn() {
           <Image
             src={"/logos-unc.png"}
             alt="image"
-            width={200}
+            width={500}
             height={160}
             style={{
               height: "auto",
