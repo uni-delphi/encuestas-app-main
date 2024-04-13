@@ -18,8 +18,10 @@ model Survey {
   title       String
   description String?
   questions   Question[]
-  createdBy   Admin    @relation(fields: [createdById], references: [id])
-  createdById Int
+  createdBy   User    @relation(fields: [createdById], references: [id])
+  createdById String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 // Modelo para representar una pregunta
@@ -31,6 +33,8 @@ model Question {
   survey          Survey           @relation(fields: [surveyId], references: [id])
   surveyId        Int
   responseExamples ResponseExample[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 model ResponseExample {
@@ -46,14 +50,6 @@ enum QuestionType {
   SINGLE_CHOICE
 }
 
-// Modelo para representar Admin y encuestados
-model Admin {
-  id                Int      @id @default(autoincrement())
-  email             String   @unique
-  password          String
-  createdSurveys    Survey[] // Relación inversa para las encuestas creadas por el administrador
-}
-
 model User {
   id                String    @id @default(cuid())
   name              String?
@@ -67,11 +63,12 @@ model User {
   expertees         String
   years             String
   password          String
-  validatedPassword String
-  createdDate       DateTime @default(now())
+  createdat         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
   role              RoleType @default(USER)
   accounts          Account[]
   sessions          Session[]
+  createdSurveys    Survey[] // Relación inversa para las encuestas creadas por el administrador
 }
 
 enum RoleType {
