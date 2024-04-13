@@ -14,27 +14,32 @@ datasource db {
 
 // Modelo para representar una encuesta
 model Survey {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String?
-  questions   Question[]
-  createdBy   User    @relation(fields: [createdById], references: [id])
-  createdById String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            Int @id @default(autoincrement())
+  title         String
+  description   String?
+  questions     Question[]
+  createdBy     User @relation(fields: [createdById], references: [id])
+  createdById   String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  responseCount Int @default(0) // New field to track the number of responses
 }
 
 // Modelo para representar una pregunta
 model Question {
-  id              Int              @id @default(autoincrement())
-  text            String
-  type            QuestionType
-  additionalInfo  String?
-  survey          Survey           @relation(fields: [surveyId], references: [id])
-  surveyId        Int
-  responseExamples ResponseExample[]
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id                      Int @id @default(autoincrement())
+  text                    String
+  type                    QuestionType
+  additionalInfo          String?
+  survey                  Survey @relation(fields: [surveyId], references: [id])
+  surveyId                Int
+  responseExamples        ResponseExample[]
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+  responses               Response[] 
+  singleChoiceResponses   SingleChoiceResponse[] // Add this line to establish the relation with single choice responses
+  checkboxResponses       CheckboxResponse[] // Add this line to establish the relation with checkbox responses
+
 }
 
 model ResponseExample {
@@ -50,25 +55,70 @@ enum QuestionType {
   SINGLE_CHOICE
 }
 
+// Modelo para representar una respuesta a una pregunta
+model Response {
+  id            Int @id @default(autoincrement())
+  respondent    User @relation(fields: [respondentId], references: [id])
+  respondentId  String
+  question      Question @relation(fields: [questionId], references: [id])
+  questionId    Int
+  answer        String // You may adjust this based on the type of answers expected
+  responseType  ResponseType // New field to specify the type of response
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+// Enum to define the types of responses
+enum ResponseType {
+  SINGLE_CHOICE
+  CHECKBOX
+}
+
+// Modelo para representar una respuesta a una pregunta de opción única (radio button)
+model SingleChoiceResponse {
+  id            Int @id @default(autoincrement())
+  respondent    User @relation(fields: [respondentId], references: [id])
+  respondentId  String
+  question      Question @relation(fields: [questionId], references: [id])
+  questionId    Int
+  choice        Int // Store the index of the selected choice
+  createdAt     DateTime @default(now())
+}
+
+// Modelo para representar una respuesta a una pregunta de selección múltiple (checkbox)
+model CheckboxResponse {
+  id            Int @id @default(autoincrement())
+  respondent    User @relation(fields: [respondentId], references: [id])
+  respondentId  String
+  question      Question @relation(fields: [questionId], references: [id])
+  questionId    Int
+  choices       Int[] // Store the indices of the selected choices
+  createdAt     DateTime @default(now())
+}
+
 model User {
-  id                String    @id @default(cuid())
-  name              String?
-  lastName          String?
-  email             String   @unique
-  country           String
-  state             String
-  education         String
-  sector            String
-  institution       String
-  expertees         String
-  years             String
-  password          String
-  createdat         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  role              RoleType @default(USER)
-  accounts          Account[]
-  sessions          Session[]
-  createdSurveys    Survey[] // Relación inversa para las encuestas creadas por el administrador
+  id                    String @id @default(cuid())
+  name                  String?
+  lastName              String?
+  email                 String @unique
+  country               String
+  state                 String
+  education             String
+  sector                String
+  institution           String
+  expertees             String
+  years                 String
+  password              String
+  createdat             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  role                  RoleType @default(USER)
+  accounts              Account[]
+  sessions              Session[]
+  createdSurveys        Survey[] // Relación inversa para las encuestas creadas por el administrador
+  responses             Response[] // Add this line to establish the relation with responses
+  singleChoiceResponses SingleChoiceResponse[] // Add this line to establish the relation with single choice responses
+  checkboxResponses     CheckboxResponse[] // Add this line to establish the relation with checkbox responses
+
 }
 
 enum RoleType {
