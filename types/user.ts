@@ -10,7 +10,7 @@ export type TUser = {
   years: string;
   email: string;
   password: string;
-  validatedPassword: string;
+  validatedPassword?: string;
   role?: string;
 };
 
