@@ -27,7 +27,7 @@ export default function LogIn() {
           No recuerdo mi contraseña
         </Button>
         <Link
-          href={"/auth/signin"}
+          href={"/registro"}
           className="bg-transparent text-black hover:bg-gray-200 font-bold py-2 px-4 rounded"
         >
           Registrarme
