@@ -84,8 +84,8 @@ export default function SignInForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    //setIsLoading(true);
-
+    setIsLoading(true);
+    
     createUser({
       name: values.name,
       lastName: values.lastName,
@@ -98,16 +98,17 @@ export default function SignInForm() {
       years: values.years,
       email: values.email,
       password: values.password,
-      validatedPassword: values.validatedPassword,
+      //validatedPassword: values.validatedPassword,
     })
       .then(() => {
         signIn("credentials", {
           email: values?.email,
           password: values?.password,
           callbackUrl: "/bienvenido",
-        })
+        });
       })
       .catch((error: any) => {
+        setIsLoading(false);
         console.log("error creando el usuario", error);
         toast({
           variant: "destructive",
