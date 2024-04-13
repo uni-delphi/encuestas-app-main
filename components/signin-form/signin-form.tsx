@@ -108,10 +108,10 @@ export default function SignInForm() {
         })
       })
       .catch((error: any) => {
-        console.log("error editando el evento", error);
+        console.log("error creando el usuario", error);
         toast({
           variant: "destructive",
-          title: "Error editando el evento",
+          title: "Error creando el usuario",
         });
       });
   }
