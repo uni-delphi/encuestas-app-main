@@ -45,7 +45,7 @@ export const authOptions: NextAuthOptions = {
         if (!valid) {
           return null;
         }
-
+        console.log("props", props)
         return props;
       },
     }),
@@ -61,17 +61,23 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
-      //console.log('token: ', token)
-      //console.log('user: ', user)
-
-      if (user) token.user = user?.role;
+      console.log('token: ', token)
+      
+      if (user) {
+        console.log('user: ', user)
+        token.lastName = user?.lastName;
+        token.role = user?.role;
+      }
       return token;
     },
     async session({ session, token }) {
       //console.log('session: ', session.user)
       //console.log('token: ', token.user)
 
-      if (session?.user) session.user.role = token.user as string;
+      if (session?.user) {
+        session.user.lastName = token.lastName as string;
+        session.user.role = token.role as string;
+      }
       return session;
     },
   },
