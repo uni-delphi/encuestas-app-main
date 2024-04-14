@@ -18,6 +18,7 @@ model Survey {
   title         String
   description   String?
   questions     Question[]
+  responses     Response[]
   createdBy     User @relation(fields: [createdById], references: [id])
   createdById   String
   createdAt     DateTime @default(now())
@@ -62,6 +63,8 @@ model Response {
   respondentId  String
   question      Question @relation(fields: [questionId], references: [id])
   questionId    Int
+  survey Survey @relation(fields: [surveyId], references: [id])
+  surveyId Int
   answer        String // You may adjust this based on the type of answers expected
   responseType  ResponseType // New field to specify the type of response
   createdAt     DateTime @default(now())
