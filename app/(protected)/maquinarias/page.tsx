@@ -3,7 +3,7 @@ import EncuestaForm from "@/components/encuesta-form/encuesta-form";
 import NavBar from "@/components/nav-bar/nav-bar";
 
 import { TUser } from "@/types/user";
-import { getServerSession } from "next-auth";
+import { Session, getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 
 export default async function Encuestas() {
@@ -13,7 +13,10 @@ export default async function Encuestas() {
 
   return (
     <main className="">
-      {/* <NavBar user={{} as TUser} session={{} as Session} /> */}
+      <NavBar
+        title={"Dashboard" as string}
+        session={session as Session}
+      />
 
       <div className="px-4 overflow-hidden">
         <h2 className="pt-20 mt-5 pb-2 text-center mx-auto">
