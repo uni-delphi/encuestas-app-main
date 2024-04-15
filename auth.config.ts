@@ -45,7 +45,7 @@ export const authOptions: NextAuthOptions = {
         if (!valid) {
           return null;
         }
-        console.log("props", props)
+        //console.log("props", props)
         return props;
       },
     }),
@@ -61,10 +61,10 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
-      console.log('token: ', token)
+      //console.log('token: ', token)
       
       if (user) {
-        console.log('user: ', user)
+        //console.log('user: ', user)
         token.lastName = user?.lastName;
         token.role = user?.role;
       }
