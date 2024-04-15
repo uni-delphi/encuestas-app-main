@@ -5,8 +5,9 @@ import { redirect } from "next/navigation";
 import bcrypt from "bcrypt";
 
 import { TUser, TLoginUser } from "@/types/user";
+
 import * as Users from "@/lib/api/users";
-import { signIn } from "next-auth/react";
+import * as Encuestas from "@/lib/api/encuestas";
 
 export async function createUser(data: TUser) {
   let user = null;
@@ -44,4 +45,13 @@ export async function loginUser(data: TLoginUser) {
   }
 
   revalidatePath("/dashboard");
+}
+
+export async function getAllEncuestas() { 
+  try {
+    return await Encuestas.getAllEncuestas();
+
+  } catch (error) {
+    
+  }
 }
