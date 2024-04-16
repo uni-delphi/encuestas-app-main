@@ -13,7 +13,7 @@ export default async function Bienvenido() {
   if (!session || !session.user) redirect("/");
 
   const encuestas: any = await getAllEncuestas();
-  const encuestaUrl = encuestas[0].tecnologias[0].title;
+  const encuestaUrl = encuestas[0].tecnologias[1].title;
   console.log("🚀 ~ encuestaUrl:", encuestaUrl)
   
   return (
