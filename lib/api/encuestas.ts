@@ -12,6 +12,9 @@ export async function getAllEncuestas() {
                 },
             },
           },
+          orderBy: {
+            id: 'asc', // or 'desc' for descending order
+          },
       },
       createdBy: {
         select: {
