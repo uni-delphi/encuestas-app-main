@@ -7,12 +7,16 @@ import { Button } from "@/components/ui/button";
 import { TUser } from "@/types/user";
 import { Session, getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
+import { getAllEncuestas } from "@/lib/actions";
 
 export default async function Encuestas() {
-  
   const session = await getServerSession(authOptions);
   if (!session || !session.user) redirect("/");
-  const { name } = session.user;
+  const { name, lastName } = session.user;
+
+  const encuestas: any = await getAllEncuestas();
+  const { title, description, tecnologias } = encuestas[0];
+  console.log("🚀 ~ encuestaUrl:", title);
 
   return (
     <main className="">
@@ -35,7 +39,12 @@ export default async function Encuestas() {
             style={{ height: "100vh", width: "100%", objectFit: "cover" }}
           />
         </section>
-        <section className="w-full overflow-y-auto px-4 text-textColor my-4">
+        <section
+          style={{
+            marginTop: "8rem",
+          }}
+          className="w-full overflow-y-auto px-4 text-textColor my-4"
+        >
           <div>
             <Image
               src={"/logos-unc.png"}
@@ -50,9 +59,11 @@ export default async function Encuestas() {
               }}
             />
             <h2 className="font-bold mx-20 mt-10 text-2xl ">
-              <span className="block line-clamp-2">Hola {name}!</span>
               <span className="block line-clamp-2">
-                Tu contribución a *Nombre del estudio* es del 83%
+                Hola {name} {lastName}!
+              </span>
+              <span className="block line-clamp-2">
+                Tu contribución a {title} es del 83%
               </span>
             </h2>
             <div className="max-w-[80%] mx-auto mt-1">
@@ -61,7 +72,7 @@ export default async function Encuestas() {
                 de tus respuestas.
               </p>
               <p className="pb-4 mb-4">
-                A continuacion te mostraremos el estado de tu encuesta.
+                A continuación te mostraremos el estado de tu encuesta.
               </p>
               <p className="pb-4 mb-4">
                 Al estudio le restan nn días para finalizar
@@ -69,58 +80,60 @@ export default async function Encuestas() {
             </div>
           </div>
           <div className="max-w-3xl mx-auto">
-            <div className="my-4">
-              <h1 className="text-2xl font-bold mb-4">Tecnología 1</h1>
-              <div className="grid ">
-                <div className="bg-[#CCE8D4] shadow-md rounded-lg p-4 flex items-center justify-between">
-                  <p className="text-gray-800 font-semibold">Completa</p>
-                  <p className="text-gray-600">Enunciado 1</p>
-                  <Button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    Ampliar Respuesta
-                  </Button>
+            {tecnologias &&
+              tecnologias.map((tecnologia: any, index: number) => (
+                <div key={tecnologia.id} className="my-4">
+                  <h1 className="text-2xl font-bold mb-4">
+                    {index+1}-{tecnologia.title}
+                  </h1>
+                  <div className="grid">
+                    {tecnologia.enunciados &&
+                      tecnologia.enunciados.map((enunciado: any) => (
+                        <div key={enunciado.id} className="bg-[#EAEAEA] shadow-md rounded-lg p-4 flex cols-12 items-center">
+                          <p className="text-gray-800 font-semibold flex-auto w-1/3">
+                            Por Empezar
+                          </p>
+                          <p className="text-gray-600 flex-auto w-1/3">
+                            {enunciado.title}
+                          </p>
+                          <div className="flex-auto w-1/3 text-center">
+                            <Button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                              Responder
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    {/*
+                    <div className="bg-[#CCE8D4] shadow-md rounded-lg p-4 flex items-center">
+                        <p className="text-gray-800 font-semibold flex-auto w-1/3">
+                          Completa
+                        </p>
+                        <p className="text-gray-600 flex-auto w-1/3">
+                          Enunciado 1
+                        </p>
+                        <div className="flex-auto w-1/3 text-center">
+                          <Button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            Editar
+                          </Button>
+                        </div>
+                      </div>
+                    <div className="bg-[#FFFFBF] shadow-md rounded-lg p-4 flex cols-12 items-center">
+                      <p className="text-gray-800 font-semibold flex-auto w-1/3">
+                        Casi Listo
+                      </p>
+                      <p className="text-gray-600 flex-auto w-1/3">
+                        Enunciado 2
+                      </p>
+                      <div className="flex-auto w-1/3 text-center">
+                        <Button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                          Ampliar
+                        </Button>
+                      </div>
+                    </div>
+                    */}
+                  </div>
                 </div>
-                <div className="bg-[#FFFFBF] shadow-md rounded-lg p-4 flex cols-12 items-center justify-between">
-                  <p className="text-gray-800 font-semibold">Casi Listo</p>
-                  <p className="text-gray-600">Enunciado 2</p>
-                  <Button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    Continuar
-                  </Button>
-                </div>
-                <div className="bg-[#EAEAEA] shadow-md rounded-lg p-4 flex cols-12 items-center justify-between">
-                  <p className="text-gray-800 font-semibold">Por Empezar</p>
-                  <p className="text-gray-600">Enunciado 3</p>
-                  <Button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    Empezar Ahora
-                  </Button>
-                </div>
-              </div>
-            </div>
-            <div className="my-4">
-              <h1 className="text-2xl font-bold mb-4">Tecnología 2</h1>
-              <div className="grid ">
-                <div className="bg-[#FFFFBF] shadow-md rounded-lg p-4 flex cols-12 items-center justify-between">
-                  <p className="text-gray-800 font-semibold">Casi Listo</p>
-                  <p className="text-gray-600">Enunciado 1</p>
-                  <Button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    Ampliar Respuesta
-                  </Button>
-                </div>
-                <div className="bg-[#CCE8D4] shadow-md rounded-lg p-4 flex items-center justify-between">
-                  <p className="text-gray-800 font-semibold">Completa</p>
-                  <p className="text-gray-600">Enunciado 2</p>
-                  <Button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    Continuar
-                  </Button>
-                </div>
-                <div className="bg-[#EAEAEA] shadow-md rounded-lg p-4 flex cols-12 items-center justify-between">
-                  <p className="text-gray-800 font-semibold">Por Empezar</p>
-                  <p className="text-gray-600">Enunciado 3</p>
-                  <Button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    Empezar Ahora
-                  </Button>
-                </div>
-              </div>
-            </div>
+              ))}
           </div>
         </section>
       </div>
