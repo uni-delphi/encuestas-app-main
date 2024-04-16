@@ -86,8 +86,8 @@ export default function EncuestaForm({ data }: { data: any }) {
       });
   }
 
-  const { nivel, importancia, difusion, aceleran, frenan, impacto } = data;
-
+  const { nivel, importancia, difusion, aceleran, frenan, impacto } = data[0];
+  
   return (
     <>
       <Form {...form}>
@@ -96,38 +96,38 @@ export default function EncuestaForm({ data }: { data: any }) {
           className="max-w-[80%] mx-auto"
         >
           <QuestionRadioField
-            data={nivel.answers}
-            statement={nivel.statement}
-            question_number={nivel.question_number}
+            data={nivel?.answers || ""}
+            statement={nivel?.statement}
+            question_number={nivel?.question_number}
           />
           <QuestionRadioField
-            data={importancia.answers}
-            statement={importancia.statement}
-            question_number={importancia.question_number}
+            data={importancia?.answers}
+            statement={importancia?.statement}
+            question_number={importancia?.question_number}
           />
           <QuestionRadioField
-            data={difusion.answers}
-            statement={difusion.statement}
-            question_number={difusion.question_number}
+            data={difusion?.answers}
+            statement={difusion?.statement}
+            question_number={difusion?.question_number}
           />
           <QuestionCheckboxField
-            data={aceleran.answers}
-            statement={aceleran.statement}
-            question_number={aceleran.question_number}
+            data={aceleran?.answers}
+            statement={aceleran?.statement}
+            question_number={aceleran?.question_number}
           />
           <QuestionCheckboxField
-            data={frenan.answers}
-            statement={frenan.statement}
-            question_number={frenan.question_number}
+            data={frenan?.answers}
+            statement={frenan?.statement}
+            question_number={frenan?.question_number}
           />
           <QuestionCheckboxField
-            data={impacto.answers}
-            statement={impacto.statement}
-            question_number={impacto.question_number}
+            data={impacto?.answers}
+            statement={impacto?.statement}
+            question_number={impacto?.question_number}
           />
         </form>
 
-        <Link className="" href="/bienvenido">
+        <Link className="" href="/estado">
           Ver avance
         </Link>
 
