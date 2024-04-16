@@ -1,19 +1,25 @@
-import React from 'react';
+import React from "react";
 import Image from "next/image";
 
-import { getServerSession } from 'next-auth';
+import { Session, getServerSession } from 'next-auth';
 import { authOptions } from "@/auth.config";
 import { redirect } from 'next/navigation';
-import { Button } from '@/components/ui/button';
+
+import CreateEncuestaButton from '@/components/create-encuesta-button/create-encuesta-button';
+import { getAllEncuestas } from '@/lib/actions';
 
 export default async function Bienvenido() {
-  const session = await getServerSession(authOptions);  
+  const session: Session | null = await getServerSession(authOptions);  
   if (!session || !session.user) redirect("/");
 
+  const encuestas: any = await getAllEncuestas();
+  const encuestaUrl = encuestas[0].tecnologias[0].title ?? "";
+  console.log("🚀 ~ encuestaUrl:", encuestaUrl)
+  
   return (
     <div className="grid grid-cols-1 xl:grid-cols-2 h-screen">
       <section className="w-full">
-      <Image
+        <Image
           src={"/gente.jpg"}
           alt="image"
           width={200}
@@ -29,7 +35,7 @@ export default async function Bienvenido() {
           <Image
             src={"/logos-unc.png"}
             alt="image"
-            width={200}
+            width={500}
             height={160}
             style={{
               height: "auto",
@@ -132,10 +138,8 @@ export default async function Bienvenido() {
             </div>
           </div>
         </div>
-        <Button className="bg-blue-600 text-white hover:bg-gray-200 block mx-auto my-4">
-          Empezá
-        </Button>
+        <CreateEncuestaButton url={ encuestaUrl } />
       </section>
     </div>
-  )
+  );
 }

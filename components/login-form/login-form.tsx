@@ -64,7 +64,7 @@ export default function LogInForm() {
       });
     }
     
-    router.push(`/maquinarias/1`);
+    router.push(`/estado/1`);
   }
 
   return (
@@ -107,7 +107,7 @@ export default function LogInForm() {
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Loading...
+                Cargando...
               </>
             ) : (
               "Ingresar"

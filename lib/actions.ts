@@ -5,8 +5,9 @@ import { redirect } from "next/navigation";
 import bcrypt from "bcrypt";
 
 import { TUser, TLoginUser } from "@/types/user";
+
 import * as Users from "@/lib/api/users";
-import { signIn } from "next-auth/react";
+import * as Encuestas from "@/lib/api/encuestas";
 
 export async function createUser(data: TUser) {
   let user = null;
@@ -21,12 +22,10 @@ export async function createUser(data: TUser) {
     data.password = hashedPassword;
     const result = await Users.createUser(data);
     user = result.id;
-
   } catch (error) {
     console.log("Error creando el usuario:", error);
     throw new Error("Error creando el usuario");
   }
-
 }
 
 export async function loginUser(data: TLoginUser) {
@@ -40,8 +39,26 @@ export async function loginUser(data: TLoginUser) {
     throw new Error("Error login");
   }
   if (eventId) {
-    redirect(`/maquinarias/1`);
+    redirect(`/estado/1`);
   }
 
   revalidatePath("/dashboard");
+}
+
+export async function getAllEncuestas() {
+  try {
+    return await Encuestas.getAllEncuestas();
+  } catch (error: any) {
+    console.log(error);
+    throw Error("Error getAllEncuestas", error);
+  }
+}
+
+export async function getTecnologia(title: string) {
+  try {
+    return await Encuestas.getTecnologia(title);
+  } catch (error: any) {
+    console.log(error);
+    throw Error("Error getTecnologia", error);
+  }
 }

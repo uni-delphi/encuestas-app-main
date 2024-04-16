@@ -7,11 +7,14 @@ import { redirect } from 'next/navigation'
 import LogInForm from "@/components/login-form/login-form";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Session } from "next-auth";
 
 export default async function Home() {
   
-  const session = await getServerSession(authOptions);
-  if (session) redirect("/maquinarias/1");
+  const session: Session | null = await getServerSession(authOptions);  
+  const redirectUrl = session?.user.role === "ADMIN" ? "/admin" : "/estado/1";
+
+  if (session) redirect(redirectUrl);
 
   return (
     <main className="grid grid-cols-1 xl:grid-cols-2 gap-9 h-screen">

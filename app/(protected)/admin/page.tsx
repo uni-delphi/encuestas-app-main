@@ -1,23 +1,38 @@
-"use client"
-import { getServerSession } from "next-auth";
-import Link from "next/link";
+import { Session, getServerSession } from "next-auth";
 import { authOptions } from "@/auth.config";
-import { getUserByEmail } from "@/lib/api/users";
+import { getAllEncuestas } from "@/lib/actions";
 import { Button } from "@/components/ui/button";
 import { signOut } from "next-auth/react";
+import NavBar from "@/components/nav-bar/nav-bar";
+import { redirect } from "next/navigation";
 
 export default async function Dashboard() {
-  //const session = await getServerSession(authOptions);
-  
+  const session = await getServerSession(authOptions);
+  if (!session || !session.user) redirect("/");
+  const encuestas: any = await getAllEncuestas();
+  console.log(encuestas[0].tecnologias);
   return (
-    <>
-      <div className="flex flex-col items-center gap-8 p-4 md:p-8 ">
-        Dashboard
-        <Button onClick={() => signOut({
-          redirect: true,
-          callbackUrl: '/'
-        })}>sign out</Button>
-      </div>
-    </>
+    <main className="flex flex-col items-center gap-8 p-4 md:p-8 ">
+      <NavBar
+        tecnologia={{}}
+        title={"Dashboard" as string}
+        session={session as Session}
+      />
+
+      {encuestas &&
+        encuestas.map((encuesta: any) => (
+          <div key={encuesta.id}>
+            <h1
+              style={{
+                marginTop: "8rem",
+              }}
+            >
+              {encuesta.title}
+            </h1>
+            <p>{encuesta.description}</p>
+            {JSON.stringify(encuesta.tecnologias)}
+          </div>
+        ))}
+    </main>
   );
 }
