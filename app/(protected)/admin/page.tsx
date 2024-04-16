@@ -10,10 +10,14 @@ export default async function Dashboard() {
   const session = await getServerSession(authOptions);
   if (!session || !session.user) redirect("/");
   const encuestas: any = await getAllEncuestas();
-console.log(encuestas[0].tecnologias)
+  console.log(encuestas[0].tecnologias);
   return (
     <main className="flex flex-col items-center gap-8 p-4 md:p-8 ">
-      <NavBar title={"Dashboard" as string} session={session as Session} />
+      <NavBar
+        tecnologia={{}}
+        title={"Dashboard" as string}
+        session={session as Session}
+      />
 
       {encuestas &&
         encuestas.map((encuesta: any) => (
@@ -25,8 +29,8 @@ console.log(encuestas[0].tecnologias)
             >
               {encuesta.title}
             </h1>
-            <p>{encuesta.description}</p>      
-            {JSON.stringify(encuesta.tecnologias)}      
+            <p>{encuesta.description}</p>
+            {JSON.stringify(encuesta.tecnologias)}
           </div>
         ))}
     </main>
