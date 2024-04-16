@@ -13,10 +13,10 @@ export default withAuth(
     if (
       (req.nextUrl.pathname.startsWith("/bienvenido") ||
         req.nextUrl.pathname.startsWith("/finalizado") ||
-        req.nextUrl.pathname.startsWith("/maquinarias")) &&
+        req.nextUrl.pathname.startsWith("/estado")) &&
       req.nextauth.token?.role !== "USER"
     ) {
-      return NextResponse.rewrite(new URL("/denied", req.url));
+      return NextResponse.rewrite(new URL('/admin', req.url))
     }
   },
   {
@@ -27,5 +27,5 @@ export default withAuth(
 );
 
 export const config = {
-  matcher: ["/admin", "/maquinarias/:path*", "/bienvenido", "/finalizado"],
+  matcher: ["/admin", "/estado/:path*", "/bienvenido", "/finalizado"],
 };
