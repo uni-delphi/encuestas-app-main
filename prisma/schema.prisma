@@ -5,7 +5,7 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
+  provider = "postgresql"
   //url      = env("DATABASE_URL")
   url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
@@ -36,12 +36,24 @@ model Tecnologias {
 }
 
 model Enunciados {
-  id           Int         @id @default(autoincrement())
-  title        String
-  description  String
-  questions    Question[]
-  tecnologia   Tecnologias @relation(fields: [tecnologiaId], references: [id])
-  tecnologiaId Int
+  id                  Int                 @id @default(autoincrement())
+  title               String
+  description         String
+  questionsEnunciados QuestionEnunciado[] // Relación many-to-many con Question
+  tecnologia          Tecnologias         @relation(fields: [tecnologiaId], references: [id])
+  tecnologiaId        Int
+  questions           Question[]
+}
+
+// Tabla intermedia para la relación many-to-many entre Question y Enunciado
+model QuestionEnunciado {
+  enunciado   Enunciados @relation(fields: [enunciadoId], references: [id])
+  enunciadoId Int
+
+  question   Question @relation(fields: [questionId], references: [id])
+  questionId Int
+
+  @@id([enunciadoId, questionId])
 }
 
 // Modelo para representar una pregunta
@@ -50,13 +62,13 @@ model Question {
   text                  String
   type                  QuestionType
   additionalInfo        String?
-  enunciado             Enunciados             @relation(fields: [enunciadoId], references: [id])
-  enunciadoId           Int
+  enunciados            Enunciados[] // Relación many-to-many con Enunciados
   createdAt             DateTime               @default(now())
   updatedAt             DateTime               @updatedAt
   responses             Response[]
-  singleChoiceResponses SingleChoiceResponse[] // Add this line to establish the relation with single choice responses
-  checkboxResponses     CheckboxResponse[] // Add this line to establish the relation with checkbox responses
+  singleChoiceResponses SingleChoiceResponse[]
+  checkboxResponses     CheckboxResponse[]
+  questionEnunciados    QuestionEnunciado[] // Relación inversa con QuestionEnunciado
 }
 
 // Enum para definir los tipos de preguntas posibles
@@ -70,8 +82,8 @@ model Response {
   id           Int          @id @default(autoincrement())
   respondent   User         @relation(fields: [respondentId], references: [id])
   respondentId String
-  question     Question     @relation(fields: [questionId], references: [id])
-  questionId   Int
+  question     Question?    @relation(fields: [questionId], references: [id])
+  questionId   Int?
   answer       String // You may adjust this based on the type of answers expected
   responseType ResponseType // New field to specify the type of response
   createdAt    DateTime     @default(now())
