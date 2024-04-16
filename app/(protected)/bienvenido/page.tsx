@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import Image from "next/image";
 
 import { Session, getServerSession } from 'next-auth';
@@ -19,7 +19,7 @@ export default async function Bienvenido() {
   return (
     <div className="grid grid-cols-1 xl:grid-cols-2 h-screen">
       <section className="w-full">
-      <Image
+        <Image
           src={"/gente.jpg"}
           alt="image"
           width={200}
@@ -35,7 +35,7 @@ export default async function Bienvenido() {
           <Image
             src={"/logos-unc.png"}
             alt="image"
-            width={200}
+            width={500}
             height={160}
             style={{
               height: "auto",
@@ -141,5 +141,5 @@ export default async function Bienvenido() {
         <CreateEncuestaButton url={ encuestaUrl } />
       </section>
     </div>
-  )
+  );
 }
