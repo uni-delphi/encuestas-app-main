@@ -25,41 +25,43 @@ import { TUser } from "@/types/user";
 import { Loader2 } from "lucide-react";
 import { signIn } from "next-auth/react";
 
-const formSchema = z.object({
-  name: z.string(),
-  lastName: z.string(),
-  country: z.string().min(1, {
-    message: "country is required",
-  }),
-  state: z.string().min(1, {
-    message: "state is required",
-  }),
-  education: z.string().min(1, {
-    message: "education is required",
-  }),
-  sector: z.string().min(1, {
-    message: "sector is required",
-  }),
-  institution: z.string().min(1, {
-    message: "institution is required",
-  }),
-  expertees: z.string().min(1, {
-    message: "expertees is required",
-  }),
-  years: z.string().min(1, {
-    message: "years is required",
-  }),
-  email: z.string().email({ message: "Invalid email address" }),
-  password: z.string().min(1, {
-    message: "password is required",
-  }),
-  validatedPassword: z.string().min(1, {
-    message: "validatedPassword is required",
-  }),
-}).refine((values) => values.password === values.validatedPassword, {
-  message: "Confirme el password",
-  path: ["validatedPassword"],
-});
+const formSchema = z
+  .object({
+    name: z.string(),
+    lastName: z.string(),
+    country: z.string().min(1, {
+      message: "country is required",
+    }),
+    state: z.string().min(1, {
+      message: "state is required",
+    }),
+    education: z.string().min(1, {
+      message: "education is required",
+    }),
+    sector: z.string().min(1, {
+      message: "sector is required",
+    }),
+    institution: z.string().min(1, {
+      message: "institution is required",
+    }),
+    expertees: z.string().min(1, {
+      message: "expertees is required",
+    }),
+    years: z.string().min(1, {
+      message: "years is required",
+    }),
+    email: z.string().email({ message: "Invalid email address" }),
+    password: z.string().min(1, {
+      message: "password is required",
+    }),
+    validatedPassword: z.string().min(1, {
+      message: "validatedPassword is required",
+    }),
+  })
+  .refine((values) => values.password === values.validatedPassword, {
+    message: "Confirme el password",
+    path: ["validatedPassword"],
+  });
 
 export default function SignInForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -85,7 +87,7 @@ export default function SignInForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    
+
     createUser({
       name: values.name,
       lastName: values.lastName,
@@ -284,17 +286,18 @@ export default function SignInForm() {
               </FormItem>
             )}
           />
-
-          <Button type="submit" disabled={isLoading} className="block mx-auto">
-            {isLoading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Loading...
-              </>
-            ) : (
-              "Confirmar mail"
-            )}
-          </Button>
+          <div className="space-y-2 w-[40%] mx-auto text-center">
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Cargando...
+                </>
+              ) : (
+                "Confirmar mail"
+              )}
+            </Button>
+          </div>
         </form>
       </Form>
     </>

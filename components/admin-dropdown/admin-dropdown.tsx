@@ -1,32 +1,25 @@
 "use client";
 
-import Link from "next/link";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Session } from "next-auth";
 import { signOut } from "next-auth/react";
+
+import Link from "next/link";
+
+import { Avatar, AvatarFallback } from "../ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "../ui/tooltip";
 import { Button } from "../ui/button";
-import { Session } from "next-auth";
-import { TUser } from "@/types/user";
 
 export default function AdminDropDown({
   session,
 }: {
   session: Session;
 }) {
-  console.log("session", session);
+  
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="relative" asChild>
@@ -45,7 +38,7 @@ export default function AdminDropDown({
             href={"/dashboard/configuracion/perfil"}
             className="font-bold cursor-pointer"
           >
-            {session.user?.name}
+            {session.user.lastName} {session.user.name}
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>

@@ -1,10 +1,12 @@
 import { authOptions } from "@/auth.config";
+import { Session, getServerSession } from "next-auth";
+import { getAllEncuestas } from "@/lib/actions";
 import EncuestaForm from "@/components/encuesta-form/encuesta-form";
 import NavBar from "@/components/nav-bar/nav-bar";
 
 import { TUser } from "@/types/user";
-import { Session, getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
+import { makeTitle } from "@/utils/text-helper";
 
 interface IDATA {
   id: number;
@@ -391,31 +393,54 @@ const data: IDATA[] = [
 export default async function Encuestas({
   params,
 }: {
-  params: { slug: string };
+  params: { slug: string[] };
 }) {
   const session = await getServerSession(authOptions);
   if (!session || !session.user) redirect("/");
-  // const { events } = await getData() || {};
 
-  const dataReal: IDATA | undefined = data.find(
-    (item) => +params.slug === item.id
+  const [techTitle, enunciadoTitle] = params.slug;
+
+  console.log("a", techTitle);
+  //console.log("b", enunciadoTitle);
+
+  const encuestas: any = await getAllEncuestas();
+  /*
+  {
+    tecnologia: {
+      id: number;
+      title: string;
+      description: string;
+      surveyId: number;
+      enunciados: {
+        id: number;
+        title: string;
+        description: string;
+        tecnologiaId: number;
+      }[] | undefined;
+    }[] | null
+  }[] | null
+  */
+  const techElegida = encuestas[0].tecnologias.find(
+    (data: any) => data.title === makeTitle(techTitle)
   );
+  if (!techElegida) redirect("/estado");
+  //console.log("🚀 ~ techElegida:", techElegida);
 
-  const { ...props } = dataReal;
   return (
     <main className="">
       <NavBar
-        title={dataReal?.title as string}
+        tecnologia={techElegida}
+        title={techElegida?.title as string}
         session={session as Session}
       />
 
       <div className="py-5 overflow-hidden">
         <div className="shadow-lg border-b-4 border-gray-300">
           <h2 className="pt-20 mt-5 pb-2 text-center text-xl font-bold">
-            {dataReal?.description}
+            {techElegida?.description}
           </h2>
         </div>
-        <EncuestaForm data={props} />
+        <EncuestaForm data={data} />
       </div>
     </main>
   );
