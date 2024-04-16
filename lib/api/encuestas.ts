@@ -1,3 +1,4 @@
+import { makeTitle } from "@/utils/text-helper";
 import { db } from "../prisma";
 
 export async function getAllEncuestas() {
@@ -22,4 +23,17 @@ export async function getAllEncuestas() {
       },
     },
   });
+}
+
+export async function getTecnologia(encuestaTitle: string) {
+  const title = makeTitle(encuestaTitle)
+  console.log("🚀 ~ getTecnologia ~ title:", title)
+  return await db.tecnologias.findFirst({ 
+    where: {
+      title,
+    },
+    include: {
+      enunciados: true,
+    }
+   });
 }
