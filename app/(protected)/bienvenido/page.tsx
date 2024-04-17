@@ -1,27 +1,33 @@
 import React from "react";
 import Image from "next/image";
 
-import { getServerSession } from "next-auth";
+import { Session, getServerSession } from 'next-auth';
 import { authOptions } from "@/auth.config";
-import { redirect } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import { redirect } from 'next/navigation';
+
+import CreateEncuestaButton from '@/components/create-encuesta-button/create-encuesta-button';
+import { getAllEncuestas } from '@/lib/actions';
 
 export default async function Bienvenido() {
-  const session = await getServerSession(authOptions);
+  const session: Session | null = await getServerSession(authOptions);  
   if (!session || !session.user) redirect("/");
 
+  const encuestas: any = await getAllEncuestas();
+  const encuestaUrl = encuestas[0].tecnologias[0].title ?? "";
+  console.log("🚀 ~ encuestaUrl:", encuestaUrl)
+  
   return (
     <div className="grid grid-cols-1 xl:grid-cols-2 h-screen">
       <section className="w-full">
         <Image
           src={"/gente.jpg"}
           alt="image"
-          width={500}
+          width={200}
           height={160}
-          sizes="(max-width: 768px) 100vw,              
+          sizes="(max-width: 768px) 100vw,
+              (max-width: 1200px) 50vw,
               33vw"
-          className="lg:h-lvh  w-full"
-          style={{ objectFit: "cover" }}
+          style={{ height: "100vh", width: "100%", objectFit: "cover" }}
         />
       </section>
       <section className="w-full overflow-y-auto px-4 text-textColor my-4">
@@ -29,13 +35,13 @@ export default async function Bienvenido() {
           <Image
             src={"/logos-unc.png"}
             alt="image"
-            width={400}
-            height={250}
+            width={500}
+            height={160}
             style={{
               height: "auto",
-              width: "auto",
+              width: "100%",
               objectFit: "cover",
-              margin: "20px auto",
+              padding: "0 200px",
             }}
           />
           <h2 className="font-bold text-center my-10 text-2xl ">
@@ -132,9 +138,7 @@ export default async function Bienvenido() {
             </div>
           </div>
         </div>
-        <Button className="bg-blue-600 text-white hover:bg-gray-200 block mx-auto my-4">
-          Empezá
-        </Button>
+        <CreateEncuestaButton url={ encuestaUrl } />
       </section>
     </div>
   );
