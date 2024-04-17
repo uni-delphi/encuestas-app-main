@@ -1,9 +1,11 @@
 import React from "react";
 
-import Image from "next/image";
-import LogInForm from "@/components/login-form/login-form";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import Image from "next/image";
+
+import { Button } from "@/components/ui/button";
+import LogInForm from "@/components/login-form/login-form";
+import GoogleLoginButton from "@/components/google-login-button/google-login-button";
 
 export default function LogIn() {
   return (
@@ -35,6 +37,7 @@ export default function LogIn() {
         />
         <h2 className="font-bold">Login</h2>
         <LogInForm />
+        <GoogleLoginButton />
         <Button className="bg-transparent text-black hover:bg-gray-200">
           No recuerdo mi contraseña
         </Button>
