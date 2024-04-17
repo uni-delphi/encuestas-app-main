@@ -1,11 +1,10 @@
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
-    env: {
-      GOOGLE_ID:
-        "426944037353-doj012lil9vjrbb60o8gghbrs0khh1sp.apps.googleusercontent.com",
-      GOOGLE_SECRET: "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",
-    }
-  };
-  
+  env: {
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+  }
+};
+
 module.exports = nextConfig;

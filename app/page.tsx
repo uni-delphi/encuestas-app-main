@@ -1,20 +1,24 @@
-
 import Image from "next/image";
-import { authOptions } from '@/auth.config';
+import { authOptions } from "@/auth.config";
 import { getServerSession } from "next-auth/next";
-import { redirect } from 'next/navigation'
-
-import LogInForm from "@/components/login-form/login-form";
-import { Button } from "@/components/ui/button";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Session } from "next-auth";
 
-export default async function Home() {
-  
-  const session: Session | null = await getServerSession(authOptions);  
+import LogInForm from "@/components/login-form/login-form";
+import { Button } from "@/components/ui/button";
+import GoogleLoginButton from "@/components/google-login-button/google-login-button";
+import { useToast } from "@/components/ui/use-toast";
+
+export default async function Home({ searchParams }: any) {
+  const session: Session | null = await getServerSession(authOptions);
   const redirectUrl = session?.user.role === "ADMIN" ? "/admin" : "/estado/1";
 
   if (session) redirect(redirectUrl);
+  
+  if (searchParams.error === "AccessDenied") {
+    console.log("Access Denied")
+  }
 
   return (
     <main className="grid grid-cols-1 xl:grid-cols-2 gap-9 h-screen">
@@ -39,6 +43,7 @@ export default async function Home() {
           </p>
         </div>
         <LogInForm />
+        <GoogleLoginButton />
         <div className="w-full text-center mt-5">
           <Button className="bg-transparent text-black hover:bg-gray-200">
             No recuerdo mi contraseña
