@@ -8,6 +8,7 @@ import { TUser } from "@/types/user";
 import { Session, getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { getAllEncuestas } from "@/lib/actions";
+import Link from "next/link";
 
 export default async function Encuestas() {
   const session = await getServerSession(authOptions);
@@ -97,9 +98,9 @@ export default async function Encuestas() {
                             {enunciado.title}
                           </p>
                           <div className="flex-auto w-1/3 text-center">
-                            <Button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            <Link href={`/${tecnologia.slug}/${enunciado.slug}`} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                               Responder
-                            </Button>
+                            </Link>
                           </div>
                         </div>
                       ))}

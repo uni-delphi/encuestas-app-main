@@ -421,10 +421,15 @@ export default async function Encuestas({
   }[] | null
   */
   const techElegida = encuestas[0].tecnologias.find(
-    (data: any) => data.title === makeTitle(techTitle)
+    (data: any) => data.slug === techTitle
   );
   if (!techElegida) redirect("/estado");
   //console.log("🚀 ~ techElegida:", techElegida);
+  const enunciadoElegido = techElegida.enunciados.find(
+    (data: any) => data.slug === enunciadoTitle
+  );
+
+  //console.log("asdasde:", enunciadoElegido);
 
   return (
     <main className="">
@@ -437,7 +442,7 @@ export default async function Encuestas({
       <div className="py-5 overflow-hidden">
         <div className="shadow-lg border-b-4 border-gray-300">
           <h2 className="pt-20 mt-5 pb-2 text-center text-xl font-bold">
-            {techElegida?.description}
+            {enunciadoElegido?.title}
           </h2>
         </div>
         <EncuestaForm data={data} />

@@ -6,15 +6,15 @@ import { authOptions } from "@/auth.config";
 import { redirect } from 'next/navigation';
 
 import CreateEncuestaButton from '@/components/create-encuesta-button/create-encuesta-button';
-import { getAllEncuestas } from '@/lib/actions';
+import { getAllEncuestas, getAllEncuestasInfo } from '@/lib/actions';
 
 export default async function Bienvenido() {
   const session: Session | null = await getServerSession(authOptions);  
   if (!session || !session.user) redirect("/");
 
-  const encuestas: any = await getAllEncuestas();
-  const encuestaUrl = encuestas[0].tecnologias[0].title ?? "";
-  console.log("🚀 ~ encuestaUrl:", encuestaUrl)
+  const encuestas: any = await getAllEncuestasInfo();
+  const encuestaUrl = `/${encuestas[0].tecnologias[0].slug}/${encuestas[0].tecnologias[0].enunciados[0].slug}`;
+  //console.log("🚀 ~ encuestaUrl:", encuestaUrl)
   
   return (
     <div className="grid grid-cols-1 xl:grid-cols-2 h-screen">
@@ -46,9 +46,7 @@ export default async function Bienvenido() {
           />
           <h2 className="font-bold text-center my-10 text-2xl ">
             <span className="block line-clamp-2">Estudio de</span>
-            <span className="block line-clamp-2">
-              Prospectiva tecnológica-ocupacional
-            </span>
+            <span className="block line-clamp-2">Prospectiva tecnológica-ocupacional</span>
           </h2>
           <div className="max-w-[80%] mx-auto">
             <p className="pb-4 mb-4">
