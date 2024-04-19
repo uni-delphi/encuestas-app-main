@@ -17,19 +17,15 @@ export default function SignIn() {
           style={{ height: "100vh", width: "100%", objectFit: "cover" }}
         />
       </section>
-      <section className="w-full overflow-y-auto px-4 py-4">
+      <section className="w-full overflow-y-auto px-4 py-4 h-screen">
         <div>
           <Image
             src={"/logos-unc.png"}
             alt="image"
             width={500}
             height={160}
-            style={{
-              height: "auto",
-              width: "100%",
-              objectFit: "cover",
-              padding: "0 200px",
-            }}
+            className="lg:h-lvh  w-full"
+            style={{ objectFit: "cover" }}
           />
           <h2 className="font-bold">¿Primera vez en la plataforma?</h2>
           <p className="pb-4 mb-4">
