@@ -22,27 +22,35 @@ model Survey {
   updatedAt     DateTime      @updatedAt
   tecnologias   Tecnologias[]
   responseCount Int           @default(0) // New field to track the number of responses
-  isActive      Boolean       @default(false)
+  isActive      Boolean       @default(true)
   hasEnded      Boolean       @default(false)
+  endDate       DateTime
 }
 
 model Tecnologias {
   id          Int          @id @default(autoincrement())
   title       String
   description String
+  slug        String?      @unique
   enunciados  Enunciados[]
   survey      Survey       @relation(fields: [surveyId], references: [id])
   surveyId    Int
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 }
 
 model Enunciados {
   id                  Int                 @id @default(autoincrement())
   title               String
   description         String
+  slug                String?             @unique
   questionsEnunciados QuestionEnunciado[] // Relación many-to-many con Question
   tecnologia          Tecnologias         @relation(fields: [tecnologiaId], references: [id])
   tecnologiaId        Int
   questions           Question[]
+  response            Response[]
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
 }
 
 // Tabla intermedia para la relación many-to-many entre Question y Enunciado
@@ -79,15 +87,21 @@ enum QuestionType {
 
 // Modelo para representar una respuesta a una pregunta
 model Response {
-  id           Int          @id @default(autoincrement())
-  respondent   User         @relation(fields: [respondentId], references: [id])
-  respondentId String
-  question     Question?    @relation(fields: [questionId], references: [id])
-  questionId   Int?
-  answer       String // You may adjust this based on the type of answers expected
-  responseType ResponseType // New field to specify the type of response
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  id             Int                   @id @default(autoincrement())
+  respondent     User                  @relation(fields: [respondentId], references: [id])
+  respondentId   String
+  question       Question?             @relation(fields: [questionId], references: [id])
+  questionId     Int?
+  enunciados     Enunciados            @relation(fields: [enunciadosId], references: [id])
+  enunciadosId   Int
+  answer         String // You may adjust this based on the type of answers expected
+  responseType   ResponseType // New field to specify the type of response
+  singleChoice   SingleChoiceResponse?
+  singleChoiceId Int?
+  checkbox       CheckboxResponse?
+  checkboxId     Int?
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
 }
 
 // Enum to define the types of responses
@@ -98,25 +112,26 @@ enum ResponseType {
 
 // Modelo para representar una respuesta a una pregunta de opción única (radio button)
 model SingleChoiceResponse {
-  id         Int      @id @default(autoincrement())
-  //respondent   User     @relation(fields: [respondentId], references: [id])
-  //respondentId String
-  question   Question @relation(fields: [questionId], references: [id])
+  id         Int       @id @default(autoincrement())
+  question   Question  @relation(fields: [questionId], references: [id])
   questionId Int
   choice     Int // Store the index of the selected choice
-  createdAt  DateTime @default(now())
+  createdAt  DateTime  @default(now())
+  answer     String
+  response   Response? @relation(fields: [responseId], references: [id])
+  responseId Int?      @unique
 }
 
 // Modelo para representar una respuesta a una pregunta de selección múltiple (checkbox)
 model CheckboxResponse {
-  id         Int      @id @default(autoincrement())
-  //respondent   User     @relation(fields: [respondentId], references: [id])
-  //respondentId String
-  question   Question @relation(fields: [questionId], references: [id])
+  id         Int       @id @default(autoincrement())
+  question   Question  @relation(fields: [questionId], references: [id])
   questionId Int
   choices    Int[] // Store the indices of the selected choices
-  createdAt  DateTime @default(now())
+  createdAt  DateTime  @default(now())
   answer     String
+  response   Response? @relation(fields: [responseId], references: [id])
+  responseId Int?      @unique
 }
 
 model User {
