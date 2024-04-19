@@ -87,7 +87,7 @@ export default function EncuestaForm({ data }: { data: any }) {
   }
 
   const { nivel, importancia, difusion, aceleran, frenan, impacto } = data[0];
-  
+
   return (
     <>
       <Form {...form}>

@@ -25,11 +25,10 @@ export default async function Encuestas() {
         title={"Dashboard" as string}
         session={session as Session}
       />
-
       <div className="grid grid-cols-1 xl:grid-cols-2 h-screen">
         <section className="w-full">
           <Image
-            src={"/gente.jpg"}
+            src={"/eccampus-temporal.jpg"}
             alt="image"
             width={200}
             height={160}
@@ -84,12 +83,15 @@ export default async function Encuestas() {
               tecnologias.map((tecnologia: any, index: number) => (
                 <div key={tecnologia.id} className="my-4">
                   <h1 className="text-2xl font-bold mb-4">
-                    {index+1}-{tecnologia.title}
+                    {index + 1}-{tecnologia.title}
                   </h1>
                   <div className="grid">
                     {tecnologia.enunciados &&
                       tecnologia.enunciados.map((enunciado: any) => (
-                        <div key={enunciado.id} className="bg-[#EAEAEA] shadow-md rounded-lg p-4 flex cols-12 items-center">
+                        <div
+                          key={enunciado.id}
+                          className="bg-[#EAEAEA] shadow-md rounded-lg p-4 flex cols-12 items-center"
+                        >
                           <p className="text-gray-800 font-semibold flex-auto w-1/3">
                             Por Empezar
                           </p>

@@ -11,7 +11,7 @@ import LayoutDefault from "@/components/image-layout/image-layout";
 export default function LogIn() {
   return (
     <LayoutDefault>
-      <h2 className="font-bold">Login</h2>
+      <h2 className="font-bold text-3xl my-4 pb-4">Ingresar</h2>
       <LogInForm />
       <div className="md:flex justify-center">
         <Button className="bg-transparent text-black hover:bg-gray-200">
