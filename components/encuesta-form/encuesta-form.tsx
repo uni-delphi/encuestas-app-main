@@ -126,7 +126,7 @@ export default function EncuestaForm({ data }: { data: any }) {
             question_number={impacto?.question_number}
           />
         </form>
-
+        <div className="flex justify-center items-center gap-2 p-4">
         <Link className="" href="/estado">
           Ver avance
         </Link>
@@ -141,6 +141,8 @@ export default function EncuestaForm({ data }: { data: any }) {
             "Siguiente"
           )}
         </Button>
+
+        </div>
       </Form>
     </>
   );

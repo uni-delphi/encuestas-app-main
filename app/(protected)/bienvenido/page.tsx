@@ -6,15 +6,16 @@ import { authOptions } from "@/auth.config";
 import { redirect } from 'next/navigation';
 
 import CreateEncuestaButton from '@/components/create-encuesta-button/create-encuesta-button';
-import { getAllEncuestas, getAllEncuestasInfo } from '@/lib/actions';
+import { getAllEncuestasInfo } from '@/lib/actions';
 
 export default async function Bienvenido() {
   const session: Session | null = await getServerSession(authOptions);  
   if (!session || !session.user) redirect("/");
 
-  const encuestas: any = await getAllEncuestasInfo();
-  const encuestaUrl = `/${encuestas[0].tecnologias[0].slug}/${encuestas[0].tecnologias[0].enunciados[0].slug}`;
-  //console.log("🚀 ~ encuestaUrl:", encuestaUrl)
+  const encuestas: any = await getAllEncuestasInfo();  
+  const encuestaUrl = `/${encuestas[0]?.tecnologias[0]?.slug}/${encuestas[0]?.tecnologias[0]?.enunciados[0].slug}`;
+  
+  console.log("🚀 ~ encuestaUrl:", encuestaUrl)
   
   return (
     <div className="grid grid-cols-1 xl:grid-cols-2 h-screen">
@@ -136,7 +137,7 @@ export default async function Bienvenido() {
             </div>
           </div>
         </div>
-        <CreateEncuestaButton url={ encuestaUrl } />
+        { encuestas[0] && <CreateEncuestaButton url={ encuestaUrl }/> }
       </section>
     </div>
   );
