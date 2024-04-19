@@ -28,6 +28,29 @@ export async function getAllEncuestas() {
   });
 }
 
+export async function getEncuestaInfo() {
+  return await db.survey.findMany({
+    include: {
+      tecnologias: {
+        include: {            
+            enunciados: true,
+          },
+          orderBy: {
+            id: 'asc', // or 'desc' for descending order
+          },
+      },
+      createdBy: {
+        select: {
+            id: true,
+            name: true,
+            lastName: true,
+            email: true,
+          },
+      },
+    },
+  });
+}
+
 export async function getTecnologia(encuestaTitle: string) {
   const title = makeTitle(encuestaTitle)
   console.log("🚀 ~ getTecnologia ~ title:", title)
@@ -40,3 +63,14 @@ export async function getTecnologia(encuestaTitle: string) {
     }
    });
 }
+
+export async function getEnunciados(slug: string) {
+  return await db.enunciados.findFirst({ 
+    where: {
+      slug,
+    },
+    include: {
+      questions: true,
+    }
+   });
+ }
