@@ -8,6 +8,7 @@ import { TUser } from "@/types/user";
 import { Session, getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { getAllEncuestas } from "@/lib/actions";
+import LogosUnc from "@/components/logos-unc/logos-unc";
 
 export default async function Encuestas() {
   const session = await getServerSession(authOptions);
@@ -25,40 +26,29 @@ export default async function Encuestas() {
         title={"Dashboard" as string}
         session={session as Session}
       />
-
       <div className="grid grid-cols-1 xl:grid-cols-2 h-screen">
         <section className="w-full">
           <Image
-            src={"/gente.jpg"}
+            src={"/eccampus-temporal.jpg"}
             alt="image"
             width={200}
             height={160}
             sizes="(max-width: 768px) 100vw,
               (max-width: 1200px) 50vw,
               33vw"
-            style={{ height: "100vh", width: "100%", objectFit: "cover" }}
+            className="lg:h-lvh  w-full hidden md:block md:sticky top-0"
+            style={{ objectFit: "cover" }}
           />
         </section>
         <section
           style={{
             marginTop: "8rem",
           }}
-          className="w-full overflow-y-auto px-4 text-textColor my-4"
+          className="w-full px-12 text-textColor my-4"
         >
           <div>
-            <Image
-              src={"/logos-unc.png"}
-              alt="image"
-              width={500}
-              height={160}
-              style={{
-                height: "auto",
-                width: "100%",
-                objectFit: "cover",
-                padding: "0 200px",
-              }}
-            />
-            <h2 className="font-bold mx-20 mt-10 text-2xl ">
+            <LogosUnc />
+            <h2 className="font-bold  mt-10 text-2xl ">
               <span className="block line-clamp-2">
                 Hola {name} {lastName}!
               </span>
@@ -66,7 +56,7 @@ export default async function Encuestas() {
                 Tu contribución a {title} es del 83%
               </span>
             </h2>
-            <div className="max-w-[80%] mx-auto mt-1">
+            <div className="max-w-[80%] mt-1">
               <p className="mb-4">
                 Puedes volver a completar, ampliar o modificar la justifiacion
                 de tus respuestas.
@@ -79,24 +69,27 @@ export default async function Encuestas() {
               </p>
             </div>
           </div>
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-3xl">
             {tecnologias &&
               tecnologias.map((tecnologia: any, index: number) => (
                 <div key={tecnologia.id} className="my-4">
                   <h1 className="text-2xl font-bold mb-4">
-                    {index+1}-{tecnologia.title}
+                    {index + 1}-{tecnologia.title}
                   </h1>
                   <div className="grid">
                     {tecnologia.enunciados &&
                       tecnologia.enunciados.map((enunciado: any) => (
-                        <div key={enunciado.id} className="bg-[#EAEAEA] shadow-md rounded-lg p-4 flex cols-12 items-center">
-                          <p className="text-gray-800 font-semibold flex-auto w-1/3">
+                        <div
+                          key={enunciado.id}
+                          className="bg-[#EAEAEA] shadow-md rounded-lg p-4 flex flex-col md:flex-row cols-12 items-center"
+                        >
+                          <p className="text-gray-800 font-semibold py-2 md:py-0 flex-auto w-full md:w-1/3">
                             Por Empezar
                           </p>
-                          <p className="text-gray-600 flex-auto w-1/3">
+                          <p className="text-gray-600 flex-auto py-2 md:py-0 w-full md:w-1/3">
                             {enunciado.title}
                           </p>
-                          <div className="flex-auto w-1/3 text-center">
+                          <div className="flex-auto w-full py-2 md:py-0 md:w-1/3 text-right">
                             <Button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                               Responder
                             </Button>

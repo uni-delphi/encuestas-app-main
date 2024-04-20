@@ -130,7 +130,7 @@ export default function SignInForm() {
             control={form.control}
             name="name"
             render={({ field }) => (
-              <FormItem className="w-[40%] mx-auto">
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
                 <FormControl>
                   <Input placeholder="Nombre" {...field} />
                 </FormControl>
@@ -141,7 +141,7 @@ export default function SignInForm() {
             control={form.control}
             name="lastName"
             render={({ field }) => (
-              <FormItem className="w-[40%] mx-auto">
+              <FormItem className="xl:xl:w-[40%] sm:w-[60%] mx-auto">
                 <FormControl>
                   <Input placeholder="Apellido" {...field} />
                 </FormControl>
@@ -152,7 +152,7 @@ export default function SignInForm() {
             control={form.control}
             name="country"
             render={({ field }) => (
-              <FormItem className="w-[40%] mx-auto">
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
                 <FormControl>
                   <Input placeholder="País*" {...field} />
                 </FormControl>
@@ -165,7 +165,7 @@ export default function SignInForm() {
             control={form.control}
             name="state"
             render={({ field }) => (
-              <FormItem className="w-[40%] mx-auto">
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
                 <FormControl>
                   <Input placeholder="Provincia / Región*" {...field} />
                 </FormControl>
@@ -178,7 +178,7 @@ export default function SignInForm() {
             control={form.control}
             name="education"
             render={({ field }) => (
-              <FormItem className="w-[40%] mx-auto">
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
                 <FormLabel>
                   Educación Formal* <br></br> (máximo nivel alcanzado)
                 </FormLabel>
@@ -194,7 +194,7 @@ export default function SignInForm() {
             control={form.control}
             name="sector"
             render={({ field }) => (
-              <FormItem className="w-[40%] mx-auto">
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
                 <FormLabel>
                   Sector en donde desarrolla su actividad principal*
                 </FormLabel>
@@ -210,7 +210,7 @@ export default function SignInForm() {
             control={form.control}
             name="institution"
             render={({ field }) => (
-              <FormItem className="w-[40%] mx-auto">
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
                 <FormLabel>Institución / empresa*</FormLabel>
                 <FormControl>
                   <Input placeholder="" {...field} />
@@ -224,7 +224,7 @@ export default function SignInForm() {
             control={form.control}
             name="expertees"
             render={({ field }) => (
-              <FormItem className="w-[40%] mx-auto">
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
                 <FormLabel>Area de especialidad*</FormLabel>
                 <FormControl>
                   <Input placeholder="" {...field} />
@@ -238,7 +238,7 @@ export default function SignInForm() {
             control={form.control}
             name="years"
             render={({ field }) => (
-              <FormItem className="w-[40%] mx-auto">
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
                 <FormLabel>Años de experiencia en la especialidad*</FormLabel>
                 <FormControl>
                   <Input placeholder="" {...field} />
@@ -252,7 +252,7 @@ export default function SignInForm() {
             control={form.control}
             name="email"
             render={({ field }) => (
-              <FormItem className="w-[40%] mx-auto">
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
                 <FormControl>
                   <Input placeholder="Mail*" {...field} />
                 </FormControl>
@@ -265,7 +265,7 @@ export default function SignInForm() {
             control={form.control}
             name="password"
             render={({ field }) => (
-              <FormItem className="w-[40%] mx-auto">
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
                 <FormControl>
                   <Input placeholder="Contraseña*" {...field} />
                 </FormControl>
@@ -278,7 +278,7 @@ export default function SignInForm() {
             control={form.control}
             name="validatedPassword"
             render={({ field }) => (
-              <FormItem className="w-[40%] mx-auto">
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
                 <FormControl>
                   <Input placeholder="Repetir contraseña*" {...field} />
                 </FormControl>
@@ -286,7 +286,7 @@ export default function SignInForm() {
               </FormItem>
             )}
           />
-          <div className="space-y-2 w-[40%] mx-auto text-center">
+          <div className="space-y-2 xl:w-[40%] sm:w-[60%] mx-auto text-center">
             <Button type="submit" disabled={isLoading}>
               {isLoading ? (
                 <>
