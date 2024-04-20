@@ -1,12 +1,11 @@
-import { NextAuthOptions } from "next-auth";
+import { Account, NextAuthOptions, User } from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
+
 import bcrypt from "bcrypt";
-
-import CredentialsProvider from "next-auth/providers/credentials";
-
 import { db } from "@/lib/prisma";
 
+import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 
 const prisma = new PrismaClient();
@@ -14,6 +13,11 @@ const prisma = new PrismaClient();
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      allowDangerousEmailAccountLinking: true,
+    }),
     CredentialsProvider({
       // The name to display on the sign in form (e.g. 'Sign in with...')
       name: "Credentials",
@@ -26,8 +30,6 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials: any, req) {
-        
-        //console.log("🚀 ~ authorize ~ credentials:", credentials);
         // Add logic here to look up the user from the credentials supplied
         const user: any = await db.user.findUnique({
           where: {
@@ -45,7 +47,7 @@ export const authOptions: NextAuthOptions = {
         if (!valid) {
           return null;
         }
-        //console.log("props", props)
+        console.log("props", props)
         return props;
       },
     }),
@@ -53,27 +55,46 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/",
     signOut: "/",
-    error: "/auth/error", // Error code passed in query string as ?error=
+    error: "/", // Error code passed in query string as ?error=
     verifyRequest: "/auth/verify-request", // (used for check email message)
   },
   session: {
     strategy: "jwt",
   },
   callbacks: {
+    async signIn({ user, account }: { user: any; account: any }) {
+      if (account.provider === "google") {
+        try {
+          const { name, email } = user;
+          const createdUser: any = await db.user.findUnique({
+            where: {
+              email,
+            },
+          });
+
+          if (!createdUser) {
+            console.log("🚀 ~ signIn ~ createdUser:", createdUser)
+
+            return null;
+          }
+
+          const { password, validatedPassword, ...props } = createdUser;
+
+          return props;
+        } catch (error) {
+          console.log("🚀 ~ signIn ~ error:", error);
+        }
+      }
+      return true;
+    },
     async jwt({ token, user }) {
-      //console.log('token: ', token)
-      
       if (user) {
-        //console.log('user: ', user)
         token.lastName = user?.lastName;
         token.role = user?.role;
       }
       return token;
     },
     async session({ session, token }) {
-      //console.log('session: ', session.user)
-      //console.log('token: ', token.user)
-
       if (session?.user) {
         session.user.lastName = token.lastName as string;
         session.user.role = token.role as string;
@@ -82,5 +103,5 @@ export const authOptions: NextAuthOptions = {
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
-  debug: process.env.NODE_ENV === "development",
+  //debug: process.env.NODE_ENV === "development",
 };

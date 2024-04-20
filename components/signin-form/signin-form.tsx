@@ -30,37 +30,44 @@ const formSchema = z
     name: z.string(),
     lastName: z.string(),
     country: z.string().min(1, {
-      message: "country is required",
+      message: "Este campo es requerido",
     }),
     state: z.string().min(1, {
-      message: "state is required",
+      message: "Este campo es requerido",
     }),
     education: z.string().min(1, {
-      message: "education is required",
+      message: "Este campo es requerido",
     }),
     sector: z.string().min(1, {
-      message: "sector is required",
+      message: "Este campo es requerido",
     }),
     institution: z.string().min(1, {
-      message: "institution is required",
+      message: "Este campo es requerido",
     }),
     expertees: z.string().min(1, {
-      message: "expertees is required",
+      message: "Este campo es requerido",
     }),
     years: z.string().min(1, {
-      message: "years is required",
+      message: "Este campo es requerido",
     }),
-    email: z.string().email({ message: "Invalid email address" }),
-    password: z.string().min(1, {
-      message: "password is required",
-    }),
+    email: z.string().email({ message: "Agregue un mail válido" }),
+    password: z
+      .string()
+      .min(8, { message: "La contraseña debe tener al menos 8 caracteres" }),      
     validatedPassword: z.string().min(1, {
-      message: "validatedPassword is required",
+      message: "Este campo es requerido",
     }),
   })
   .refine((values) => values.password === values.validatedPassword, {
     message: "Confirme el password",
     path: ["validatedPassword"],
+  })
+  .refine((values) => {
+    // Comprobación de al menos una letra mayúscula y un número
+    return /[A-Z]/.test(values.password) && /\d/.test(values.password);
+  }, {
+    message: "La contraseña debe contener al menos una letra mayúscula y un número",
+    path: ["password"],
   });
 
 export default function SignInForm() {
@@ -130,7 +137,7 @@ export default function SignInForm() {
             control={form.control}
             name="name"
             render={({ field }) => (
-              <FormItem className="w-[40%] mx-auto">
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
                 <FormControl>
                   <Input placeholder="Nombre" {...field} />
                 </FormControl>
@@ -141,7 +148,7 @@ export default function SignInForm() {
             control={form.control}
             name="lastName"
             render={({ field }) => (
-              <FormItem className="w-[40%] mx-auto">
+              <FormItem className="xl:xl:w-[40%] sm:w-[60%] mx-auto">
                 <FormControl>
                   <Input placeholder="Apellido" {...field} />
                 </FormControl>
@@ -152,7 +159,7 @@ export default function SignInForm() {
             control={form.control}
             name="country"
             render={({ field }) => (
-              <FormItem className="w-[40%] mx-auto">
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
                 <FormControl>
                   <Input placeholder="País*" {...field} />
                 </FormControl>
@@ -165,7 +172,7 @@ export default function SignInForm() {
             control={form.control}
             name="state"
             render={({ field }) => (
-              <FormItem className="w-[40%] mx-auto">
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
                 <FormControl>
                   <Input placeholder="Provincia / Región*" {...field} />
                 </FormControl>
@@ -178,7 +185,7 @@ export default function SignInForm() {
             control={form.control}
             name="education"
             render={({ field }) => (
-              <FormItem className="w-[40%] mx-auto">
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
                 <FormLabel>
                   Educación Formal* <br></br> (máximo nivel alcanzado)
                 </FormLabel>
@@ -194,7 +201,7 @@ export default function SignInForm() {
             control={form.control}
             name="sector"
             render={({ field }) => (
-              <FormItem className="w-[40%] mx-auto">
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
                 <FormLabel>
                   Sector en donde desarrolla su actividad principal*
                 </FormLabel>
@@ -210,7 +217,7 @@ export default function SignInForm() {
             control={form.control}
             name="institution"
             render={({ field }) => (
-              <FormItem className="w-[40%] mx-auto">
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
                 <FormLabel>Institución / empresa*</FormLabel>
                 <FormControl>
                   <Input placeholder="" {...field} />
@@ -224,7 +231,7 @@ export default function SignInForm() {
             control={form.control}
             name="expertees"
             render={({ field }) => (
-              <FormItem className="w-[40%] mx-auto">
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
                 <FormLabel>Area de especialidad*</FormLabel>
                 <FormControl>
                   <Input placeholder="" {...field} />
@@ -238,7 +245,7 @@ export default function SignInForm() {
             control={form.control}
             name="years"
             render={({ field }) => (
-              <FormItem className="w-[40%] mx-auto">
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
                 <FormLabel>Años de experiencia en la especialidad*</FormLabel>
                 <FormControl>
                   <Input placeholder="" {...field} />
@@ -252,7 +259,7 @@ export default function SignInForm() {
             control={form.control}
             name="email"
             render={({ field }) => (
-              <FormItem className="w-[40%] mx-auto">
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
                 <FormControl>
                   <Input placeholder="Mail*" {...field} />
                 </FormControl>
@@ -265,7 +272,7 @@ export default function SignInForm() {
             control={form.control}
             name="password"
             render={({ field }) => (
-              <FormItem className="w-[40%] mx-auto">
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
                 <FormControl>
                   <Input placeholder="Contraseña*" {...field} />
                 </FormControl>
@@ -278,7 +285,7 @@ export default function SignInForm() {
             control={form.control}
             name="validatedPassword"
             render={({ field }) => (
-              <FormItem className="w-[40%] mx-auto">
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
                 <FormControl>
                   <Input placeholder="Repetir contraseña*" {...field} />
                 </FormControl>
@@ -286,7 +293,7 @@ export default function SignInForm() {
               </FormItem>
             )}
           />
-          <div className="space-y-2 w-[40%] mx-auto text-center">
+          <div className="space-y-2 xl:w-[40%] sm:w-[60%] mx-auto text-center">
             <Button type="submit" disabled={isLoading}>
               {isLoading ? (
                 <>
