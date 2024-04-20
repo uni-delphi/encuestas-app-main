@@ -12,7 +12,7 @@ import {
 import { FormControl } from "../ui/form";
 
 export default function TemasSelect({ enunciados }: { enunciados: any }) {
-  console.log("🚀 ~ TemasSelect ~ tech:", enunciados);
+  //console.log("🚀 ~ TemasSelect ~ tech:", enunciados);
 
   return (
     <div className="flex justify-center gap-4 items-center">

@@ -16,7 +16,7 @@ export default async function Encuestas() {
   const { name, lastName } = session.user;
 
   const encuestas: any = await getAllEncuestas();
-  const { title, description, tecnologias } = encuestas[0];
+  const { title, description, tecnologias } = encuestas[0] ?? [];
   console.log("🚀 ~ encuestaUrl:", title);
 
   return (

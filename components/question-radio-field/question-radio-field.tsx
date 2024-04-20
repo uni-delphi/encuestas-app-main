@@ -44,10 +44,12 @@ export default function QuestionRadioField({
   data,
   statement,
   question_number,
+  response,
 }: {
   data: any;
   statement: any;
   question_number: any;
+  response: any;
 }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
