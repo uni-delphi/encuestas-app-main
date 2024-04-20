@@ -87,7 +87,7 @@ export default function EncuestaForm({ data, response }: { data: any, response: 
   }
   //console.log("respuestas", response);
   const { nivel, importancia, difusion, aceleran, frenan, impacto } = data[0];
-  
+
   return (
     <>
       <Form {...form}>

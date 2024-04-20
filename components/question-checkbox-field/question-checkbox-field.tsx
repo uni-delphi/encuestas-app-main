@@ -71,8 +71,8 @@ export default function QuestionCheckboxField({
 
   return (
     <>
-      <div className="flex gap-5 py-5">
-        <div className="flex-auto w-1/3">
+      <div className="flex gap-5 py-5 flex-col md:flex-row">
+        <div className="flex-auto w-full md:w-1/3">
           <FormField
             control={form.control}
             name="items"
@@ -125,7 +125,7 @@ export default function QuestionCheckboxField({
             )}
           />
         </div>
-        <div className="flex-auto w-1/3">
+        <div className="flex-auto w-full md:w-1/3">
           <FormField
             control={form.control}
             name="lastName"
@@ -141,7 +141,7 @@ export default function QuestionCheckboxField({
             )}
           />
         </div>
-        <div className="flex-auto w-1/3">
+        <div className="flex-auto w-full md:w-1/3">
           <p className="font-bold">Otros comentarios</p>
           <Carousel
             opts={{
