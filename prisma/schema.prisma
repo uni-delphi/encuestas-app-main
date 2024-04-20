@@ -135,27 +135,37 @@ model CheckboxResponse {
 }
 
 model User {
-  id             String     @id @default(cuid())
-  name           String?
-  lastName       String?
-  email          String     @unique
-  country        String
-  state          String
-  education      String
-  sector         String
-  institution    String
-  expertees      String
-  years          String
-  password       String
-  createdat      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
-  role           RoleType   @default(USER)
-  accounts       Account[]
-  sessions       Session[]
-  createdSurveys Survey[] // Relación inversa para las encuestas creadas por el administrador
-  responses      Response[] // Add this line to establish the relation with responses
+  id                 String               @id @default(cuid())
+  name               String?
+  lastName           String?
+  email              String               @unique
+  country            String
+  state              String
+  education          String
+  sector             String
+  institution        String
+  expertees          String
+  years              String
+  password           String
+  createdat          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  role               RoleType             @default(USER)
+  accounts           Account[]
+  sessions           Session[]
+  createdSurveys     Survey[] // Relación inversa para las encuestas creadas por el administrador
+  responses          Response[] // Add this line to establish the relation with responses
+  passwordReserToken PasswordReserToken[]
   //singleChoiceResponses SingleChoiceResponse[] // Add this line to establish the relation with single choice responses
   //checkboxResponses     CheckboxResponse[] // Add this line to establish the relation with checkbox responses
+}
+
+model PasswordReserToken {
+  id        Int       @id @default(autoincrement())
+  token     String    @unique
+  createdAt DateTime  @default(now())
+  resetAt   DateTime?
+  user      User      @relation(fields: [userId], references: [id])
+  userId    String
 }
 
 enum RoleType {
