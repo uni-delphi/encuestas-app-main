@@ -1,18 +1,15 @@
-import { authOptions } from "@/auth.config";
-
-import NavBar from "@/components/nav-bar/nav-bar";
+import Link from "next/link";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
-
-import { TUser } from "@/types/user";
+import { authOptions } from "@/auth.config";
 import { Session, getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { getAllEncuestas } from "@/lib/actions";
-import Link from "next/link";
+
 import LogosUnc from "@/components/logos-unc/logos-unc";
+import NavBar from "@/components/nav-bar/nav-bar";
 
 export default async function Encuestas() {
-  const session = await getServerSession(authOptions);
+  const session: Session | null = await getServerSession(authOptions);
   if (!session || !session.user) redirect("/");
   const { name, lastName } = session.user;
 
@@ -27,7 +24,7 @@ export default async function Encuestas() {
         title={"Dashboard" as string}
         session={session as Session}
       />
-      <div className="grid grid-cols-1 xl:grid-cols-2 h-screen">
+      <div className="grid grid-cols-1 md:grid-cols-2 h-screen">
         <section className="w-full">
           <Image
             src={"/eccampus-temporal.jpg"}

@@ -5,7 +5,7 @@ import LogosUnc from "../logos-unc/logos-unc";
 export default function LayoutDefault(props: any) {
   const { children } = props;
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-2 xl:h-screen">
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:h-screen">
       <div className="w-full">
         <Image
           src={"/eccampus-temporal.jpg"}
