@@ -2,10 +2,18 @@ import React from "react";
 import Image from "next/image";
 import SignInForm from "@/components/signin-form/signin-form";
 import LogosUnc from "@/components/logos-unc/logos-unc";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/auth.config";
+import { Session } from "next-auth";
+import { redirect } from "next/navigation";
 
-export default function SignIn() {
+export default async function SignIn() {
+  const session: Session | null = await getServerSession(authOptions);
+  const redirectUrl = session?.user.role === "ADMIN" ? "/admin" : "/estado/1";
+
+  if (session) redirect(redirectUrl);
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-2 xl:h-screen">
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:h-screen">
       <section className="w-full">
         <Image
           src={"/eccampus-temporal.jpg"}

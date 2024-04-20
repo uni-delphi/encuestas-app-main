@@ -9,6 +9,7 @@ import LogInForm from "@/components/login-form/login-form";
 import { Button } from "@/components/ui/button";
 import GoogleLoginButton from "@/components/google-login-button/google-login-button";
 import { useToast } from "@/components/ui/use-toast";
+import LayoutDefault from "@/components/image-layout/image-layout";
 
 export default async function Home({ searchParams }: any) {
   const session: Session | null = await getServerSession(authOptions);
@@ -21,30 +22,11 @@ export default async function Home({ searchParams }: any) {
   }
 
   return (
-    <main className="grid grid-cols-1 xl:grid-cols-2 gap-9 h-screen">
-      <section className="w-full">
-        <Image
-          src={"/gente.jpg"}
-          alt="image"
-          width={200}
-          height={160}
-          sizes="(max-width: 768px) 100vw,
-              (max-width: 1200px) 50vw,
-              33vw"
-          style={{ height: "100vh", width: "100%", objectFit: "cover" }}
-        />
-      </section>
-      <section className="w-full overflow-y-auto px-4 py-4 text-center">
-        <div>
-          <h2 className="font-bold">¿Primera vez en la plataforma?</h2>
-          <p className="pb-4 mb-4">
-            Te pedimos que completes los siguientes datos a fines de poder hacer
-            cruces demográficos de las respuestas
-          </p>
-        </div>
+    <main>
+      <LayoutDefault>
+        <h2 className="font-bold text-3xl my-4 pb-4">Ingresar</h2>
         <LogInForm />
-        <GoogleLoginButton />
-        <div className="w-full text-center mt-5">
+        <div className="md:flex justify-center">
           <Button className="bg-transparent text-black hover:bg-gray-200">
             No recuerdo mi contraseña
           </Button>
@@ -55,7 +37,7 @@ export default async function Home({ searchParams }: any) {
             Registrarme
           </Link>
         </div>
-      </section>
+      </LayoutDefault>
     </main>
   );
 }
