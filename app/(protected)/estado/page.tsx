@@ -35,14 +35,15 @@ export default async function Encuestas() {
             sizes="(max-width: 768px) 100vw,
               (max-width: 1200px) 50vw,
               33vw"
-            style={{ height: "100vh", width: "100%", objectFit: "cover" }}
+            className="lg:h-lvh  w-full md:sticky top-0"
+            style={{ objectFit: "cover" }}
           />
         </section>
         <section
           style={{
             marginTop: "8rem",
           }}
-          className="w-full overflow-y-auto px-4 text-textColor my-4"
+          className="w-full px-12 text-textColor my-4 text-center"
         >
           <div>
             <Image
