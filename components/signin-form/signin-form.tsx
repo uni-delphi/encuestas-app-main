@@ -30,37 +30,44 @@ const formSchema = z
     name: z.string(),
     lastName: z.string(),
     country: z.string().min(1, {
-      message: "country is required",
+      message: "Este campo es requerido",
     }),
     state: z.string().min(1, {
-      message: "state is required",
+      message: "Este campo es requerido",
     }),
     education: z.string().min(1, {
-      message: "education is required",
+      message: "Este campo es requerido",
     }),
     sector: z.string().min(1, {
-      message: "sector is required",
+      message: "Este campo es requerido",
     }),
     institution: z.string().min(1, {
-      message: "institution is required",
+      message: "Este campo es requerido",
     }),
     expertees: z.string().min(1, {
-      message: "expertees is required",
+      message: "Este campo es requerido",
     }),
     years: z.string().min(1, {
-      message: "years is required",
+      message: "Este campo es requerido",
     }),
-    email: z.string().email({ message: "Invalid email address" }),
-    password: z.string().min(1, {
-      message: "password is required",
-    }),
+    email: z.string().email({ message: "Agregue un mail válido" }),
+    password: z
+      .string()
+      .min(8, { message: "La contraseña debe tener al menos 8 caracteres" }),      
     validatedPassword: z.string().min(1, {
-      message: "validatedPassword is required",
+      message: "Este campo es requerido",
     }),
   })
   .refine((values) => values.password === values.validatedPassword, {
     message: "Confirme el password",
     path: ["validatedPassword"],
+  })
+  .refine((values) => {
+    // Comprobación de al menos una letra mayúscula y un número
+    return /[A-Z]/.test(values.password) && /\d/.test(values.password);
+  }, {
+    message: "La contraseña debe contener al menos una letra mayúscula y un número",
+    path: ["password"],
   });
 
 export default function SignInForm() {

@@ -8,6 +8,7 @@ import { TUser, TLoginUser } from "@/types/user";
 
 import * as Users from "@/lib/api/users";
 import * as Encuestas from "@/lib/api/encuestas";
+import * as Respuestas from "@/lib/api/respuestas";
 
 export async function createUser(data: TUser) {
   let user = null;
@@ -54,9 +55,36 @@ export async function getAllEncuestas() {
   }
 }
 
+export async function getAllEncuestasInfo() {
+  try {
+    return await Encuestas.getEncuestaInfo();
+  } catch (error: any) {
+    console.log(error);
+    throw Error("Error getAllEncuestas", error);
+  }
+}
+
 export async function getTecnologia(title: string) {
   try {
     return await Encuestas.getTecnologia(title);
+  } catch (error: any) {
+    console.log(error);
+    throw Error("Error getTecnologia", error);
+  }
+}
+
+export async function getEnunciados(slug: string) {
+  try {
+    return await Encuestas.getEnunciados(slug);
+  } catch (error: any) {
+    console.log(error);
+    throw Error("Error getTecnologia", error);
+  }
+}
+
+export async function getAllRespuestasByEnunciado(id: number) {
+  try {
+    return await Respuestas.getAllRespuestasByEnunciado(id);
   } catch (error: any) {
     console.log(error);
     throw Error("Error getTecnologia", error);

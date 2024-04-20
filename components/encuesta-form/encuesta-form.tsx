@@ -32,7 +32,7 @@ const formSchema = z.object({
   validatedPassword: z.string(),
 });
 
-export default function EncuestaForm({ data }: { data: any }) {
+export default function EncuestaForm({ data, response }: { data: any, response: any }) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { toast } = useToast();
 
@@ -85,7 +85,7 @@ export default function EncuestaForm({ data }: { data: any }) {
         });
       });
   }
-
+  //console.log("respuestas", response);
   const { nivel, importancia, difusion, aceleran, frenan, impacto } = data[0];
 
   return (
@@ -99,34 +99,40 @@ export default function EncuestaForm({ data }: { data: any }) {
             data={nivel?.answers || ""}
             statement={nivel?.statement}
             question_number={nivel?.question_number}
+            response={response}
           />
           <QuestionRadioField
             data={importancia?.answers}
             statement={importancia?.statement}
             question_number={importancia?.question_number}
+            response={response}
           />
           <QuestionRadioField
             data={difusion?.answers}
             statement={difusion?.statement}
             question_number={difusion?.question_number}
+            response={response}
           />
           <QuestionCheckboxField
             data={aceleran?.answers}
             statement={aceleran?.statement}
             question_number={aceleran?.question_number}
+            response={response}
           />
           <QuestionCheckboxField
             data={frenan?.answers}
             statement={frenan?.statement}
             question_number={frenan?.question_number}
+            response={response}
           />
           <QuestionCheckboxField
             data={impacto?.answers}
             statement={impacto?.statement}
             question_number={impacto?.question_number}
+            response={response}
           />
         </form>
-
+        <div className="flex justify-center items-center gap-2 p-4">
         <Link className="" href="/estado">
           Ver avance
         </Link>
@@ -141,6 +147,8 @@ export default function EncuestaForm({ data }: { data: any }) {
             "Siguiente"
           )}
         </Button>
+
+        </div>
       </Form>
     </>
   );

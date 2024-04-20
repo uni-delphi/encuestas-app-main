@@ -10,7 +10,7 @@ export default function CreateEncuestaButton({ url }: { url: string }) {
   console.log(formatTitleToSlug(url))
   return (
     <Button
-      onClick={() => router.push(`/${formatTitleToSlug(url)}`)}
+      onClick={() => router.push(url)}
       className="bg-blue-600 text-white hover:bg-gray-200 block mx-auto my-4"
     >
       Empezá
