@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import SignInForm from "@/components/signin-form/signin-form";
+import LogosUnc from "@/components/logos-unc/logos-unc";
 
 export default function SignIn() {
   return (
@@ -20,18 +21,7 @@ export default function SignIn() {
       </section>
       <section className="w-full px-12 text-textColor my-4 text-center">
         <div>
-          <Image
-            src={"/logos-unc.png"}
-            alt="image"
-            width={500}
-            height={160}
-            style={{
-              height: "auto",
-              width: "auto",
-              objectFit: "cover",
-              margin: "0 auto",
-            }}
-          />
+          <LogosUnc />
           <h2 className="font-bold text-3xl my-4 pb-4">
             ¿Primera vez en la plataforma?
           </h2>

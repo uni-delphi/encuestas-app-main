@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import LogosUnc from "../logos-unc/logos-unc";
 
 export default function LayoutDefault(props: any) {
   const { children } = props;
@@ -19,18 +20,7 @@ export default function LayoutDefault(props: any) {
         />
       </div>
       <div className="w-full px-12 text-textColor my-4 text-center">
-        <Image
-          src={"/logos-unc.png"}
-          alt="image"
-          width={500}
-          height={250}
-          style={{
-            height: "auto",
-            width: "auto",
-            objectFit: "cover",
-            margin: "0 auto",
-          }}
-        />
+        <LogosUnc />
         {children}
       </div>
     </div>

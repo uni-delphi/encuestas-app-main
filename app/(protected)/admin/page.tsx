@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { signOut } from "next-auth/react";
 import NavBar from "@/components/nav-bar/nav-bar";
 import { redirect } from "next/navigation";
+/* import BarChartAdmin from "@/components/bar-chart/bar-chart"; */
 
 export default async function Dashboard() {
   const session = await getServerSession(authOptions);
@@ -18,7 +19,9 @@ export default async function Dashboard() {
         title={"Dashboard" as string}
         session={session as Session}
       />
-
+      {/* <section className="mt-32 w-full h-screen">
+        <BarChartAdmin />
+      </section> */}
       {encuestas &&
         encuestas.map((encuesta: any) => (
           <div key={encuesta.id}>
