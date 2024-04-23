@@ -24,6 +24,27 @@ import { useToast } from "@/components/ui/use-toast";
 import { TUser } from "@/types/user";
 import { Loader2 } from "lucide-react";
 import { signIn } from "next-auth/react";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+
+type TEducation = "Secundaria" | "Terciario" | "Universitario";
+
+type TSector = "Pública - gubernamental" | "Privada - empresarial" | "Cientifica - académica" | "Gremial - sindicalia";
+
+const education: TEducation[] = ["Secundaria", "Terciario", "Universitario"];
+
+const sectors: TSector[] = [
+  "Pública - gubernamental",
+  "Privada - empresarial",
+  "Cientifica - académica",
+  "Gremial - sindicalia",
+];
 
 const formSchema = z
   .object({
@@ -53,7 +74,7 @@ const formSchema = z
     email: z.string().email({ message: "Agregue un mail válido" }),
     password: z
       .string()
-      .min(8, { message: "La contraseña debe tener al menos 8 caracteres" }),      
+      .min(8, { message: "La contraseña debe tener al menos 8 caracteres" }),
     validatedPassword: z.string().min(1, {
       message: "Este campo es requerido",
     }),
@@ -62,13 +83,17 @@ const formSchema = z
     message: "Confirme el password",
     path: ["validatedPassword"],
   })
-  .refine((values) => {
-    // Comprobación de al menos una letra mayúscula y un número
-    return /[A-Z]/.test(values.password) && /\d/.test(values.password);
-  }, {
-    message: "La contraseña debe contener al menos una letra mayúscula y un número",
-    path: ["password"],
-  });
+  .refine(
+    (values) => {
+      // Comprobación de al menos una letra mayúscula y un número
+      return /[A-Z]/.test(values.password) && /\d/.test(values.password);
+    },
+    {
+      message:
+        "La contraseña debe contener al menos una letra mayúscula y un número",
+      path: ["password"],
+    }
+  );
 
 export default function SignInForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -185,14 +210,23 @@ export default function SignInForm() {
             control={form.control}
             name="education"
             render={({ field }) => (
-              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto text-left">
                 <FormLabel>
                   Educación Formal* <br></br> (máximo nivel alcanzado)
                 </FormLabel>
-                <FormControl>
-                  <Input placeholder="Elige nivel" {...field} />
-                </FormControl>
-                <FormMessage />
+                <Select onValueChange={field.onChange}>
+                  <SelectTrigger className="w-[280px]">
+                    <SelectValue placeholder="Elige nivel" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {education &&
+                      education.map((edu: TEducation, index: number) => (
+                        <SelectGroup key={index}>
+                          <SelectItem value={edu}>{edu}</SelectItem>
+                        </SelectGroup>
+                      ))}
+                  </SelectContent>
+                </Select>
               </FormItem>
             )}
           />
@@ -201,14 +235,23 @@ export default function SignInForm() {
             control={form.control}
             name="sector"
             render={({ field }) => (
-              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto text-left">
                 <FormLabel>
                   Sector en donde desarrolla su actividad principal*
                 </FormLabel>
-                <FormControl>
-                  <Input placeholder="Elige sector" {...field} />
-                </FormControl>
-                <FormMessage />
+                <Select onValueChange={field.onChange}>
+                  <SelectTrigger className="w-[280px]">
+                    <SelectValue placeholder="Elige sector" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {sectors &&
+                      sectors.map((edu: TSector, index: number) => (
+                        <SelectGroup key={index}>
+                          <SelectItem value={edu}>{edu}</SelectItem>
+                        </SelectGroup>
+                      ))}
+                  </SelectContent>
+                </Select>
               </FormItem>
             )}
           />
@@ -217,7 +260,7 @@ export default function SignInForm() {
             control={form.control}
             name="institution"
             render={({ field }) => (
-              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto text-left">
                 <FormLabel>Institución / empresa*</FormLabel>
                 <FormControl>
                   <Input placeholder="" {...field} />
@@ -231,7 +274,7 @@ export default function SignInForm() {
             control={form.control}
             name="expertees"
             render={({ field }) => (
-              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto text-left">
                 <FormLabel>Area de especialidad*</FormLabel>
                 <FormControl>
                   <Input placeholder="" {...field} />
@@ -245,7 +288,7 @@ export default function SignInForm() {
             control={form.control}
             name="years"
             render={({ field }) => (
-              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto text-left">
                 <FormLabel>Años de experiencia en la especialidad*</FormLabel>
                 <FormControl>
                   <Input placeholder="" {...field} />

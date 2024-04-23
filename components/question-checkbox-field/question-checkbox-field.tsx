@@ -165,8 +165,6 @@ export default function QuestionCheckboxField({
                 vitae aliquet nec.
               </CarouselItem>
             </CarouselContent>
-            {/**<CarouselPrevious />
-            <CarouselNext /> */}
           </Carousel>
         </div>
       </div>

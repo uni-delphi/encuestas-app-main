@@ -69,6 +69,7 @@ model Question {
   id                    Int                    @id @default(autoincrement())
   text                  String
   type                  QuestionType
+  inputType             InputQuestionType?
   additionalInfo        String?
   enunciados            Enunciados[] // Relación many-to-many con Enunciados
   createdAt             DateTime               @default(now())
@@ -83,6 +84,15 @@ model Question {
 enum QuestionType {
   CHECKBOX
   SINGLE_CHOICE
+}
+
+enum InputQuestionType {
+  NIVEL
+  IMPORTANCIA
+  DIFUSION
+  ACELERAN
+  FRENAN
+  IMPACTO
 }
 
 // Modelo para representar una respuesta a una pregunta
@@ -115,7 +125,7 @@ model SingleChoiceResponse {
   id         Int       @id @default(autoincrement())
   question   Question  @relation(fields: [questionId], references: [id])
   questionId Int
-  choice     Int // Store the index of the selected choice
+  choice     String 
   createdAt  DateTime  @default(now())
   answer     String
   response   Response? @relation(fields: [responseId], references: [id])
@@ -127,7 +137,7 @@ model CheckboxResponse {
   id         Int       @id @default(autoincrement())
   question   Question  @relation(fields: [questionId], references: [id])
   questionId Int
-  choices    Int[] // Store the indices of the selected choices
+  choices    String[] 
   createdAt  DateTime  @default(now())
   answer     String
   response   Response? @relation(fields: [responseId], references: [id])

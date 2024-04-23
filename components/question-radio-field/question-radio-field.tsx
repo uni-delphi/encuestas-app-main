@@ -68,7 +68,7 @@ export default function QuestionRadioField({
       validatedPassword: "",
     },
   });
-
+//console.log("radio ", response)
   return (
     <>
       <div className="flex gap-5 py-5 flex-col md:flex-row">
@@ -105,29 +105,7 @@ export default function QuestionRadioField({
                             {item.name}
                           </FormLabel>
                         </FormItem>
-                      ))}
-                    {/*<FormItem className="flex items-center space-x-3 space-y-0">
-                      <FormControl>
-                        <RadioGroupItem value="all" />
-                      </FormControl>
-                      <FormLabel className="font-normal">
-                        All new messages
-                      </FormLabel>
-                    </FormItem>
-                    <FormItem className="flex items-center space-x-3 space-y-0">
-                      <FormControl>
-                        <RadioGroupItem value="mentions" />
-                      </FormControl>
-                      <FormLabel className="font-normal">
-                        Direct messages and mentions
-                      </FormLabel>
-                    </FormItem>
-                    <FormItem className="flex items-center space-x-3 space-y-0">
-                      <FormControl>
-                        <RadioGroupItem value="none" />
-                      </FormControl>
-                      <FormLabel className="font-normal">Nothing</FormLabel>
-                    </FormItem>*/}
+                      ))}                    
                   </RadioGroup>
                 </FormControl>
                 <FormMessage />
@@ -176,8 +154,6 @@ export default function QuestionRadioField({
                 vitae aliquet nec.
               </CarouselItem>
             </CarouselContent>
-            {/**<CarouselPrevious />
-            <CarouselNext /> */}
           </Carousel>
         </div>
       </div>
