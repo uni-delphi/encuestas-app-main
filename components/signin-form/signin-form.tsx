@@ -33,9 +33,13 @@ import {
   SelectValue,
 } from "../ui/select";
 
-const education = ["Secundaria", "Terciario", "Universitario"];
+type TEducation = "Secundaria" | "Terciario" | "Universitario";
 
-const sectors = [
+type TSector = "Pública - gubernamental" | "Privada - empresarial" | "Cientifica - académica" | "Gremial - sindicalia";
+
+const education: TEducation[] = ["Secundaria", "Terciario", "Universitario"];
+
+const sectors: TSector[] = [
   "Pública - gubernamental",
   "Privada - empresarial",
   "Cientifica - académica",
@@ -115,8 +119,7 @@ export default function SignInForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    console.log(values);
-    return;
+
     createUser({
       name: values.name,
       lastName: values.lastName,
@@ -217,7 +220,7 @@ export default function SignInForm() {
                   </SelectTrigger>
                   <SelectContent>
                     {education &&
-                      education.map((edu: any, index: number) => (
+                      education.map((edu: TEducation, index: number) => (
                         <SelectGroup key={index}>
                           <SelectItem value={edu}>{edu}</SelectItem>
                         </SelectGroup>
@@ -242,7 +245,7 @@ export default function SignInForm() {
                   </SelectTrigger>
                   <SelectContent>
                     {sectors &&
-                      sectors.map((edu: any, index: number) => (
+                      sectors.map((edu: TSector, index: number) => (
                         <SelectGroup key={index}>
                           <SelectItem value={edu}>{edu}</SelectItem>
                         </SelectGroup>
