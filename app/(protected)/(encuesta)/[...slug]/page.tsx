@@ -412,7 +412,7 @@ export default async function Encuestas({
   );
 
   const enunciados = await getAllRespuestasByEnunciado(enunciadoElegido?.id ?? techElegida.enunciados[0].id);
-  console.log("resp   s", enunciados);
+  console.log("resp   s", enunciadoElegido);
   return (
     <main className="">
       <NavBar
