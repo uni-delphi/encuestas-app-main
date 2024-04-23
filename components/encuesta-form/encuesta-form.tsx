@@ -34,8 +34,8 @@ const formSchema = z.object({
 
 export default function EncuestaForm({ data, response }: { data: any, response: any }) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { toast } = useToast();
-//console.log("encuesta component", response)
+  const { toast } = useToast();  
+  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {

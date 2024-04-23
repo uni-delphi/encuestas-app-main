@@ -68,7 +68,7 @@ export default function QuestionRadioField({
       validatedPassword: "",
     },
   });
-
+//console.log("radio ", response)
   return (
     <>
       <div className="flex gap-5 py-5 flex-col md:flex-row">
