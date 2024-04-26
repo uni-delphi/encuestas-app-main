@@ -1,12 +1,11 @@
 import { authOptions } from "@/auth.config";
-import { Session, getServerSession } from "next-auth";
-import { getAllEncuestas, getAllRespuestasByEnunciado } from "@/lib/actions";
+import { Session, User, getServerSession } from "next-auth";
+import { getAllEncuestas, getEnunciado } from "@/lib/actions";
 import EncuestaForm from "@/components/encuesta-form/encuesta-form";
 import NavBar from "@/components/nav-bar/nav-bar";
 
-import { TUser } from "@/types/user";
 import { redirect } from "next/navigation";
-import { makeTitle } from "@/utils/text-helper";
+import { IENUNCIADO } from "@/types/encuestas";
 
 interface IDATA {
   id: number;
@@ -398,21 +397,29 @@ export default async function Encuestas({
   const session = await getServerSession(authOptions);
   if (!session || !session.user) redirect("/");
 
+  const { user } = session;
   const [techTitle, enunciadoTitle] = params.slug;
+  let emptyEnunciadoSlug: string = "";
+  let emptyEnunciadoId: number = 0;
 
   const encuestas: any = await getAllEncuestas();
+  const techElegida = encuestas[0]?.tecnologias.find((data: any) => data.slug === techTitle);
 
-  const techElegida = encuestas[0]?.tecnologias.find(
-    (data: any) => data.slug === techTitle
-  );
   if (!techElegida) redirect("/estado");
 
-  const enunciadoElegido = techElegida.enunciados.find(
-    (data: any) => data.slug === enunciadoTitle
-  );
+  const enunciadoElegido = techElegida.enunciados.find((data: any) => data.slug === enunciadoTitle);
 
-  const enunciados = await getAllRespuestasByEnunciado(enunciadoElegido?.id ?? techElegida.enunciados[0].id);
-  console.log("resp   s", enunciadoElegido);
+  if (!enunciadoElegido) {
+    emptyEnunciadoSlug = techElegida.enunciados[0].slug;
+    emptyEnunciadoId = techElegida.enunciados[0].id;
+  }
+
+  const enunciados = await getEnunciado({
+    dataSlug: enunciadoElegido?.slug ?? emptyEnunciadoSlug,
+    dataUserId: session?.user.id,
+    dataEnunciadoId: enunciadoElegido?.id ?? emptyEnunciadoId,
+  });
+  
   return (
     <main className="">
       <NavBar
@@ -427,7 +434,7 @@ export default async function Encuestas({
             {enunciadoElegido?.title ?? techElegida.enunciados[0].title}
           </h2>
         </div>
-        <EncuestaForm data={data} response={enunciados} />
+        <EncuestaForm enunciado={enunciados as IENUNCIADO} user={user as User}/>
       </div>
     </main>
   );
