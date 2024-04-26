@@ -14,12 +14,7 @@ import {
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
 
-export default function AdminDropDown({
-  session,
-}: {
-  session: Session;
-}) {
-  
+export default function AdminDropDown({ session }: { session: Session }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="relative" asChild>
