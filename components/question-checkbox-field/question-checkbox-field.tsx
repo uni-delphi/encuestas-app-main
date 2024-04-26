@@ -1,10 +1,11 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
+  Form,
   FormControl,
   FormDescription,
   FormField,
@@ -14,160 +15,218 @@ import {
 } from "../ui/form";
 import { Checkbox } from "../ui/checkbox";
 import { Textarea } from "../ui/textarea";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "../ui/carousel";
+import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
 import { useForm } from "react-hook-form";
+import { createResponse, updateCheckboxResponse } from "@/lib/actions";
+import {
+  IANSWER,
+  IDATAQUESTION,
+  IENUNCIADOPROPS,
+  IQUESTION,
+} from "@/types/encuestas";
+import { User } from "next-auth";
 
 const formSchema = z.object({
   items: z.array(z.string()),
   type: z.enum(["all", "mentions", "none"], {
     required_error: "You need to select a notification type.",
   }),
-  lastName: z.string(),
-  state: z.string(),
-  education: z.string(),
-  sector: z.string(),
-  institution: z.string(),
-  expertees: z.string(),
-  years: z.string(),
-  email: z.string(),
-  password: z.string(),
-  validatedPassword: z.string(),
+  textField: z.string(),
 });
 
 export default function QuestionCheckboxField({
   data,
-  statement,
-  question_number,
-  response
+  values,
+  enunciadoData,
+  checkboxResponse,
+  user,
 }: {
-  data: any;
-  statement: any;
-  question_number: any;
-  response: any;
+  data: IDATAQUESTION;
+  values: IQUESTION;
+  enunciadoData: IENUNCIADOPROPS;
+  checkboxResponse: any;
+  user: User;
 }) {
+  //console.log("QuestionCheckboxField", enunciadoData);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      items: ["recents", "home"],
-      lastName: "",
-      //country: "",
-      state: "",
-      education: "",
-      sector: "",
-      institution: "",
-      expertees: "",
-      years: "",
-      email: "",
-      password: "",
-      validatedPassword: "",
+      items: values.responses[0]?.checkbox?.choices ?? [],
+      textField: values.responses[0]?.checkbox?.answer ?? "",
     },
   });
 
+  const [debouncedValue, setDebouncedValue] = useState<string>(
+    form.getValues("textField")
+  );
+  const timerRef = useRef<number | undefined>();
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current !== undefined) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, []);
+
+  const handleChange = (checked: boolean, itemId: string) => {
+    const currentItems = form.getValues("items");
+    const updatedItems = checked
+      ? [...currentItems, itemId]
+      : currentItems.filter((value) => value !== itemId);
+    form.setValue("items", updatedItems);
+
+    updateDatabase({ choices: updatedItems });
+  };
+
+  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    form.setValue("textField", e.target.value);
+    // Se inicia el temporizador para activar el debouncer
+    if (timerRef.current !== undefined) {
+      clearTimeout(timerRef.current);
+    }
+    timerRef.current = window.setTimeout(() => {
+      setDebouncedValue(e.target.value);
+
+      updateDatabase({ answer: e.target.value });
+    }, 1500);
+  };
+
+  const updateDatabase = async (value: any) => {
+    if (values.responses.length > 0) {
+      const response = await updateCheckboxResponse(
+        value,
+        values.responses[0]?.checkbox.id
+      );
+      return;
+    }
+
+    const { choices, answer } = value;
+
+    const responseData: any = {
+      respondentId: user.id,
+      questionId: values.id,
+      enunciadosId: enunciadoData.id,
+      responseType: values.type,
+      answer: "",
+      singleChoice: {},
+      checkbox: {
+        questionId: values.id,
+        choices: choices ?? [],
+        answer: answer ?? "",
+        enunciadosId: enunciadoData.id,
+      },
+    };
+
+    const response = await createResponse(responseData);
+    console.log("🚀 ~ updateDatabase ~ response:", response);
+  };
+
   return (
     <>
-      <div className="flex gap-5 py-5 flex-col md:flex-row">
-        <div className="flex-auto w-full md:w-1/3">
-          <FormField
-            control={form.control}
-            name="items"
-            render={() => (
-              <FormItem>
-                <div className="mb-4 flex">
-                  <FormLabel className="text-base mr-4 font-bold">
-                    {question_number}
-                  </FormLabel>
-                  <FormDescription className="font-bold w-[80%]">
-                    {statement}
-                  </FormDescription>
-                </div>
-                {data &&
-                  data.map((item: any) => (
-                    <FormField
-                      key={item.id}
-                      control={form.control}
-                      name="items"
-                      render={({ field }) => {
-                        return (
-                          <FormItem
-                            key={item.id}
-                            className="flex flex-row items-start space-x-3 space-y-0"
-                          >
-                            <FormControl>
-                              <Checkbox
-                                checked={field.value?.includes(item.id)}
-                                onCheckedChange={(checked) => {
-                                  return checked
-                                    ? field.onChange([...field.value, item.id])
-                                    : field.onChange(
-                                        field.value?.filter(
-                                          (value) => value !== item.id
-                                        )
-                                      );
-                                }}
-                              />
-                            </FormControl>
-                            <FormLabel className="font-normal">
-                              {item.label}
-                            </FormLabel>
-                          </FormItem>
-                        );
-                      }}
-                    />
-                  ))}
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="flex-auto w-full md:w-1/3">
-          <FormField
-            control={form.control}
-            name="lastName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="font-bold text-base">
-                  Justifique de respuesta
-                </FormLabel>
-                <FormControl>
-                  <Textarea placeholder="" {...field} />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="flex-auto w-full md:w-1/3">
-          <p className="font-bold">Otros comentarios</p>
-          <Carousel
-            opts={{
-              align: "start",
-            }}
-          >
-            <CarouselContent className="text-center h-100">
-              <CarouselItem className="text-justify pt-2">
-                Leo a diam sollicitudin tempor id eu nisl nunc mi ipsum faucibus
-                vitae aliquet nec.
-              </CarouselItem>
-              <CarouselItem className="text-justify pt-2">
-                A cras semper auctor neque vitae tempus quam pellentesque nec
-                nam aliquam sem et tortor consequat id porta nibh venenatis cras
-                sed felis eget velit aliquet sagittis id consectetur purus ut
-                faucibus pulvinar elementum integer enim neque volutpat ac
-                tincidunt.
-              </CarouselItem>
-              <CarouselItem className="text-justify pt-2">
-                Leo a diam sollicitudin tempor id eu nisl nunc mi ipsum faucibus
-                vitae aliquet nec.
-              </CarouselItem>
-            </CarouselContent>
-          </Carousel>
-        </div>
-      </div>
+      <Form {...form}>
+        <form className="max-w-[80%] mx-auto">
+          <div className="flex gap-5 py-5 flex-col md:flex-row">
+            <div className="flex-auto w-full md:w-1/3">
+              <FormField
+                control={form.control}
+                name="items"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="mb-4 flex">
+                      <FormLabel className="text-base mr-4 font-bold">
+                        {data.order}
+                      </FormLabel>
+                      <FormDescription className="font-bold w-[80%]">
+                        {values.text}
+                      </FormDescription>
+                    </div>
+                    {data.answers &&
+                      data.answers.map((item: IANSWER) => (
+                        <FormField
+                          key={item.id}
+                          control={form.control}
+                          name="items"
+                          render={({ field }) => {
+                            return (
+                              <FormItem
+                                key={item.id}
+                                className="flex flex-row items-start space-x-3 space-y-0"
+                              >
+                                <FormControl>
+                                  <Checkbox
+                                    checked={form
+                                      .getValues("items")
+                                      .includes(item.id)}
+                                    onCheckedChange={(checked: boolean) =>
+                                      handleChange(checked, item.id)
+                                    }
+                                  />
+                                </FormControl>
+                                <FormLabel className="font-normal">
+                                  {item.name}
+                                </FormLabel>
+                              </FormItem>
+                            );
+                          }}
+                        />
+                      ))}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="flex-auto w-full md:w-1/3">
+              <FormField
+                control={form.control}
+                name="textField"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-bold text-base">
+                      Justifique de respuesta
+                    </FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder=""
+                        defaultValue={field.value}
+                        onChange={(value) => handleTextChange(value)}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="flex-auto w-full md:w-1/3">
+              <p className="font-bold">Otros comentarios</p>
+              <Carousel
+                opts={{
+                  align: "start",
+                }}
+              >
+                <CarouselContent className="text-center h-100 cursor-grab">
+                  {!checkboxResponse && (
+                    <CarouselItem className="text-justify pt-2">
+                      No hay respuestas
+                    </CarouselItem>
+                  )}
+                  {checkboxResponse &&
+                    checkboxResponse.map((response: any) =>
+                      values.id === response.questionId ? (
+                        <CarouselItem
+                          key={response.checkbox?.id}
+                          className="text-justify pt-2 italic "
+                        >
+                          {response.checkbox?.answer}
+                        </CarouselItem>
+                      ) : ("")
+                    )}
+                </CarouselContent>
+              </Carousel>
+            </div>
+          </div>
+        </form>
+      </Form>
       <hr />
     </>
   );

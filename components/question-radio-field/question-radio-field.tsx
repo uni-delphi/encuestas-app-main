@@ -1,10 +1,11 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
+  Form,
   FormControl,
   FormDescription,
   FormField,
@@ -14,149 +15,198 @@ import {
 } from "../ui/form";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Textarea } from "../ui/textarea";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "../ui/carousel";
+import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
 import { useForm } from "react-hook-form";
+import { createResponse, updateSingleChoiceResponse } from "@/lib/actions";
+import { IDATAQUESTION, IQUESTION, IENUNCIADOPROPS } from "@/types/encuestas";
+import { User } from "next-auth";
 
 const formSchema = z.object({
   items: z.array(z.string()),
-  type: z.enum(["all", "mentions", "none"], {
+  type: z.enum(["Any"], {
     required_error: "You need to select a notification type.",
   }),
-  lastName: z.string(),
-  state: z.string(),
-  education: z.string(),
-  sector: z.string(),
-  institution: z.string(),
-  expertees: z.string(),
-  years: z.string(),
-  email: z.string(),
-  password: z.string(),
-  validatedPassword: z.string(),
+  textField: z.string(),
 });
 
 export default function QuestionRadioField({
   data,
-  statement,
-  question_number,
-  response,
+  values,
+  enunciadoData,
+  user,
+  singleChoiceResponse,
 }: {
-  data: any;
-  statement: any;
-  question_number: any;
-  response: any;
+  data: IDATAQUESTION;
+  values: IQUESTION;
+  enunciadoData: IENUNCIADOPROPS;
+  singleChoiceResponse: any;
+  user: User;
 }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      items: ["recents", "home"],
-      lastName: "",
-      //country: "",
-      state: "",
-      education: "",
-      sector: "",
-      institution: "",
-      expertees: "",
-      years: "",
-      email: "",
-      password: "",
-      validatedPassword: "",
+      textField: values.responses[0]?.singleChoice?.answer ?? "",
+      type: values.responses[0]?.singleChoice?.choice ?? "none",
     },
   });
-//console.log("radio ", response)
+
+  const [debouncedValue, setDebouncedValue] = useState<string>(
+    form.getValues("textField")
+  );
+  const timerRef = useRef<number | undefined>();
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current !== undefined) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, []);
+
+  const handleChange = (value: any) => {
+    form.setValue("type", value); // Actualiza el valor del campo type en el formulario
+    updateDatabase({ choice: value }); // Envía los cambios a la base de datos
+  };
+
+  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    form.setValue("textField", e.target.value);
+    // Se inicia el temporizador para activar el debouncer
+    if (timerRef.current !== undefined) {
+      clearTimeout(timerRef.current);
+    }
+    timerRef.current = window.setTimeout(() => {
+      setDebouncedValue(e.target.value);
+
+      updateDatabase({ answer: e.target.value });
+    }, 1500);
+  };
+
+  const updateDatabase = async (value: any) => {
+    if (values.responses.length > 0) {
+      const response = await updateSingleChoiceResponse(
+        value,
+        values.responses[0]?.singleChoice.id
+      );
+      return;
+    }
+
+    const { choice, answer } = value;
+
+    const responseData: any = {
+      respondentId: user.id,
+      questionId: values.id,
+      enunciadosId: enunciadoData.id,
+      responseType: values.type,
+      answer: "",
+      singleChoice: {
+        questionId: values.id,
+        choice: choice ?? "",
+        answer: answer ?? "",
+        enunciadosId: enunciadoData.id,
+      },
+      checkbox: {},
+    };
+
+    const response = await createResponse(responseData);
+    console.log("🚀 ~ updateDatabase ~ response:", response);
+  };
+  //console.log("singleChoiceResponse", singleChoiceResponse)
   return (
     <>
-      <div className="flex gap-5 py-5 flex-col md:flex-row">
-        <div className="flex-auto w-full md:w-1/3">
-          <FormField
-            control={form.control}
-            name="type"
-            render={({ field }) => (
-              <FormItem className="space-y-3">
-                <div className="flex">
-                  <FormLabel className="mr-4 font-bold">
-                    {question_number}
-                  </FormLabel>
-                  <FormDescription className="font-bold w-[80%]">
-                    {statement}
-                  </FormDescription>
-                </div>
-                <FormControl>
-                  <RadioGroup
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                    className="flex flex-col space-y-1"
-                  >
-                    {data &&
-                      data.map((item: any) => (
-                        <FormItem
-                          key={item.id}
-                          className="flex items-center space-x-3 space-y-0"
+      <Form {...form}>
+        <form className="max-w-[80%] mx-auto">
+          <div className="flex gap-5 py-5 flex-col md:flex-row">
+            <div className="flex-auto w-full md:w-1/3">
+              <FormField
+                control={form.control}
+                name="type"
+                render={({ field }) => (
+                  <FormItem className="space-y-3">
+                    <div className="flex">
+                      <FormLabel className="mr-4 font-bold">
+                        {data.order}
+                      </FormLabel>
+                      <FormDescription className="font-bold w-[80%]">
+                        {values.text}
+                      </FormDescription>
+                    </div>
+                    <FormControl>
+                      <RadioGroup
+                        onValueChange={(value) => handleChange(value)} // Llama a handleChange cuando cambia el valor del radio
+                        defaultValue={field.value}
+                        className="flex flex-col space-y-1"
+                      >
+                        {data.answers &&
+                          data.answers.map((item: any) => (
+                            <FormItem
+                              key={item.id}
+                              className="flex items-center space-x-3 space-y-0"
+                            >
+                              <FormControl>
+                                <RadioGroupItem value={item.name} />
+                              </FormControl>
+                              <FormLabel className="font-normal">
+                                {item.name}
+                              </FormLabel>
+                            </FormItem>
+                          ))}
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="flex-auto w-full md:w-1/3">
+              <FormField
+                control={form.control}
+                name="textField"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-bold text-base">
+                      Justifique de respuesta
+                    </FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder=""
+                        defaultValue={field.value}
+                        onChange={(value) => handleTextChange(value)}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="flex-auto w-full md:w-1/3">
+              <p className="font-bold">Otros comentarios</p>
+              <Carousel
+                opts={{
+                  align: "start",
+                }}
+              >
+                <CarouselContent className="text-center h-100 cursor-grab">
+                  {!singleChoiceResponse && (
+                    <CarouselItem className="text-justify pt-2">
+                      No hay respuestas
+                    </CarouselItem>
+                  )}
+                  {singleChoiceResponse &&
+                    singleChoiceResponse.map((response: any) =>
+                      values.id === response.questionId ? (
+                        <CarouselItem
+                          key={response.singleChoice?.id}
+                          className="text-justify pt-2 italic "
                         >
-                          <FormControl>
-                            <RadioGroupItem value={item.id} />
-                          </FormControl>
-                          <FormLabel className="font-normal">
-                            {item.name}
-                          </FormLabel>
-                        </FormItem>
-                      ))}                    
-                  </RadioGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="flex-auto w-full md:w-1/3">
-          <FormField
-            control={form.control}
-            name="lastName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="font-bold text-base">
-                  Justifique de respuesta
-                </FormLabel>
-                <FormControl>
-                  <Textarea placeholder="" {...field} />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="flex-auto w-full md:w-1/3">
-          <p className="font-bold">Otros comentarios</p>
-          <Carousel
-            opts={{
-              align: "start",
-            }}
-          >
-            <CarouselContent className="text-center h-100">
-              <CarouselItem className="text-justify pt-2">
-                Leo a diam sollicitudin tempor id eu nisl nunc mi ipsum faucibus
-                vitae aliquet nec ollicitudin tempor id eu nisl nunc mi ipsum
-                faucibus vitae aliquet.
-              </CarouselItem>
-              <CarouselItem className="text-justify pt-2">
-                A cras semper auctor neque vitae tempus quam pellentesque nec
-                nam aliquam sem et tortor consequat id porta nibh venenatis cras
-                sed felis eget velit aliquet sagittis id consectetur purus ut
-                faucibus pulvinar elementum integer enim neque volutpat ac
-                tincidunt.
-              </CarouselItem>
-              <CarouselItem className="text-justify pt-2">
-                Leo a diam sollicitudin tempor id eu nisl nunc mi ipsum faucibus
-                vitae aliquet nec.
-              </CarouselItem>
-            </CarouselContent>
-          </Carousel>
-        </div>
-      </div>
+                          {response.singleChoice.answer}
+                        </CarouselItem>
+                      ) : ("")
+                    )}
+                </CarouselContent>
+              </Carousel>
+            </div>
+          </div>
+        </form>
+      </Form>
       <hr />
     </>
   );
