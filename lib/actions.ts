@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import bcrypt from "bcrypt";
 
@@ -48,7 +48,8 @@ export async function loginUser(data: TLoginUser) {
 
 export async function getAllEncuestas() {
   try {
-    return await Encuestas.getAllEncuestas();
+    const response = await Encuestas.getAllEncuestas();
+    return response;
   } catch (error: any) {
     console.log(error);
     throw Error("Error getAllEncuestas", error);
@@ -73,20 +74,77 @@ export async function getTecnologia(title: string) {
   }
 }
 
-export async function getEnunciados(slug: string) {
+export async function getEnunciado({
+  dataSlug,
+  dataUserId,
+  dataEnunciadoId,
+}: {
+  dataSlug: string;
+  dataUserId: string;
+  dataEnunciadoId: string;
+}) {
   try {
-    return await Encuestas.getEnunciados(slug);
+    return await Encuestas.getEnunciado({
+      dataSlug,
+      dataUserId,
+      dataEnunciadoId,
+    });
   } catch (error: any) {
     console.log(error);
     throw Error("Error getTecnologia", error);
   }
 }
 
-export async function getAllRespuestasByEnunciado(id: number) {
+export async function getAllRespuestasByEnunciado(enunciadosId: number, respondentId: string){
   try {
-    return await Respuestas.getAllRespuestasByEnunciado(id);
+    return await Respuestas.getAllRespuestasByEnunciado(enunciadosId, respondentId);
   } catch (error: any) {
     console.log(error);
     throw Error("Error getTecnologia", error);
+  }
+}
+
+export async function getExampleResponses(enunciadosId: number) {
+  try {
+    return await Encuestas.getExampleResponses(enunciadosId);
+  } catch (error: any) {
+    console.log(error);
+    throw Error("Error getTecnologia", error);
+  }
+}
+
+export async function createResponse(data: any) {
+  try {
+    const response = await Respuestas.createResponse(data);
+    revalidatePath('/')
+    return response;
+  } catch (error) {
+    console.log("Error creando el createResponse:", error);
+    throw new Error("Error creando el createResponse");
+  }  
+  revalidatePath("/impresoras-3d/enunciado-sobre-impresoras-3d-de-plasticoas");
+}
+
+
+
+export async function updateSingleChoiceResponse(data: any, responseId: number) {
+  try {
+    const response = await Respuestas.updateSingleChoiceResponse(responseId, data);
+    revalidatePath('/')
+    return response;
+  } catch (error) {
+    console.log("Error editando el updateSingleChoiceResponse:", error);
+    throw new Error("Error editando el updateSingleChoiceResponse");
+  }
+}
+
+export async function updateCheckboxResponse(data: any, responseId: number) {
+  try {
+    const response = await Respuestas.updateCheckboxResponse(responseId, data);
+    revalidatePath('/')
+    return response;
+  } catch (error) {
+    console.log("Error editando el updateCheckboxResponse:", error);
+    throw new Error("Error editando el updateCheckboxResponse");
   }
 }
