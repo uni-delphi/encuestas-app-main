@@ -158,13 +158,13 @@ export default function QuestionCheckboxField({
                   <FormItem>
                     <div className="mb-4 flex">
                       <FormLabel className="text-base mr-4 font-bold">
-                        {data.order}
+                        {data?.order}
                       </FormLabel>
                       <FormDescription className="font-bold w-[80%]">
                         {values.text}
                       </FormDescription>
                     </div>
-                    {data.answers &&
+                    {data?.answers &&
                       data.answers.map((item: IANSWER) => (
                         <FormField
                           key={item.id}
