@@ -1,7 +1,10 @@
-
 import { db } from "../prisma";
 
-export async function getSampleRespuestasByEnunciado(enunciadosId: number, respondentId: string, responseType: any) {
+export async function getSampleRespuestasByEnunciado(
+  enunciadosId: number,
+  respondentId: string,
+  responseType: any
+) {
   return await db.response.findMany({
     where: {
       enunciadosId,
@@ -18,6 +21,53 @@ export async function getSampleRespuestasByEnunciado(enunciadosId: number, respo
       id: "desc",
     },
     take: 15, // Limita a 5 respuestas de single choice por pregunta
+  });
+}
+
+export async function getResponses() {
+  const formattedData = await db.response.findMany({
+    include: {
+      respondent: true,
+      singleChoice: {
+        include: {
+          question: true,
+        },
+      },
+      checkbox: {
+        include: {
+          question: true,
+        },
+      },
+      enunciados: true,
+      question: true,
+    },
+    orderBy: {
+      id: "desc",
+    },
+  });
+
+  return formattedData.map((res) => {
+    return {
+      enunciado: res.enunciados?.title,
+      question: res.question?.text,
+      createdAt: res.createdAt,
+      checkboxChoises:
+        res.responseType === "CHECKBOX"
+          ? JSON.stringify(
+              res.checkbox?.choices
+                .map((item) =>
+                  item.replace(/"/g, "").replace(/]/g, "").replace(/\[/g, "")
+                )
+                .join("|")
+            )
+          : res.singleChoice?.choice,
+      respuestas:
+        res.responseType === "CHECKBOX"
+          ? res.checkbox?.answer
+          : res.singleChoice?.answer,
+      respondentName: `${res.respondent.name} ${res.respondent.lastName}`,
+      respondentEmail: res.respondent.email,
+    };
   });
 }
 
@@ -59,7 +109,10 @@ export async function createResponse(newResponseData: any) {
   });
 }
 
-export async function updateSingleChoiceResponse(responseId: number,  data: any) {
+export async function updateSingleChoiceResponse(
+  responseId: number,
+  data: any
+) {
   return await db.singleChoiceResponse.update({
     where: {
       id: responseId,

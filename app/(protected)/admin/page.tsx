@@ -7,13 +7,23 @@ import NavBar from "@/components/nav-bar/nav-bar";
 import LayoutDefault from "@/components/image-layout/image-layout";
 import BarChart from "@/components/chart-bar/chart-bar";
 import ModalCloseSurvey from "@/components/close-survey-modal/close-survey-modal";
+import DescargarCsv from "@/components/descargar-csv/descargar-csv";
+import { getResponses } from "@/lib/actions";
 
 export default async function Dashboard() {
   const session = await getServerSession(authOptions);
   if (!session || !session.user) redirect("/");
 
+  const encuestas: any = await getResponses();
+
   const chartData = {
-    labels: ["Enunciado 1", "Enunciado 2", "Enunciado 3", "Enunciado 4", "Enunciado 5"],
+    labels: [
+      "Enunciado 1",
+      "Enunciado 2",
+      "Enunciado 3",
+      "Enunciado 4",
+      "Enunciado 5",
+    ],
     datasets: [
       {
         label: "Respuestas en %",
@@ -35,6 +45,20 @@ export default async function Dashboard() {
   const handleCloseSurvey = () => {
     console.log("dasdasdsa");
   };
+
+  const datas = {
+    headers: [
+      { displayName: "enunciados", id: "enunciado" },
+      { displayName: "question", id: "question" },
+      { displayName: "Seleccionado", id: "checkboxChoises" },
+      { displayName: "Respuesta", id: "respuestas" },
+      { displayName: "createdAt", id: "createdAt" },
+      { displayName: "respondent name", id: "respondentName" },
+      { displayName: "respondent email", id: "respondentEmail" },
+    ],
+    data: encuestas,
+  };
+  console.log("🚀 ~ Dashboard ~ datas.encuestas:", encuestas);
 
   return (
     <>
@@ -62,9 +86,7 @@ export default async function Dashboard() {
             <Button className="border  text-white py-2 font-bold rounded bg-[#087B38] hover:bg-[#087B38]">
               Finalizar cuestionario
             </Button>
-            <Button className="bg-blue-600 text-white md:mx-10 hover:bg-gray-200  my-4">
-              Descargar csv
-            </Button>
+            <DescargarCsv props={datas} />
           </div>
         </LayoutDefault>
         <ModalCloseSurvey visible={false} />
