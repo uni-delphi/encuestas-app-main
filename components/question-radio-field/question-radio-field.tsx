@@ -143,7 +143,7 @@ export default function QuestionRadioField({
                   <FormItem className="space-y-3">
                     <div className="flex">
                       <FormLabel className="mr-4 font-bold">
-                        {data?.order}
+                        {data.order}
                       </FormLabel>
                       <FormDescription className="font-bold w-[80%]">
                         {values.text}
@@ -155,7 +155,7 @@ export default function QuestionRadioField({
                         defaultValue={field.value}
                         className="flex flex-col space-y-1"
                       >
-                        {data?.answers &&
+                        {data.answers &&
                           data.answers.map((item: any) => (
                             <FormItem
                               key={item.id}
