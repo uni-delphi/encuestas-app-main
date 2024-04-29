@@ -1,5 +1,12 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
+import {
+  IANSWER,
+  IDATAQUESTION,
+  IENUNCIADOPROPS,
+  IQUESTION,
+} from "@/types/encuestas";
+import { User } from "next-auth";
 
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,23 +22,21 @@ import {
 } from "../ui/form";
 import { Checkbox } from "../ui/checkbox";
 import { Textarea } from "../ui/textarea";
-import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
+import {
+  Carousel,
+  CarouselApi,
+  CarouselContent,
+  CarouselItem,
+} from "../ui/carousel";
 import { useForm } from "react-hook-form";
 import { createResponse, updateCheckboxResponse } from "@/lib/actions";
-import {
-  IANSWER,
-  IDATAQUESTION,
-  IENUNCIADOPROPS,
-  IQUESTION,
-} from "@/types/encuestas";
-import { User } from "next-auth";
 
 const formSchema = z.object({
-  items: z.array(z.string()),
+  items: z.array(z.string()).max(3),
   type: z.enum(["all", "mentions", "none"], {
     required_error: "You need to select a notification type.",
   }),
-  textField: z.string(),
+  textField: z.string().max(10),
 });
 
 export default function QuestionCheckboxField({
@@ -47,7 +52,7 @@ export default function QuestionCheckboxField({
   checkboxResponse: any;
   user: User;
 }) {
-  //console.log("QuestionCheckboxField", enunciadoData);
+  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -56,24 +61,43 @@ export default function QuestionCheckboxField({
     },
   });
 
+  const [api, setApi] = useState<CarouselApi>();
+  const [current, setCurrent] = useState<number>(0);
+  const [count, setCount] = useState<number>(0);
   const [debouncedValue, setDebouncedValue] = useState<string>(
     form.getValues("textField")
   );
   const timerRef = useRef<number | undefined>();
 
   useEffect(() => {
+    if (!api) {
+      return;
+    }
+
+    setCount(api.scrollSnapList().length);
+    setCurrent(api.selectedScrollSnap() + 1);
+
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap() + 1);
+    });
+
     return () => {
       if (timerRef.current !== undefined) {
         clearTimeout(timerRef.current);
       }
     };
-  }, []);
+  }, [api]);
 
   const handleChange = (checked: boolean, itemId: string) => {
     const currentItems = form.getValues("items");
     const updatedItems = checked
       ? [...currentItems, itemId]
       : currentItems.filter((value) => value !== itemId);
+
+    // Check if the updated items exceed the limit of 3
+    if (updatedItems.length > 3) {
+      return;
+    }
     form.setValue("items", updatedItems);
 
     updateDatabase({ choices: updatedItems });
@@ -119,7 +143,6 @@ export default function QuestionCheckboxField({
     };
 
     const response = await createResponse(responseData);
-    console.log("🚀 ~ updateDatabase ~ response:", response);
   };
 
   return (
@@ -197,32 +220,40 @@ export default function QuestionCheckboxField({
               />
             </div>
 
-            <div className="flex-auto w-full md:w-1/3">
+            <div className="flex-auto w-full md:w-1/3 h-100">
               <p className="font-bold">Otros comentarios</p>
               <Carousel
                 opts={{
                   align: "start",
+                  loop: true,
                 }}
+                setApi={setApi}
+                className="h-100"
               >
                 <CarouselContent className="text-center h-100 cursor-grab">
-                  {!checkboxResponse && (
+                  {checkboxResponse.length === 0 &&  (
                     <CarouselItem className="text-justify pt-2">
                       No hay respuestas
                     </CarouselItem>
                   )}
                   {checkboxResponse &&
-                    checkboxResponse.map((response: any) =>
+                    checkboxResponse.map((response: any, index: number) =>
                       values.id === response.questionId ? (
                         <CarouselItem
                           key={response.checkbox?.id}
-                          className="text-justify pt-2 italic "
+                          className="text-justify pt-2 italic h-100 select-none"
                         >
                           {response.checkbox?.answer}
                         </CarouselItem>
-                      ) : ("")
+                      ) : (
+                        ""
+                      )
                     )}
                 </CarouselContent>
               </Carousel>
+              <div className="py-2 text-center text-sm text-muted-foreground">
+                Respuesta {current} de {count}
+              </div>
             </div>
           </div>
         </form>

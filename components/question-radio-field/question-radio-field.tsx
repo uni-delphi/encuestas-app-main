@@ -15,7 +15,12 @@ import {
 } from "../ui/form";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Textarea } from "../ui/textarea";
-import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
+import {
+  Carousel,
+  CarouselApi,
+  CarouselContent,
+  CarouselItem,
+} from "../ui/carousel";
 import { useForm } from "react-hook-form";
 import { createResponse, updateSingleChoiceResponse } from "@/lib/actions";
 import { IDATAQUESTION, IQUESTION, IENUNCIADOPROPS } from "@/types/encuestas";
@@ -50,18 +55,33 @@ export default function QuestionRadioField({
     },
   });
 
+  const [api, setApi] = useState<CarouselApi>();
+  const [current, setCurrent] = useState<number>(0);
+  const [count, setCount] = useState<number>(0);
+
   const [debouncedValue, setDebouncedValue] = useState<string>(
     form.getValues("textField")
   );
   const timerRef = useRef<number | undefined>();
 
   useEffect(() => {
+    if (!api) {
+      return;
+    }
+
+    setCount(api.scrollSnapList().length);
+    setCurrent(api.selectedScrollSnap() + 1);
+
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap() + 1);
+    });
+
     return () => {
       if (timerRef.current !== undefined) {
         clearTimeout(timerRef.current);
       }
     };
-  }, []);
+  }, [api]);
 
   const handleChange = (value: any) => {
     form.setValue("type", value); // Actualiza el valor del campo type en el formulario
@@ -108,9 +128,8 @@ export default function QuestionRadioField({
     };
 
     const response = await createResponse(responseData);
-    console.log("🚀 ~ updateDatabase ~ response:", response);
   };
-  //console.log("singleChoiceResponse", singleChoiceResponse)
+  
   return (
     <>
       <Form {...form}>
@@ -182,27 +201,35 @@ export default function QuestionRadioField({
               <Carousel
                 opts={{
                   align: "start",
+                  loop: true,
                 }}
+                setApi={setApi}
               >
                 <CarouselContent className="text-center h-100 cursor-grab">
-                  {!singleChoiceResponse && (
+                  {singleChoiceResponse.length === 0 && (
                     <CarouselItem className="text-justify pt-2">
                       No hay respuestas
                     </CarouselItem>
                   )}
                   {singleChoiceResponse &&
-                    singleChoiceResponse.map((response: any) =>
-                      values.id === response.questionId ? (
+                    singleChoiceResponse.map((response: any, index:number) =>
+                      values.id === response.questionId &&
+                      response.singleChoice.answer ? (
                         <CarouselItem
                           key={response.singleChoice?.id}
-                          className="text-justify pt-2 italic "
+                          className="text-justify pt-2 italic h-100 select-none"
                         >
-                          {response.singleChoice.answer}
+                          {response.singleChoice?.answer}
                         </CarouselItem>
-                      ) : ("")
+                      ) : (
+                        ""
+                      )
                     )}
                 </CarouselContent>
               </Carousel>
+              <div className="py-2 text-center text-sm text-muted-foreground">
+                Respuesta {current} de {count}
+              </div>
             </div>
           </div>
         </form>

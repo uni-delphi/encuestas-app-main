@@ -1,13 +1,13 @@
 import React from "react";
-
-import { Button } from "@/components/ui/button";
+import { User } from "next-auth";
 import Link from "next/link";
 
-import QuestionCheckboxField from "../question-checkbox-field/question-checkbox-field";
-import QuestionRadioField from "../question-radio-field/question-radio-field";
-import { getAllRespuestasByEnunciado, getExampleResponses } from "@/lib/actions";
-import { User } from "next-auth";
+import { getSampleRespuestasByEnunciado } from "@/lib/actions";
 import { IDATATYPE, IENUNCIADO, IQUESTION } from "@/types/encuestas";
+
+import { Button } from "@/components/ui/button";
+import QuestionCheckboxField from "@/components/question-checkbox-field/question-checkbox-field";
+import QuestionRadioField from "@/components/question-radio-field/question-radio-field";
 
 const data: IDATATYPE = {
   NIVEL: {
@@ -189,9 +189,8 @@ export default async function EncuestaForm({
   enunciado: IENUNCIADO;
   user: User;
 }) {
-  const respuestas = await getAllRespuestasByEnunciado(enunciado.id, user.id);
-  const singleChoice = respuestas.filter(respuest => respuest.responseType === "SINGLE_CHOICE");
-  const checkbox = respuestas.filter(respuest => respuest.responseType === "CHECKBOX");
+  const singleChoice = await getSampleRespuestasByEnunciado(enunciado.id, user.id, "SINGLE_CHOICE");
+  const checkbox = await getSampleRespuestasByEnunciado(enunciado.id, user.id, "CHECKBOX");
 
   const { questions, ...props } = enunciado;
 
@@ -219,12 +218,12 @@ export default async function EncuestaForm({
             />
           )
         )}
-      <div className="flex justify-center items-center gap-2 p-4">
+      <div className="flex justify-center items-center gap-5 p-4">
         <Link href="/estado" >
           Ver avance
         </Link>
 
-        <Button>Siguiente</Button>
+        <Button className="bg-blue-600 text-white md:mx-10 hover:bg-gray-200 hover:text-blue-600">Siguiente</Button>
       </div>
     </>
   );
