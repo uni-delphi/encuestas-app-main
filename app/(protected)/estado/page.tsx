@@ -7,6 +7,7 @@ import { getAllEncuestas } from "@/lib/actions";
 
 import LogosUnc from "@/components/logos-unc/logos-unc";
 import NavBar from "@/components/nav-bar/nav-bar";
+import { calculateRemainingDays } from "@/utils/date-formatter";
 
 export default async function Encuestas() {
   const session: Session | null = await getServerSession(authOptions);
@@ -14,8 +15,7 @@ export default async function Encuestas() {
   const { name, lastName } = session.user;
 
   const encuestas: any = await getAllEncuestas();
-  const { title, description, tecnologias } = encuestas[0] ?? [];
-  console.log("🚀 ~ encuestaUrl:", title);
+  const { title, tecnologias, endDate, ...props } = encuestas[0] ?? [];
 
   return (
     <main className="">
@@ -63,7 +63,7 @@ export default async function Encuestas() {
                 A continuación te mostraremos el estado de tu encuesta.
               </p>
               <p className="pb-4 mb-4">
-                Al estudio le restan nn días para finalizar
+                Al estudio le restan { calculateRemainingDays(endDate) } días para finalizar
               </p>
             </div>
           </div>

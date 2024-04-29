@@ -1,10 +1,9 @@
 import { Session, getServerSession } from "next-auth";
 import { authOptions } from "@/auth.config";
-import { getAllEncuestas } from "@/lib/actions";
-import { Button } from "@/components/ui/button";
-import { signOut } from "next-auth/react";
-import NavBar from "@/components/nav-bar/nav-bar";
 import { redirect } from "next/navigation";
+
+import { Button } from "@/components/ui/button";
+import NavBar from "@/components/nav-bar/nav-bar";
 import LayoutDefault from "@/components/image-layout/image-layout";
 import BarChart from "@/components/chart-bar/chart-bar";
 import ModalCloseSurvey from "@/components/close-survey-modal/close-survey-modal";
@@ -14,17 +13,29 @@ export default async function Dashboard() {
   if (!session || !session.user) redirect("/");
 
   const chartData = {
-    labels: ["Enero", "Febrero", "Marzo", "Abril", "Mayo"],
+    labels: ["Enunciado 1", "Enunciado 2", "Enunciado 3", "Enunciado 4", "Enunciado 5"],
     datasets: [
       {
-        label: "Ventas",
-        data: [12, 19, 3, 5, 2],
+        label: "Respuestas en %",
+        data: [12.52, 19.55, 83.33, 5, 2],
       },
     ],
   };
+
   const chartOptions = {
     // Opciones del gráfico (puedes personalizar según tu necesidad)
+    scales: {
+      y: {
+        beginAtZero: true,
+        suggestedMax: 100,
+      },
+    },
   };
+
+  const handleCloseSurvey = () => {
+    console.log("dasdasdsa");
+  };
+
   return (
     <>
       <NavBar
@@ -40,7 +51,9 @@ export default async function Dashboard() {
               Prospectiva tecnológica-ocupacional
             </span>
           </h2>
-          <p>Hola *Nombre* !</p>
+          <p>
+            Hola {session.user.name} {session.user.lastName}!
+          </p>
           <p>
             Estos son los resultados parciales en el avance de las respuestas
           </p>
@@ -54,7 +67,7 @@ export default async function Dashboard() {
             </Button>
           </div>
         </LayoutDefault>
-        <ModalCloseSurvey />
+        <ModalCloseSurvey visible={false} />
       </main>
     </>
   );
