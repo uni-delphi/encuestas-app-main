@@ -15,6 +15,7 @@ export default function GoogleLoginButton() {
 
   return (
     <div className="md:flex-col">
+      <p className="mt-4">Si estas registrado</p>
       <Button onClick={handleGoogleLogin}>
         {isLoading ? (
           <>
@@ -25,7 +26,7 @@ export default function GoogleLoginButton() {
           "Ingresar con Google"
         )}
       </Button>
-      <p className="mt-4">Si estas registrado</p>
+      
     </div>
   );
 }

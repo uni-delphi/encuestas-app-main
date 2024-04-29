@@ -1,155 +1,230 @@
-"use client";
-import React, { useState } from "react";
+import React from "react";
+import { User } from "next-auth";
+import Link from "next/link";
 
-import * as z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { createUser } from "@/lib/actions";
-import { Form } from "@/components/ui/form";
+import { getSampleRespuestasByEnunciado } from "@/lib/actions";
+import { IDATATYPE, IENUNCIADO, IQUESTION } from "@/types/encuestas";
 
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { useToast } from "@/components/ui/use-toast";
-import { Loader2 } from "lucide-react";
+import QuestionCheckboxField from "@/components/question-checkbox-field/question-checkbox-field";
+import QuestionRadioField from "@/components/question-radio-field/question-radio-field";
 
-import QuestionCheckboxField from "../question-checkbox-field/question-checkbox-field";
-import QuestionRadioField from "../question-radio-field/question-radio-field";
+const data: IDATATYPE = {
+  NIVEL: {
+    order: "a",
+    answers: [
+      {
+        id: "alto",
+        name: "Alto",
+      },
+      {
+        id: "medioAlto",
+        name: "Medio alto",
+      },
+      {
+        id: "medioBajo",
+        name: "Medio bajo",
+      },
+      {
+        id: "bajo",
+        name: "Bajo",
+      },
+      {
+        id: "ninguno",
+        name: "Ninguno",
+      },
+    ],
+  },
+  IMPORTANCIA: {
+    order: "b",
+    answers: [
+      {
+        id: "muyAlto",
+        name: "Muy Alto",
+      },
+      {
+        id: "alto",
+        name: "Alto",
+      },
+      {
+        id: "medioAlto",
+        name: "Medio alto",
+      },
+      {
+        id: "medioBajo",
+        name: "Medio bajo",
+      },
+      {
+        id: "bajo",
+        name: "Bajo",
+      },
+      {
+        id: "muyBajo",
+        name: "Muy Bajo",
+      },
+      {
+        id: "irrelevante",
+        name: "Irrelevante",
+      },
+    ],
+  },
+  DIFUSION: {
+    order: "c",
+    answers: [
+      {
+        id: "12Meses",
+        name: "12 Meses",
+      },
+      {
+        id: "3Años",
+        name: "3 Años",
+      },
+      {
+        id: "5Años",
+        name: "5 Años",
+      },
+      {
+        id: "7Años",
+        name: "7 Años",
+      },
+      {
+        id: "10Años",
+        name: "10 Años",
+      },
+    ],
+  },
+  ACELERAN: {
+    order: "d",
+    answers: [
+      {
+        id: "social",
+        name: "Social",
+      },
+      {
+        id: "tecnológica",
+        name: "Tecnológica",
+      },
+      {
+        id: "económica",
+        name: "Económica",
+      },
+      {
+        id: "ambiental",
+        name: "Ambiental",
+      },
+      {
+        id: "política",
+        name: "Política",
+      },
+      {
+        id: "cultural",
+        name: "Cultural",
+      },
+    ],
+  },
+  FRENAN: {
+    order: "e",
+    answers: [
+      {
+        id: "social",
+        name: "Social",
+      },
+      {
+        id: "tecnológica",
+        name: "Tecnológica",
+      },
+      {
+        id: "económica",
+        name: "Económica",
+      },
+      {
+        id: "ambiental",
+        name: "Ambiental",
+      },
+      {
+        id: "política",
+        name: "Política",
+      },
+      {
+        id: "cultural",
+        name: "Cultural",
+      },
+    ],
+  },
+  IMPACTO: {
+    order: "f",
+    answers: [
+      {
+        id: "social",
+        name: "Social",
+      },
+      {
+        id: "tecnológica",
+        name: "Tecnológica",
+      },
+      {
+        id: "económica",
+        name: "Económica",
+      },
+      {
+        id: "ambiental",
+        name: "Ambiental",
+      },
+      {
+        id: "política",
+        name: "Política",
+      },
+      {
+        id: "cultural",
+        name: "Cultural",
+      },
+    ],
+  },
+};
 
-const formSchema = z.object({
-  items: z.array(z.string()),
-  type: z.enum(["all", "mentions", "none"], {
-    required_error: "You need to select a notification type.",
-  }),
-  lastName: z.string(),
-  state: z.string(),
-  education: z.string(),
-  sector: z.string(),
-  institution: z.string(),
-  expertees: z.string(),
-  years: z.string(),
-  email: z.string(),
-  password: z.string(),
-  validatedPassword: z.string(),
-});
+export default async function EncuestaForm({
+  enunciado,
+  user,
+}: {
+  enunciado: IENUNCIADO;
+  user: User;
+}) {
+  const singleChoice = await getSampleRespuestasByEnunciado(enunciado.id, user.id, "SINGLE_CHOICE");
+  const checkbox = await getSampleRespuestasByEnunciado(enunciado.id, user.id, "CHECKBOX");
 
-export default function EncuestaForm({ data, response }: { data: any, response: any }) {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { toast } = useToast();  
-  
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      items: ["recents", "home"],
-      lastName: "",
-      //country: "",
-      state: "",
-      education: "",
-      sector: "",
-      institution: "",
-      expertees: "",
-      years: "",
-      email: "",
-      password: "",
-      validatedPassword: "",
-    },
-  });
-
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    //setIsLoading(true);
-
-    createUser({
-      //name: values.name,
-      lastName: values.lastName,
-      country: values.type,
-      state: values.state,
-      education: values.education,
-      sector: values.sector,
-      institution: values.institution,
-      expertees: values.expertees,
-      years: values.years,
-      email: values.email,
-      password: values.password,
-      validatedPassword: values.validatedPassword,
-    })
-      .then(() => {
-        toast({
-          title: "Evento editado!",
-        });
-        setIsLoading(false);
-      })
-      .catch((error: any) => {
-        console.log("error editando el evento", error);
-        toast({
-          variant: "destructive",
-          title: "Error editando el evento",
-        });
-      });
-  }
-  //console.log("respuestas", response);
-  const { nivel, importancia, difusion, aceleran, frenan, impacto } = data[0];
+  const { questions, ...props } = enunciado;
 
   return (
     <>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit((values) => onSubmit(values))}
-          className="max-w-[80%] mx-auto"
-        >
-          <QuestionRadioField
-            data={nivel?.answers || ""}
-            statement={nivel?.statement}
-            question_number={nivel?.question_number}
-            response={response}
-          />
-          <QuestionRadioField
-            data={importancia?.answers}
-            statement={importancia?.statement}
-            question_number={importancia?.question_number}
-            response={response}
-          />
-          <QuestionRadioField
-            data={difusion?.answers}
-            statement={difusion?.statement}
-            question_number={difusion?.question_number}
-            response={response}
-          />
-          <QuestionCheckboxField
-            data={aceleran?.answers}
-            statement={aceleran?.statement}
-            question_number={aceleran?.question_number}
-            response={response}
-          />
-          <QuestionCheckboxField
-            data={frenan?.answers}
-            statement={frenan?.statement}
-            question_number={frenan?.question_number}
-            response={response}
-          />
-          <QuestionCheckboxField
-            data={impacto?.answers}
-            statement={impacto?.statement}
-            question_number={impacto?.question_number}
-            response={response}
-          />
-        </form>
-        <div className="flex justify-center items-center gap-2 p-4">
-        <Link className="" href="/estado">
+      {questions &&
+        questions.map((question: IQUESTION) =>
+          question.type === "SINGLE_CHOICE" ? (
+            <QuestionRadioField
+              key={question.id}
+              data={data[question.inputType]}
+              values={question}
+              enunciadoData={props}
+              user={user}
+              singleChoiceResponse={singleChoice}
+            />
+          ) : (
+            <QuestionCheckboxField
+              key={question.id}
+              data={data[question.inputType]}
+              values={question}
+              enunciadoData={props}
+              user={user}
+              checkboxResponse={checkbox}
+            />
+          )
+        )}
+      <div className="flex justify-center items-center gap-5 p-4">
+        <Link href="/estado" >
           Ver avance
         </Link>
 
-        <Button disabled={isLoading}>
-          {isLoading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Loading...
-            </>
-          ) : (
-            "Siguiente"
-          )}
-        </Button>
-
-        </div>
-      </Form>
+        <Button className="bg-blue-600 text-white md:mx-10 hover:bg-gray-200 hover:text-blue-600">Siguiente</Button>
+      </div>
     </>
   );
 }

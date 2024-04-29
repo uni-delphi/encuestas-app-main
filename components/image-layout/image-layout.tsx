@@ -19,7 +19,7 @@ export default function LayoutDefault(props: any) {
           style={{ objectFit: "cover" }}
         />
       </div>
-      <div className="w-full px-12 text-textColor my-4 text-center">
+      <div className="w-full px-6 md:px-12 text-textColor my-4 text-center">
         <LogosUnc />
         {children}
       </div>

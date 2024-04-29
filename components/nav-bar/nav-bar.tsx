@@ -19,10 +19,12 @@ export default function NavBar({
   session: Session;
   title: string;
 }) {
-
-  return (
+  const roleUser = session?.user?.role;
+  return roleUser !== "ADMIN" ? (
     <header className="fixed grid bg-white h-20 w-full z-10">
-      <TemasSelect enunciados={tecnologia?.enunciados} />
+      {tecnologia?.enunciados?.length > 0 && (
+        <TemasSelect enunciados={tecnologia?.enunciados} />
+      )}
       <nav className="flex w-full bg-blue-700 text-white justify-center items-center p-3">
         <h1 className="scroll-m-20 text-2xl font-bold tracking-tight ">
           {title}
@@ -37,6 +39,10 @@ export default function NavBar({
         )}
         {session && <AdminDropDown session={session} />}
       </nav>
+    </header>
+  ) : (
+    <header className="fixed right-2 top-2 md:right-5 md:top-5 ">
+      <nav className="">{session && <AdminDropDown session={session} />}</nav>
     </header>
   );
 }

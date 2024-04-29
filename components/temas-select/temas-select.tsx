@@ -18,7 +18,7 @@ export default function TemasSelect({ enunciados }: { enunciados: any }) {
     <div className="flex justify-center gap-4 items-center">
       <span>1 de {enunciados?.length}: ir a</span>
       <Select>
-        <SelectTrigger className="w-[280px]">
+        <SelectTrigger className="w-[280px] my-2">
           <SelectValue placeholder="Elija un enunciado" />
         </SelectTrigger>
         <SelectContent>

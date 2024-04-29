@@ -40,17 +40,19 @@ model Tecnologias {
 }
 
 model Enunciados {
-  id                  Int                 @id @default(autoincrement())
-  title               String
-  description         String
-  slug                String?             @unique
-  questionsEnunciados QuestionEnunciado[] // Relación many-to-many con Question
-  tecnologia          Tecnologias         @relation(fields: [tecnologiaId], references: [id])
-  tecnologiaId        Int
-  questions           Question[]
-  response            Response[]
-  createdAt           DateTime            @default(now())
-  updatedAt           DateTime            @updatedAt
+  id                   Int                    @id @default(autoincrement())
+  title                String
+  description          String
+  slug                 String?                @unique
+  questionsEnunciados  QuestionEnunciado[] // Relación many-to-many con Question
+  tecnologia           Tecnologias            @relation(fields: [tecnologiaId], references: [id])
+  tecnologiaId         Int
+  questions            Question[]
+  response             Response[]
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+  SingleChoiceResponse SingleChoiceResponse[]
+  CheckboxResponse     CheckboxResponse?
 }
 
 // Tabla intermedia para la relación many-to-many entre Question y Enunciado
@@ -122,26 +124,30 @@ enum ResponseType {
 
 // Modelo para representar una respuesta a una pregunta de opción única (radio button)
 model SingleChoiceResponse {
-  id         Int       @id @default(autoincrement())
-  question   Question  @relation(fields: [questionId], references: [id])
-  questionId Int
-  choice     String 
-  createdAt  DateTime  @default(now())
-  answer     String
-  response   Response? @relation(fields: [responseId], references: [id])
-  responseId Int?      @unique
+  id           Int         @id @default(autoincrement())
+  question     Question    @relation(fields: [questionId], references: [id])
+  questionId   Int
+  choice       String
+  createdAt    DateTime    @default(now())
+  answer       String
+  response     Response?   @relation(fields: [responseId], references: [id])
+  responseId   Int?        @unique
+  enunciados   Enunciados? @relation(fields: [enunciadosId], references: [id])
+  enunciadosId Int?        @unique
 }
 
 // Modelo para representar una respuesta a una pregunta de selección múltiple (checkbox)
 model CheckboxResponse {
-  id         Int       @id @default(autoincrement())
-  question   Question  @relation(fields: [questionId], references: [id])
-  questionId Int
-  choices    String[] 
-  createdAt  DateTime  @default(now())
-  answer     String
-  response   Response? @relation(fields: [responseId], references: [id])
-  responseId Int?      @unique
+  id           Int         @id @default(autoincrement())
+  question     Question    @relation(fields: [questionId], references: [id])
+  questionId   Int
+  choices      String[]
+  createdAt    DateTime    @default(now())
+  answer       String
+  response     Response?   @relation(fields: [responseId], references: [id])
+  responseId   Int?        @unique
+  enunciados   Enunciados? @relation(fields: [enunciadosId], references: [id])
+  enunciadosId Int?        @unique
 }
 
 model User {

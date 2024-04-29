@@ -112,7 +112,6 @@ export default function LogInForm() {
                 "Ingresar"
               )}
             </Button>
-            <GoogleLoginButton />
           </div>
         </form>
       </Form>
