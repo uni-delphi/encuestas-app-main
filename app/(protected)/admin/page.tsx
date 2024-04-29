@@ -1,30 +1,65 @@
 import { Session, getServerSession } from "next-auth";
 import { authOptions } from "@/auth.config";
-import { getAllEncuestas } from "@/lib/actions";
-import { Button } from "@/components/ui/button";
-import { signOut } from "next-auth/react";
-import NavBar from "@/components/nav-bar/nav-bar";
 import { redirect } from "next/navigation";
+
+import { Button } from "@/components/ui/button";
+import NavBar from "@/components/nav-bar/nav-bar";
 import LayoutDefault from "@/components/image-layout/image-layout";
 import BarChart from "@/components/chart-bar/chart-bar";
 import ModalCloseSurvey from "@/components/close-survey-modal/close-survey-modal";
+import DescargarCsv from "@/components/descargar-csv/descargar-csv";
+import { getResponses } from "@/lib/actions";
 
 export default async function Dashboard() {
   const session = await getServerSession(authOptions);
   if (!session || !session.user) redirect("/");
 
+  const encuestas: any = await getResponses();
+
   const chartData = {
-    labels: ["Enero", "Febrero", "Marzo", "Abril", "Mayo"],
+    labels: [
+      "Enunciado 1",
+      "Enunciado 2",
+      "Enunciado 3",
+      "Enunciado 4",
+      "Enunciado 5",
+    ],
     datasets: [
       {
-        label: "Ventas",
-        data: [12, 19, 3, 5, 2],
+        label: "Respuestas en %",
+        data: [12.52, 19.55, 83.33, 5, 2],
       },
     ],
   };
+
   const chartOptions = {
     // Opciones del gráfico (puedes personalizar según tu necesidad)
+    scales: {
+      y: {
+        beginAtZero: true,
+        suggestedMax: 100,
+      },
+    },
   };
+
+  const handleCloseSurvey = () => {
+    console.log("dasdasdsa");
+  };
+
+  const datas = {
+    headers: [
+      { displayName: "enunciados", id: "enunciado" },
+      { displayName: "question", id: "question" },
+      { displayName: "Seleccionado", id: "checkboxChoises" },
+      { displayName: "Respuesta", id: "respuestas" },
+      { displayName: "createdAt", id: "createdAt" },
+      { displayName: "respondent name", id: "respondentName" },
+      { displayName: "respondent email", id: "respondentEmail" },
+    ],
+    data: encuestas,
+  };
+  console.log("🚀 ~ Dashboard ~ datas.encuestas:", encuestas);
+
   return (
     <>
       <NavBar
@@ -40,7 +75,9 @@ export default async function Dashboard() {
               Prospectiva tecnológica-ocupacional
             </span>
           </h2>
-          <p>Hola *Nombre* !</p>
+          <p>
+            Hola {session.user.name} {session.user.lastName}!
+          </p>
           <p>
             Estos son los resultados parciales en el avance de las respuestas
           </p>
@@ -49,12 +86,10 @@ export default async function Dashboard() {
             <Button className="border  text-white py-2 font-bold rounded bg-[#087B38] hover:bg-[#087B38]">
               Finalizar cuestionario
             </Button>
-            <Button className="bg-blue-600 text-white md:mx-10 hover:bg-gray-200  my-4">
-              Descargar csv
-            </Button>
+            <DescargarCsv props={datas} />
           </div>
         </LayoutDefault>
-        <ModalCloseSurvey />
+        <ModalCloseSurvey visible={false} />
       </main>
     </>
   );

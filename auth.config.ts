@@ -89,6 +89,7 @@ export const authOptions: NextAuthOptions = {
     },
     async jwt({ token, user }) {
       if (user) {
+        token.id = user?.id;
         token.lastName = user?.lastName;
         token.role = user?.role;
       }
@@ -96,8 +97,9 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       if (session?.user) {
-        session.user.lastName = token.lastName as string;
+        session.user.id = token.id as string;
         session.user.role = token.role as string;
+        session.user.lastName = token.lastName as string;
       }
       return session;
     },

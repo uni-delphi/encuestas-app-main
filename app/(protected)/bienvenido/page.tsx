@@ -16,8 +16,6 @@ export default async function Bienvenido() {
   const encuestas: any = await getAllEncuestasInfo();
   const encuestaUrl = `/${encuestas[0]?.tecnologias[0]?.slug}/${encuestas[0]?.tecnologias[0]?.enunciados[0].slug}`;
 
-  console.log("🚀 ~ encuestaUrl:", encuestaUrl);
-
   return (
     <main>
       <LayoutDefault>

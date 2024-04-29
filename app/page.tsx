@@ -36,7 +36,9 @@ export default async function Home({ searchParams }: any) {
           >
             Registrarme
           </Link>
+          
         </div>
+          <GoogleLoginButton />
       </LayoutDefault>
     </main>
   );

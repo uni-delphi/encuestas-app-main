@@ -33,7 +33,9 @@ export default async function LogIn() {
           >
             Registrarme
           </Link>
+          
         </div>
+          <GoogleLoginButton />
       </LayoutDefault>
     </main>
   );

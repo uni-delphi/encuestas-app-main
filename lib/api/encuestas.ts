@@ -5,15 +5,7 @@ export async function getAllEncuestas() {
     include: {
       tecnologias: {
         include: {
-          enunciados: {
-            include: {
-              questions: {
-                include: {
-                  responses: true,
-                },
-              },
-            },
-          },
+          enunciados: true,
         },
         orderBy: {
           id: "asc", // or 'desc' for descending order
@@ -65,13 +57,56 @@ export async function getTecnologia(slug: string) {
   });
 }
 
-export async function getEnunciados(slug: string) {
+export async function getEnunciado({
+  dataSlug,
+  dataUserId,
+  dataEnunciadoId,
+}: {
+  dataSlug: string;
+  dataUserId: string;
+  dataEnunciadoId: any;
+}) {
+  //console.log("🚀 ~ enunciadoId:", enunciadoId);
   return await db.enunciados.findFirst({
     where: {
-      slug,
+      slug: dataSlug,
     },
     include: {
-      questions: true,
+      questions: {
+        include: {
+          responses: {
+            include: {
+              singleChoice: true,
+              checkbox: true,
+            },
+            where: {
+              respondentId: dataUserId,
+              enunciadosId: dataEnunciadoId,
+            },
+          },
+        },
+        orderBy: {
+          id: "asc", // or 'desc' for descending order
+        },
+      },
+    },
+    orderBy: {
+      id: "asc", // or 'desc' for descending order
+    },
+  });
+}
+
+export async function getExampleResponses(
+  //questionId: number,
+  enunciadosId: number
+) {
+  return await db.response.findFirst({
+    where: {
+      enunciadosId,
+      //questionId,
+    },
+    include: {
+      question: true,
     },
   });
 }
