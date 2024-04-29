@@ -146,3 +146,12 @@ export async function updateCheckboxResponse(data: any, responseId: number) {
     throw new Error("Error editando el updateCheckboxResponse");
   }
 }
+
+export async function getResponses() {
+  try {
+    return await Respuestas.getResponses();
+  } catch (error: any) {
+    console.log(error);
+    throw Error("Error getTecnologia", error);
+  }
+}
