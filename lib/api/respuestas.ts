@@ -1,9 +1,11 @@
+
 import { db } from "../prisma";
 
-export async function getAllRespuestasByEnunciado(enunciadosId: number, respondentId: string) {
+export async function getSampleRespuestasByEnunciado(enunciadosId: number, respondentId: string, responseType: any) {
   return await db.response.findMany({
     where: {
       enunciadosId,
+      responseType,
       NOT: {
         respondentId,
       },
@@ -13,9 +15,9 @@ export async function getAllRespuestasByEnunciado(enunciadosId: number, responde
       checkbox: true,
     },
     orderBy: {
-      id: "asc",
+      id: "desc",
     },
-    take: 30
+    take: 15, // Limita a 5 respuestas de single choice por pregunta
   });
 }
 
@@ -57,10 +59,7 @@ export async function createResponse(newResponseData: any) {
   });
 }
 
-export async function updateSingleChoiceResponse(
-  responseId: number,
-  data: any
-) {
+export async function updateSingleChoiceResponse(responseId: number,  data: any) {
   return await db.singleChoiceResponse.update({
     where: {
       id: responseId,

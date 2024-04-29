@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import bcrypt from "bcrypt";
 
@@ -95,9 +95,9 @@ export async function getEnunciado({
   }
 }
 
-export async function getAllRespuestasByEnunciado(enunciadosId: number, respondentId: string){
+export async function getSampleRespuestasByEnunciado(enunciadosId: number, respondentId: string, responseType: any){
   try {
-    return await Respuestas.getAllRespuestasByEnunciado(enunciadosId, respondentId);
+    return await Respuestas.getSampleRespuestasByEnunciado(enunciadosId, respondentId , responseType);
   } catch (error: any) {
     console.log(error);
     throw Error("Error getTecnologia", error);
@@ -124,8 +124,6 @@ export async function createResponse(data: any) {
   }  
   revalidatePath("/impresoras-3d/enunciado-sobre-impresoras-3d-de-plasticoas");
 }
-
-
 
 export async function updateSingleChoiceResponse(data: any, responseId: number) {
   try {
