@@ -9,6 +9,7 @@ import BarChart from "@/components/chart-bar/chart-bar";
 import ModalCloseSurvey from "@/components/close-survey-modal/close-survey-modal";
 import DescargarCsv from "@/components/descargar-csv/descargar-csv";
 import { getResponses } from "@/lib/actions";
+import CloseSurvey from "@/components/close-survey/close-survey";
 
 export default async function Dashboard() {
   const session = await getServerSession(authOptions);
@@ -44,6 +45,14 @@ export default async function Dashboard() {
 
   const handleCloseSurvey = () => {
     console.log("dasdasdsa");
+  };
+  const closeModal = async () => {
+    "use server";
+    console.log("modal was closed");
+  };
+  const openModal = async () => {
+    "use server";
+    console.log("the modal was opened");
   };
 
   const datas = {
@@ -83,13 +92,10 @@ export default async function Dashboard() {
           </p>
           <BarChart chartData={chartData} chartOptions={chartOptions} />
           <div className="flex md:block items-center gap-2">
-            <Button className="border  text-white py-2 font-bold rounded bg-[#087B38] hover:bg-[#087B38]">
-              Finalizar cuestionario
-            </Button>
+            <CloseSurvey />
             <DescargarCsv props={datas} />
           </div>
         </LayoutDefault>
-        <ModalCloseSurvey visible={false} />
       </main>
     </>
   );
