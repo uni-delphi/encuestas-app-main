@@ -6,6 +6,7 @@ import NavBar from "@/components/nav-bar/nav-bar";
 
 import { redirect } from "next/navigation";
 import { IENUNCIADO } from "@/types/encuestas";
+import { Suspense } from "react";
 
 interface IDATA {
   id: number;
@@ -403,11 +404,15 @@ export default async function Encuestas({
   let emptyEnunciadoId: number = 0;
 
   const encuestas: any = await getAllEncuestas();
-  const techElegida = encuestas[0]?.tecnologias.find((data: any) => data.slug === techTitle);
+  const techElegida = encuestas[0]?.tecnologias.find(
+    (data: any) => data.slug === techTitle
+  );
 
   if (!techElegida) redirect("/estado");
 
-  const enunciadoElegido = techElegida.enunciados.find((data: any) => data.slug === enunciadoTitle);
+  const enunciadoElegido = techElegida.enunciados.find(
+    (data: any) => data.slug === enunciadoTitle
+  );
 
   if (!enunciadoElegido) {
     emptyEnunciadoSlug = techElegida.enunciados[0].slug;
@@ -419,13 +424,14 @@ export default async function Encuestas({
     dataUserId: session?.user.id,
     dataEnunciadoId: enunciadoElegido?.id ?? emptyEnunciadoId,
   });
-  
+
   return (
     <main className="">
       <NavBar
-        tecnologia={techElegida}
+        encuesta={encuestas}
         title={techElegida?.title as string}
         session={session as Session}
+        user={user as User}
       />
 
       <div className="py-5 overflow-hidden">
@@ -434,7 +440,36 @@ export default async function Encuestas({
             {enunciadoElegido?.title ?? techElegida.enunciados[0].title}
           </h2>
         </div>
-        <EncuestaForm enunciado={enunciados as IENUNCIADO} user={user as User}/>
+        <Suspense
+          fallback={Array(6)
+            .fill(0)
+            .map((el, index) => (
+              <div key={index} className="max-w-[80%] mx-auto">
+                <div className="flex flex-row bg-white items-center gap-2 p-2">
+                  <div className="flex flex-col gap-2 w-9/12 h-[8rem]">
+                    <span className="w-11/12 bg-gray-300 h-4 rounded-full animate-pulse"></span>
+                    <span className="w-9/12 bg-gray-300 h-4 rounded-full animate-pulse"></span>
+                    <span className="w-9/12 bg-gray-300 h-4 rounded-full animate-pulse"></span>
+                    <span className="w-9/12 bg-gray-300 h-4 rounded-full animate-pulse"></span>
+                    <span className="w-9/12 bg-gray-300 h-4 rounded-full animate-pulse"></span>
+                  </div>
+                  <div className="flex flex-col gap-2 w-9/12 h-[8rem]">
+                    <span className="w-9/12 bg-gray-300 h-4 rounded-full animate-pulse"></span>
+                    <span className="w-11/12 border border-input rounded-md h-[6rem] rounded-4 animate-pulse"></span>
+                  </div>
+                  <div className="flex flex-col gap-2 w-9/12 h-[8rem]">
+                    <span className="w-9/12 bg-gray-300 h-4 rounded-full animate-pulse"></span>
+                    <span className="w-11/12 bg-gray-300 h-[8rem] rounded-4 animate-pulse"></span>
+                  </div>
+                </div>
+              </div>
+            ))}
+        >
+          <EncuestaForm
+            enunciado={enunciados as IENUNCIADO}
+            user={user as User}
+          />
+        </Suspense>
       </div>
     </main>
   );
