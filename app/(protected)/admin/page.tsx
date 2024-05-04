@@ -2,32 +2,36 @@ import { Session, getServerSession } from "next-auth";
 import { authOptions } from "@/auth.config";
 import { redirect } from "next/navigation";
 
+import { getResponsesForCSV, getAllEnunciados, getAllUsers } from "@/lib/actions";
+import { TRESPONSE } from "@/types/respuestas";
+
 import { Button } from "@/components/ui/button";
 import NavBar from "@/components/nav-bar/nav-bar";
 import LayoutDefault from "@/components/image-layout/image-layout";
 import BarChart from "@/components/chart-bar/chart-bar";
 import ModalCloseSurvey from "@/components/close-survey-modal/close-survey-modal";
 import DescargarCsv from "@/components/descargar-csv/descargar-csv";
-import { getResponses } from "@/lib/actions";
 
 export default async function Dashboard() {
   const session = await getServerSession(authOptions);
   if (!session || !session.user) redirect("/");
 
-  const encuestas: any = await getResponses();
-
+  const respuestas: TRESPONSE[] = await getResponsesForCSV();
+  const enunciados = await getAllEnunciados();
+  //console.log("🚀 ~ Dashboard ~ enunciados:", enunciados)
+  const users = await getAllUsers();
+  
+  const enunciadosLabels = enunciados.map(enunciado => ({
+    label: enunciado.title,
+    porcents: (enunciado.response.length/(enunciado.questions.length * users.length)) * 100,
+  }));
+console.log(enunciadosLabels)
   const chartData = {
-    labels: [
-      "Enunciado 1",
-      "Enunciado 2",
-      "Enunciado 3",
-      "Enunciado 4",
-      "Enunciado 5",
-    ],
+    labels: enunciadosLabels.map((enunciado, index: number) => `Enunciado ${index + 1}`),
     datasets: [
       {
         label: "Respuestas en %",
-        data: [12.52, 19.55, 83.33, 5, 2],
+        data: enunciadosLabels.map(enunciado => +enunciado.porcents.toFixed(2)),
       },
     ],
   };
@@ -42,28 +46,32 @@ export default async function Dashboard() {
     },
   };
 
-  const handleCloseSurvey = () => {
-    console.log("dasdasdsa");
-  };
-
   const datas = {
     headers: [
-      { displayName: "enunciados", id: "enunciado" },
-      { displayName: "question", id: "question" },
+      { displayName: "Tecnologia", id: "technology" },
+      { displayName: "Enunciados", id: "enunciado" },
+      { displayName: "Pregunta", id: "question" },
       { displayName: "Seleccionado", id: "checkboxChoises" },
       { displayName: "Respuesta", id: "respuestas" },
-      { displayName: "createdAt", id: "createdAt" },
-      { displayName: "respondent name", id: "respondentName" },
-      { displayName: "respondent email", id: "respondentEmail" },
+      { displayName: "Fecha creada", id: "createdAt" },
+      { displayName: "Nombre del experto", id: "respondentName" },
+      { displayName: "Email del experto", id: "respondentEmail" },
+      { displayName: "Pais del experto", id: "respondentCountry" },
+      { displayName: "Provincia del experto", id: "respondentState" },
+      { displayName: "Education del experto", id: "respondentEducation" },
+      { displayName: "Sector del experto", id: "respondentSector" },
+      { displayName: "Institución del experto", id: "respondentInstitution" },
+      { displayName: "Expertees del experto", id: "respondentExpertees" },
+      { displayName: "Años del experto", id: "respondentYears" },
     ],
-    data: encuestas,
+    data: respuestas,
   };
-  console.log("🚀 ~ Dashboard ~ datas.encuestas:", encuestas);
 
   return (
     <>
       <NavBar
-        tecnologia={{}}
+        encuesta={[]}
+        user={session.user}
         title={"Dashboard" as string}
         session={session as Session}
       />
@@ -86,10 +94,10 @@ export default async function Dashboard() {
             <Button className="border  text-white py-2 font-bold rounded bg-[#087B38] hover:bg-[#087B38]">
               Finalizar cuestionario
             </Button>
+            <ModalCloseSurvey visible={false} />
             <DescargarCsv props={datas} />
           </div>
         </LayoutDefault>
-        <ModalCloseSurvey visible={false} />
       </main>
     </>
   );
