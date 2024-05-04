@@ -17,17 +17,16 @@ export default async function Dashboard() {
   if (!session || !session.user) redirect("/");
 
   const respuestas: TRESPONSE[] = await getResponsesForCSV();
-  const enunciados = await getAllEnunciados();
-  //console.log("🚀 ~ Dashboard ~ enunciados:", enunciados)
+  const enunciados = await getAllEnunciados();  
   const users = await getAllUsers();
   
   const enunciadosLabels = enunciados.map(enunciado => ({
     label: enunciado.title,
     porcents: (enunciado.response.length/(enunciado.questions.length * users.length)) * 100,
   }));
-console.log(enunciadosLabels)
+  
   const chartData = {
-    labels: enunciadosLabels.map((enunciado, index: number) => `Enunciado ${index + 1}`),
+    labels: enunciadosLabels.map((_, index: number) => `Enunciado ${index + 1}`),
     datasets: [
       {
         label: "Respuestas en %",

@@ -47,7 +47,7 @@ export const authOptions: NextAuthOptions = {
         if (!valid) {
           return null;
         }
-        console.log("props", props)
+        
         return props;
       },
     }),
@@ -73,8 +73,6 @@ export const authOptions: NextAuthOptions = {
           });
 
           if (!createdUser) {
-            console.log("🚀 ~ signIn ~ createdUser:", createdUser)
-
             return null;
           }
 

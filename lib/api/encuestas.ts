@@ -70,7 +70,6 @@ export async function getEnunciado({
   dataUserId: string;
   dataEnunciadoId: any;
 }) {
-  //console.log("🚀 ~ enunciadoId:", enunciadoId);
   return await db.enunciados.findFirst({
     where: {
       slug: dataSlug,

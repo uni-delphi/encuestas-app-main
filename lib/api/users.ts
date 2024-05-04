@@ -28,12 +28,10 @@ export async function getUserById(userId: string) {
 }
 
 export async function createUser(data: any) {
-  console.log("🚀 ~ createUser ~ data:", data);
   return await db.user.create({ data });
 }
 
 export async function logInUser(data: any) {
-  console.log("🚀 ~ createUser ~ data:", data);
   return await db.user.findUnique({ where: { email: data.email } });
 }
 
