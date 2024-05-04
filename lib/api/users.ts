@@ -1,5 +1,16 @@
 import { db } from "../prisma";
 
+export async function getAllUsers() { 
+  return await db.user.findMany({
+    select: {
+      email: true,
+    },
+    where: {
+      role: "USER",
+    }
+  });
+}
+
 export async function getUserByEmail(email: string) {
   return await db.user.findUnique({
     where: {

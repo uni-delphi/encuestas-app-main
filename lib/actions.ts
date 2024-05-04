@@ -147,11 +147,29 @@ export async function updateCheckboxResponse(data: any, responseId: number) {
   }
 }
 
-export async function getResponses() {
+export async function getResponsesForCSV() {
   try {
-    return await Respuestas.getResponses();
+    return await Respuestas.getResponsesForCSV();
   } catch (error: any) {
     console.log(error);
-    throw Error("Error getTecnologia", error);
+    throw Error("Error getResponsesForCSV", error);
+  }
+}
+
+export async function getAllEnunciados() {
+  try {
+    return await Encuestas.getAllEnunciados();
+  } catch (error: any) {
+    console.log(error);
+    throw Error("Error getAllEnunciados", error);
+  }
+}
+
+export async function getAllUsers() {
+  try {
+    return await Users.getAllUsers();
+  } catch (error: any) {
+    console.log(error);
+    throw Error("Error getAllEnunciados", error);
   }
 }

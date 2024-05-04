@@ -28,7 +28,11 @@ export async function getEncuestaInfo() {
     include: {
       tecnologias: {
         include: {
-          enunciados: true,
+          enunciados: {
+            select: { 
+              slug: true,
+            }          
+          },
         },
         orderBy: {
           id: "asc", // or 'desc' for descending order
@@ -89,6 +93,18 @@ export async function getEnunciado({
           id: "asc", // or 'desc' for descending order
         },
       },
+    },
+    orderBy: {
+      id: "asc", // or 'desc' for descending order
+    },
+  });
+}
+
+export async function getAllEnunciados() {
+  return await db.enunciados.findMany({
+    include: { 
+      response: true,
+      questions: true,
     },
     orderBy: {
       id: "asc", // or 'desc' for descending order
