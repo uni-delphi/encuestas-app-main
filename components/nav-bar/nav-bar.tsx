@@ -13,7 +13,7 @@ export default function NavBar({
   session,
   title,
 }: {
-  encuesta: any;
+  encuesta: any[];
   user?: User;
   session: Session;
   title: string;
