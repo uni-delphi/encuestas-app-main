@@ -5,10 +5,20 @@ import { redirect } from "next/navigation";
 import LayoutDefault from "@/components/image-layout/image-layout";
 import { Button } from "@/components/ui/button";
 import BarChart from "@/components/chart-bar/chart-bar";
+import { getAllEncuestasInfo } from "@/lib/actions";
+import { surveyHasEnded } from "@/utils/date-formatter";
 
 export default async function Bienvenido() {
   const session: Session | null = await getServerSession(authOptions);
   if (!session || !session.user) redirect("/");
+
+  const encuestas: any = await getAllEncuestasInfo();
+  const { hasEnded, endDate, isActive } = encuestas[0];
+  
+  if(surveyHasEnded({ endDate, isActive, hasEnded })) {
+    redirect("/finalizado")
+  }
+
   const chartData = {
     labels: ["Enero", "Febrero", "Marzo", "Abril", "Mayo"],
     datasets: [

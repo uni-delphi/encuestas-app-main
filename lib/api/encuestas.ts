@@ -1,6 +1,37 @@
 import { db } from "../prisma";
 
-export async function getAllEncuestas() {
+export async function getAllEncuestas(userId: string) {
+  return await db.survey.findMany({
+    include: {
+      tecnologias: {
+        include: {
+          enunciados: {
+            include: { 
+              response: {
+                where: {
+                  respondentId: userId
+                }
+              }
+            },
+          },
+        },
+        orderBy: {
+          id: "asc", // or 'desc' for descending order
+        },
+      },
+      createdBy: {
+        select: {
+          id: true,
+          name: true,
+          lastName: true,
+          email: true,
+        },
+      },
+    },
+  });
+}
+
+export async function getEncuesta() {
   return await db.survey.findMany({
     include: {
       tecnologias: {
@@ -28,7 +59,11 @@ export async function getEncuestaInfo() {
     include: {
       tecnologias: {
         include: {
-          enunciados: true,
+          enunciados: {
+            select: { 
+              slug: true,
+            }          
+          },
         },
         orderBy: {
           id: "asc", // or 'desc' for descending order
@@ -66,7 +101,6 @@ export async function getEnunciado({
   dataUserId: string;
   dataEnunciadoId: any;
 }) {
-  //console.log("🚀 ~ enunciadoId:", enunciadoId);
   return await db.enunciados.findFirst({
     where: {
       slug: dataSlug,
@@ -96,6 +130,18 @@ export async function getEnunciado({
   });
 }
 
+export async function getAllEnunciados() {
+  return await db.enunciados.findMany({
+    include: { 
+      response: true,
+      questions: true,
+    },
+    orderBy: {
+      id: "asc", // or 'desc' for descending order
+    },
+  });
+}
+
 export async function getExampleResponses(
   //questionId: number,
   enunciadosId: number
@@ -109,4 +155,13 @@ export async function getExampleResponses(
       question: true,
     },
   });
+}
+
+export async function updateEncuesta(surveyId: number, data: any) {
+  return await db.survey.update({
+    where: {
+      id: surveyId,
+    },
+    data,
+  })
 }

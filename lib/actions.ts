@@ -46,13 +46,23 @@ export async function loginUser(data: TLoginUser) {
   revalidatePath("/dashboard");
 }
 
-export async function getAllEncuestas() {
+export async function getAllEncuestas(userId: string) {
   try {
-    const response = await Encuestas.getAllEncuestas();
+    const response = await Encuestas.getAllEncuestas(userId);
     return response;
   } catch (error: any) {
     console.log(error);
     throw Error("Error getAllEncuestas", error);
+  }
+}
+
+export async function getEncuesta() {
+  try {
+    const response = await Encuestas.getEncuesta();
+    return response;
+  } catch (error: any) {
+    console.log(error);
+    throw Error("Error getEncuesta", error);
   }
 }
 
@@ -147,9 +157,47 @@ export async function updateCheckboxResponse(data: any, responseId: number) {
   }
 }
 
-export async function getResponses() {
+export async function getResponsesForCSV() {
   try {
-    return await Respuestas.getResponses();
+    return await Respuestas.getResponsesForCSV();
+  } catch (error: any) {
+    console.log(error);
+    throw Error("Error getResponsesForCSV", error);
+  }
+}
+
+export async function getAllMyResponses(userId: string) {
+  try {
+    return await Respuestas.getAllMyResponses(userId);
+  } catch (error: any) {
+    console.log(error);
+    throw Error("Error getAllMyResponses", error);
+  }
+}
+
+export async function getAllEnunciados() {
+  try {
+    return await Encuestas.getAllEnunciados();
+  } catch (error: any) {
+    console.log(error);
+    throw Error("Error getAllEnunciados", error);
+  }
+}
+
+export async function getAllUsers() {
+  try {
+    return await Users.getAllUsers();
+  } catch (error: any) {
+    console.log(error);
+    throw Error("Error getAllEnunciados", error);
+  }
+}
+
+export async function updateEncuesta(surveyId: number, data: any) {
+  try {
+    const response =  await Encuestas.updateEncuesta(surveyId, data);
+    revalidatePath('/');
+    return response;
   } catch (error: any) {
     console.log(error);
     throw Error("Error getTecnologia", error);

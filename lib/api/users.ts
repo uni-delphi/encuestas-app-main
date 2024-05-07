@@ -1,5 +1,16 @@
 import { db } from "../prisma";
 
+export async function getAllUsers() { 
+  return await db.user.findMany({
+    select: {
+      email: true,
+    },
+    where: {
+      role: "USER",
+    }
+  });
+}
+
 export async function getUserByEmail(email: string) {
   return await db.user.findUnique({
     where: {
@@ -17,12 +28,10 @@ export async function getUserById(userId: string) {
 }
 
 export async function createUser(data: any) {
-  console.log("🚀 ~ createUser ~ data:", data);
   return await db.user.create({ data });
 }
 
 export async function logInUser(data: any) {
-  console.log("🚀 ~ createUser ~ data:", data);
   return await db.user.findUnique({ where: { email: data.email } });
 }
 

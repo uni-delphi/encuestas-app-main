@@ -3,24 +3,28 @@ import Image from "next/image";
 import { authOptions } from "@/auth.config";
 import { Session, getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { getAllEncuestas } from "@/lib/actions";
+import { getAllEncuestas, getAllMyResponses } from "@/lib/actions";
 
 import LogosUnc from "@/components/logos-unc/logos-unc";
 import NavBar from "@/components/nav-bar/nav-bar";
-import { calculateRemainingDays } from "@/utils/date-formatter";
+import { calculateRemainingDays, surveyHasEnded } from "@/utils/date-formatter";
 
 export default async function Encuestas() {
   const session: Session | null = await getServerSession(authOptions);
   if (!session || !session.user) redirect("/");
   const { name, lastName } = session.user;
 
-  const encuestas: any = await getAllEncuestas();
-  const { title, tecnologias, endDate, ...props } = encuestas[0] ?? [];
+  const encuestas: any = await getAllEncuestas(session.user.id);
+  const { title, tecnologias, endDate, hasEnded, isActive, ...props } = encuestas[0] ?? [];
+  
+  if(surveyHasEnded({ endDate, isActive, hasEnded })) {
+    redirect("/finalizado")
+  }
 
   return (
     <main className="">
       <NavBar
-        tecnologia={{}}
+        encuesta={[]}
         title={"Dashboard" as string}
         session={session as Session}
       />
@@ -38,12 +42,7 @@ export default async function Encuestas() {
             style={{ objectFit: "cover" }}
           />
         </section>
-        <section
-          style={{
-            marginTop: "8rem",
-          }}
-          className="w-full px-12 text-textColor my-4"
-        >
+        <section className="w-full px-12 text-textColor my-4">
           <div>
             <LogosUnc />
             <h2 className="font-bold  mt-10 text-2xl ">

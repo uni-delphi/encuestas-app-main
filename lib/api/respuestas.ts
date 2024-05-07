@@ -24,7 +24,7 @@ export async function getSampleRespuestasByEnunciado(
   });
 }
 
-export async function getResponses() {
+export async function getResponsesForCSV() {
   const formattedData = await db.response.findMany({
     include: {
       respondent: true,
@@ -38,7 +38,15 @@ export async function getResponses() {
           question: true,
         },
       },
-      enunciados: true,
+      enunciados: {
+        include: {
+          tecnologia: {
+            select: {
+              title: true,
+            }
+          },
+        },
+      },
       question: true,
     },
     orderBy: {
@@ -48,7 +56,8 @@ export async function getResponses() {
 
   return formattedData.map((res) => {
     return {
-      enunciado: res.enunciados?.title,
+      technology: res.enunciados.tecnologia.title,
+      enunciado: res.enunciados.title,
       question: res.question?.text,
       createdAt: res.createdAt,
       checkboxChoises:
@@ -65,9 +74,49 @@ export async function getResponses() {
         res.responseType === "CHECKBOX"
           ? res.checkbox?.answer
           : res.singleChoice?.answer,
-      respondentName: `${res.respondent.name} ${res.respondent.lastName}`,
+      respondentName: `${res.respondent?.name} ${res.respondent?.lastName}`,
       respondentEmail: res.respondent.email,
+      respondentCountry: res.respondent.country,
+      respondentState: res.respondent.state,
+      respondentEducation: res.respondent.education,
+      respondentSector: res.respondent.sector,
+      respondentInstitution: res.respondent.institution,
+      respondentExpertees: res.respondent.expertees,
+      respondentYears: res.respondent.years,
     };
+  });
+}
+
+export async function getAllMyResponses(userId: string){
+  return await db.response.findMany({
+    where: {
+      respondentId: userId,
+    },
+    include: {
+      singleChoice: {
+        include: {
+          question: true,
+        },
+      },
+      checkbox: {
+        include: {
+          question: true,
+        },
+      },
+      enunciados: {
+        include: {
+          tecnologia: true,
+        },
+      },
+      question: {
+        include: {
+          responses: true,
+        },
+      },
+    },
+    orderBy: {
+      id: "desc",
+    },
   });
 }
 
