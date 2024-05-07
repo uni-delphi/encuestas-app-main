@@ -160,6 +160,45 @@ export default function SignInForm() {
         >
           <FormField
             control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
+                <FormControl>
+                  <Input placeholder="Mail*" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
+                <FormControl>
+                  <Input placeholder="Contraseña*" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="validatedPassword"
+            render={({ field }) => (
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
+                <FormControl>
+                  <Input placeholder="Repetir contraseña*" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <hr className="w-full position-absolute" />
+          <FormField
+            control={form.control}
             name="name"
             render={({ field }) => (
               <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
@@ -297,47 +336,9 @@ export default function SignInForm() {
               </FormItem>
             )}
           />
-          <hr className="w-full position-absolute" />
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
-                <FormControl>
-                  <Input placeholder="Mail*" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
-                <FormControl>
-                  <Input placeholder="Contraseña*" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="validatedPassword"
-            render={({ field }) => (
-              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
-                <FormControl>
-                  <Input placeholder="Repetir contraseña*" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                    
           <div className="space-y-2 xl:w-[40%] sm:w-[60%] mx-auto text-center">
-            <Button type="submit" disabled={isLoading}>
+            <Button type="submit" disabled={isLoading} className="bg-blue-600 text-white md:mx-10 hover:bg-gray-200 hover:text-blue-600 my-4">
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
