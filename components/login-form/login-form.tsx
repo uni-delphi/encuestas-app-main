@@ -95,7 +95,7 @@ export default function LogInForm() {
               <FormItem>
                 <FormLabel>Contraseña</FormLabel>
                 <FormControl>
-                  <Input placeholder="" {...field} />
+                  <Input placeholder="" type="password" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
