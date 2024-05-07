@@ -2,14 +2,17 @@ import { Session, getServerSession } from "next-auth";
 import { authOptions } from "@/auth.config";
 import { redirect } from "next/navigation";
 
-import { getResponsesForCSV, getAllEnunciados, getAllUsers } from "@/lib/actions";
+import {
+  getResponsesForCSV,
+  getAllEnunciados,
+  getAllUsers,
+  getEncuesta,
+} from "@/lib/actions";
 import { TRESPONSE } from "@/types/respuestas";
 
-import { Button } from "@/components/ui/button";
 import NavBar from "@/components/nav-bar/nav-bar";
 import LayoutDefault from "@/components/image-layout/image-layout";
 import BarChart from "@/components/chart-bar/chart-bar";
-import ModalCloseSurvey from "@/components/close-survey-modal/close-survey-modal";
 import DescargarCsv from "@/components/descargar-csv/descargar-csv";
 import CloseSurvey from "@/components/close-survey/close-survey";
 
@@ -17,21 +20,31 @@ export default async function Dashboard() {
   const session = await getServerSession(authOptions);
   if (!session || !session.user) redirect("/");
 
-  const respuestas: TRESPONSE[] = await getResponsesForCSV();
-  const enunciados = await getAllEnunciados();  
-  const users = await getAllUsers();
-  
-  const enunciadosLabels = enunciados.map(enunciado => ({
+  const [encuesta, respuestas, enunciados, users] = await Promise.all([
+    getEncuesta(),
+    getResponsesForCSV() as Promise<TRESPONSE[]>,
+    getAllEnunciados(),
+    getAllUsers()
+  ]);
+
+  const enunciadosLabels = enunciados.map((enunciado) => ({
     label: enunciado.title,
-    porcents: (enunciado.response.length/(enunciado.questions.length * users.length)) * 100,
+    porcents:
+      (enunciado.response.length /
+        (enunciado.questions.length * users.length)) *
+      100,
   }));
-  
+
   const chartData = {
-    labels: enunciadosLabels.map((_, index: number) => `Enunciado ${index + 1}`),
+    labels: enunciadosLabels.map(
+      (_, index: number) => `Enunciado ${index + 1}`
+    ),
     datasets: [
       {
         label: "Respuestas en %",
-        data: enunciadosLabels.map(enunciado => +enunciado.porcents.toFixed(2)),
+        data: enunciadosLabels.map(
+          (enunciado) => +enunciado.porcents.toFixed(2)
+        ),
       },
     ],
   };
@@ -44,10 +57,6 @@ export default async function Dashboard() {
         suggestedMax: 100,
       },
     },
-  };
-
-  const handleCloseSurvey = () => {
-    console.log("dasdasdsa");
   };
 
   const datas = {
@@ -95,9 +104,7 @@ export default async function Dashboard() {
           </p>
           <BarChart chartData={chartData} chartOptions={chartOptions} />
           <div className="flex md:block items-center gap-2">
-            <Button className="border  text-white py-2 font-bold rounded bg-[#087B38] hover:bg-[#087B38]">
-              Finalizar cuestionario
-            </Button>
+            <CloseSurvey encuesta={encuesta[0] || []}/>
             <DescargarCsv props={datas} />
           </div>
         </LayoutDefault>

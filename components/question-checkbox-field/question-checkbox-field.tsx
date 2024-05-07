@@ -52,6 +52,7 @@ export default function QuestionCheckboxField({
   checkboxResponse: any;
   user: User;
 }) {
+  console.log("🚀 ~ checkboxResponse:", checkboxResponse)
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -245,9 +246,7 @@ export default function QuestionCheckboxField({
                         >
                           {response.checkbox?.answer}
                         </CarouselItem>
-                      ) : (
-                        ""
-                      )
+                      ) : null
                     )}
                 </CarouselContent>
               </Carousel>

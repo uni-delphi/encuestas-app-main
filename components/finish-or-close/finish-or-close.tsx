@@ -1,12 +1,35 @@
 import React from "react";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import { getAllEncuestasInfo } from "@/lib/actions";
+import { surveyHasEnded } from "@/utils/date-formatter";
 
-export default function FinishOrClose() {
-  const surveyIsClosed = true;
+export default async function FinishOrClose() {
   //TODO: replace this variable for one in db
+  const encuestas: any = await getAllEncuestasInfo();
+  const { hasEnded, endDate, isActive } = encuestas[0];
+  const surveyIsClosed = true;
 
-  return surveyIsClosed ? (
+  if (surveyHasEnded({ endDate, isActive, hasEnded })) {
+    console.log("🚀 ~ encuesta finalizada");
+  }
+
+  return surveyHasEnded({ endDate, isActive, hasEnded }) ? (
+    <>
+      <div className="w-full md:max-w-[80%] md:mx-auto mt-14">
+        <p className="pb-4 mb-4 text-justify md:text-center">
+          El cuestionario se encuentra cerrado y no se podrán sumar ni modificar
+          respuestas. Puedes informarte más sobre los resultados o los avances
+          haciendo click en el siguiente botón.
+        </p>
+      </div>
+      <div className="flex justify-center gap-5">
+        <Button className="bg-blue-600 text-white md:mx-10 hover:bg-gray-200  my-4">
+          Ver más del estudio
+        </Button>
+      </div>
+    </>
+  ) : (
     <>
       <div className="w-full md:max-w-[80%] md:mx-auto mt-14">
         <p className="pb-4 mb-4 text-justify md:text-center">
@@ -30,21 +53,6 @@ export default function FinishOrClose() {
         >
           Ver mis respuestas
         </Link>
-        <Button className="bg-blue-600 text-white md:mx-10 hover:bg-gray-200  my-4">
-          Ver más del estudio
-        </Button>
-      </div>
-    </>
-  ) : (
-    <>
-      <div className="w-full md:max-w-[80%] md:mx-auto mt-14">
-        <p className="pb-4 mb-4 text-justify md:text-center">
-          El cuestionario se encuentra cerrado y no se podrán sumar ni modificar
-          respuestas. Puedes informarte más sobre los resultados o los avances
-          haciendo click en el siguiente botón.
-        </p>
-      </div>
-      <div className="flex justify-center gap-5">
         <Button className="bg-blue-600 text-white md:mx-10 hover:bg-gray-200  my-4">
           Ver más del estudio
         </Button>
