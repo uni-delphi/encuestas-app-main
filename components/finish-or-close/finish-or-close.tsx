@@ -8,11 +8,6 @@ export default async function FinishOrClose() {
   //TODO: replace this variable for one in db
   const encuestas: any = await getAllEncuestasInfo();
   const { hasEnded, endDate, isActive } = encuestas[0];
-  const surveyIsClosed = true;
-
-  if (surveyHasEnded({ endDate, isActive, hasEnded })) {
-    console.log("🚀 ~ encuesta finalizada");
-  }
 
   return surveyHasEnded({ endDate, isActive, hasEnded }) ? (
     <>

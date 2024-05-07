@@ -61,7 +61,9 @@ export default function ModalCloseSurvey({ action, open, encuesta }: Props) {
     });
 
     if (endedSurveyResponse) {
-      console.log("🚀 ~ onSubmit ~ endedSurveyResponse:", endedSurveyResponse);
+      toast({
+        title: "La encuesta fue actualizada correctamente",
+      });
     }
     setIsLoading(false);
     action();

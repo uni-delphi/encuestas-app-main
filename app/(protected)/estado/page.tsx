@@ -16,7 +16,6 @@ export default async function Encuestas() {
 
   const encuestas: any = await getAllEncuestas(session.user.id);
   const { title, tecnologias, endDate, hasEnded, isActive, ...props } = encuestas[0] ?? [];
-  console.log("🚀 ~ Encuestas ~ props:", props)
   
   if(surveyHasEnded({ endDate, isActive, hasEnded })) {
     redirect("/finalizado")
