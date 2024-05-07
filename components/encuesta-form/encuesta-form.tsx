@@ -180,6 +180,57 @@ const data: IDATATYPE = {
       },
     ],
   },
+  DIFUSION_2024:{
+    order: "g",
+    answers: [
+      {
+        id: "hasta30",
+        name: "Hasta 30%",
+      },
+      {
+        id: "hasta50",
+        name: "Hasta 50%",
+      },
+      {
+        id: "hasta70",
+        name: "Hasta 70%",
+      }
+    ],
+  },
+  DIFUSION_2027:{
+    order: "h",
+    answers: [
+      {
+        id: "hasta30",
+        name: "Hasta 30%",
+      },
+      {
+        id: "hasta50",
+        name: "Hasta 50%",
+      },
+      {
+        id: "hasta70",
+        name: "Hasta 70%",
+      }
+    ],
+  },
+  DIFUSION_2030:{
+    order: "i",
+    answers: [
+      {
+        id: "hasta30",
+        name: "Hasta 30%",
+      },
+      {
+        id: "hasta50",
+        name: "Hasta 50%",
+      },
+      {
+        id: "hasta70",
+        name: "Hasta 70%",
+      }
+    ],
+  },
 };
 
 export default async function EncuestaForm({
