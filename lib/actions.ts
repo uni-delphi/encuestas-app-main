@@ -56,6 +56,16 @@ export async function getAllEncuestas(userId: string) {
   }
 }
 
+export async function getEncuesta() {
+  try {
+    const response = await Encuestas.getEncuesta();
+    return response;
+  } catch (error: any) {
+    console.log(error);
+    throw Error("Error getEncuesta", error);
+  }
+}
+
 export async function getAllEncuestasInfo() {
   try {
     return await Encuestas.getEncuestaInfo();
@@ -180,5 +190,16 @@ export async function getAllUsers() {
   } catch (error: any) {
     console.log(error);
     throw Error("Error getAllEnunciados", error);
+  }
+}
+
+export async function updateEncuesta(surveyId: number, data: any) {
+  try {
+    const response =  await Encuestas.updateEncuesta(surveyId, data);
+    revalidatePath('/');
+    return response;
+  } catch (error: any) {
+    console.log(error);
+    throw Error("Error getTecnologia", error);
   }
 }

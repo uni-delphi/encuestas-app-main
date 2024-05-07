@@ -31,6 +31,29 @@ export async function getAllEncuestas(userId: string) {
   });
 }
 
+export async function getEncuesta() {
+  return await db.survey.findMany({
+    include: {
+      tecnologias: {
+        include: {
+          enunciados: true,
+        },
+        orderBy: {
+          id: "asc", // or 'desc' for descending order
+        },
+      },
+      createdBy: {
+        select: {
+          id: true,
+          name: true,
+          lastName: true,
+          email: true,
+        },
+      },
+    },
+  });
+}
+
 export async function getEncuestaInfo() {
   return await db.survey.findMany({
     include: {
@@ -132,4 +155,13 @@ export async function getExampleResponses(
       question: true,
     },
   });
+}
+
+export async function updateEncuesta(surveyId: number, data: any) {
+  return await db.survey.update({
+    where: {
+      id: surveyId,
+    },
+    data,
+  })
 }
