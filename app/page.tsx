@@ -26,9 +26,9 @@ export default async function Home({ searchParams }: any) {
       <LayoutDefault>
         <h2 className="font-bold text-3xl my-4 pb-4">Ingresar</h2>
         <LogInForm />
-        <div className="md:flex justify-center">
+        <div className="md:flex justify-center mt-4">
           <Button className="bg-transparent text-black hover:bg-gray-200">
-            No recuerdo mi contraseña
+            Recuperar contraseña
           </Button>
           <Link
             href={"/registro"}
