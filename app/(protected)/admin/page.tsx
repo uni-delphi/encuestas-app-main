@@ -11,6 +11,7 @@ import LayoutDefault from "@/components/image-layout/image-layout";
 import BarChart from "@/components/chart-bar/chart-bar";
 import ModalCloseSurvey from "@/components/close-survey-modal/close-survey-modal";
 import DescargarCsv from "@/components/descargar-csv/descargar-csv";
+import CloseSurvey from "@/components/close-survey/close-survey";
 
 export default async function Dashboard() {
   const session = await getServerSession(authOptions);
@@ -43,6 +44,10 @@ export default async function Dashboard() {
         suggestedMax: 100,
       },
     },
+  };
+
+  const handleCloseSurvey = () => {
+    console.log("dasdasdsa");
   };
 
   const datas = {
@@ -93,7 +98,6 @@ export default async function Dashboard() {
             <Button className="border  text-white py-2 font-bold rounded bg-[#087B38] hover:bg-[#087B38]">
               Finalizar cuestionario
             </Button>
-            <ModalCloseSurvey visible={false} />
             <DescargarCsv props={datas} />
           </div>
         </LayoutDefault>
