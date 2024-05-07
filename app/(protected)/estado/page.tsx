@@ -7,7 +7,7 @@ import { getAllEncuestas, getAllMyResponses } from "@/lib/actions";
 
 import LogosUnc from "@/components/logos-unc/logos-unc";
 import NavBar from "@/components/nav-bar/nav-bar";
-import { calculateRemainingDays } from "@/utils/date-formatter";
+import { calculateRemainingDays, surveyHasEnded } from "@/utils/date-formatter";
 
 export default async function Encuestas() {
   const session: Session | null = await getServerSession(authOptions);
@@ -15,7 +15,12 @@ export default async function Encuestas() {
   const { name, lastName } = session.user;
 
   const encuestas: any = await getAllEncuestas(session.user.id);
-  const { title, tecnologias, endDate, ...props } = encuestas[0] ?? [];
+  const { title, tecnologias, endDate, hasEnded, isActive, ...props } = encuestas[0] ?? [];
+  console.log("🚀 ~ Encuestas ~ props:", props)
+  
+  if(surveyHasEnded({ endDate, isActive, hasEnded })) {
+    redirect("/finalizado")
+  }
 
   return (
     <main className="">
@@ -38,12 +43,7 @@ export default async function Encuestas() {
             style={{ objectFit: "cover" }}
           />
         </section>
-        <section
-          style={{
-            marginTop: "8rem",
-          }}
-          className="w-full px-12 text-textColor my-4"
-        >
+        <section className="w-full px-12 text-textColor my-4">
           <div>
             <LogosUnc />
             <h2 className="font-bold  mt-10 text-2xl ">
