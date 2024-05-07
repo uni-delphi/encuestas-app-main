@@ -95,6 +95,9 @@ enum InputQuestionType {
   ACELERAN
   FRENAN
   IMPACTO
+  DIFUSION_2024
+  DIFUSION_2027
+  DIFUSION_2030
 }
 
 // Modelo para representar una respuesta a una pregunta
