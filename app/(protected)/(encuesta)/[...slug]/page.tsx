@@ -403,7 +403,7 @@ export default async function Encuestas({
   let emptyEnunciadoSlug: string = "";
   let emptyEnunciadoId: number = 0;
 
-  const encuestas: any = await getAllEncuestas();
+  const encuestas: any = await getAllEncuestas(session.user.id);
   const techElegida = encuestas[0]?.tecnologias.find(
     (data: any) => data.slug === techTitle
   );

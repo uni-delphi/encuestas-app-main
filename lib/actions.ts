@@ -46,9 +46,9 @@ export async function loginUser(data: TLoginUser) {
   revalidatePath("/dashboard");
 }
 
-export async function getAllEncuestas() {
+export async function getAllEncuestas(userId: string) {
   try {
-    const response = await Encuestas.getAllEncuestas();
+    const response = await Encuestas.getAllEncuestas(userId);
     return response;
   } catch (error: any) {
     console.log(error);
@@ -153,6 +153,15 @@ export async function getResponsesForCSV() {
   } catch (error: any) {
     console.log(error);
     throw Error("Error getResponsesForCSV", error);
+  }
+}
+
+export async function getAllMyResponses(userId: string) {
+  try {
+    return await Respuestas.getAllMyResponses(userId);
+  } catch (error: any) {
+    console.log(error);
+    throw Error("Error getAllMyResponses", error);
   }
 }
 

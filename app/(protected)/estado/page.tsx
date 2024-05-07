@@ -3,7 +3,7 @@ import Image from "next/image";
 import { authOptions } from "@/auth.config";
 import { Session, getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { getAllEncuestas, getAllEnunciados } from "@/lib/actions";
+import { getAllEncuestas, getAllMyResponses } from "@/lib/actions";
 
 import LogosUnc from "@/components/logos-unc/logos-unc";
 import NavBar from "@/components/nav-bar/nav-bar";
@@ -14,9 +14,7 @@ export default async function Encuestas() {
   if (!session || !session.user) redirect("/");
   const { name, lastName } = session.user;
 
-  const encuestas: any = await getAllEncuestas();
-  const enunciados = await getAllEnunciados();
-  console.log("🚀 ~ Encuestas ~ enunciados:", enunciados)
+  const encuestas: any = await getAllEncuestas(session.user.id);
   const { title, tecnologias, endDate, ...props } = encuestas[0] ?? [];
 
   return (

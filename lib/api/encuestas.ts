@@ -1,11 +1,19 @@
 import { db } from "../prisma";
 
-export async function getAllEncuestas() {
+export async function getAllEncuestas(userId: string) {
   return await db.survey.findMany({
     include: {
       tecnologias: {
         include: {
-          enunciados: true,
+          enunciados: {
+            include: { 
+              response: {
+                where: {
+                  respondentId: userId
+                }
+              }
+            },
+          },
         },
         orderBy: {
           id: "asc", // or 'desc' for descending order

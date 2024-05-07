@@ -87,6 +87,39 @@ export async function getResponsesForCSV() {
   });
 }
 
+export async function getAllMyResponses(userId: string){
+  return await db.response.findMany({
+    where: {
+      respondentId: userId,
+    },
+    include: {
+      singleChoice: {
+        include: {
+          question: true,
+        },
+      },
+      checkbox: {
+        include: {
+          question: true,
+        },
+      },
+      enunciados: {
+        include: {
+          tecnologia: true,
+        },
+      },
+      question: {
+        include: {
+          responses: true,
+        },
+      },
+    },
+    orderBy: {
+      id: "desc",
+    },
+  });
+}
+
 export async function createResponse(newResponseData: any) {
   const data: any = {
     respondentId: newResponseData.respondentId,
