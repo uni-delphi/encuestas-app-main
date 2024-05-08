@@ -8,6 +8,7 @@ import { getAllEncuestas, getAllMyResponses } from "@/lib/actions";
 import LogosUnc from "@/components/logos-unc/logos-unc";
 import NavBar from "@/components/nav-bar/nav-bar";
 import { calculateRemainingDays, surveyHasEnded } from "@/utils/date-formatter";
+import LayoutDefault from "@/components/image-layout/image-layout";
 
 export default async function Encuestas() {
   const session: Session | null = await getServerSession(authOptions);
@@ -15,56 +16,43 @@ export default async function Encuestas() {
   const { name, lastName } = session.user;
 
   const encuestas: any = await getAllEncuestas(session.user.id);
-  const { title, tecnologias, endDate, hasEnded, isActive, ...props } = encuestas[0] ?? [];
-  
-  if(surveyHasEnded({ endDate, isActive, hasEnded })) {
-    redirect("/finalizado")
+  const { title, tecnologias, endDate, hasEnded, isActive, ...props } =
+    encuestas[0] ?? [];
+
+  if (surveyHasEnded({ endDate, isActive, hasEnded })) {
+    redirect("/finalizado");
   }
 
   return (
-    <main className="">
+    <>
       <NavBar
         encuesta={[]}
-        title={"Dashboard" as string}
+        user={session.user}
+        title={""}
         session={session as Session}
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 h-screen">
-        <section className="w-full">
-          <Image
-            src={"/eccampus-temporal.jpg"}
-            alt="image"
-            width={200}
-            height={160}
-            sizes="(max-width: 768px) 100vw,
-              (max-width: 1200px) 50vw,
-              33vw"
-            className="lg:h-lvh  w-full hidden md:block md:sticky top-0"
-            style={{ objectFit: "cover" }}
-          />
-        </section>
-        <section className="w-full px-12 text-textColor my-4">
-          <div>
-            <LogosUnc />
-            <h2 className="font-bold  mt-10 text-2xl ">
-              <span className="block line-clamp-2">
-                Hola {name} {lastName}!
-              </span>
-              <span className="block line-clamp-2">
-                Tu contribución a {title} es del 83%
-              </span>
-            </h2>
-            <div className="max-w-[80%] mt-1">
-              <p className="mb-4">
-                Puedes volver a completar, ampliar o modificar la justifiacion
-                de tus respuestas.
-              </p>
-              <p className="pb-4 mb-4">
-                A continuación te mostraremos el estado de tu encuesta.
-              </p>
-              <p className="pb-4 mb-4">
-                Al estudio le restan { calculateRemainingDays(endDate) } días para finalizar
-              </p>
-            </div>
+      <main className="">
+        <LayoutDefault>
+          <h2 className="font-bold  mt-10 text-2xl ">
+            <span className="block line-clamp-2">
+              Hola {name} {lastName}!
+            </span>
+            <span className="block line-clamp-2">
+              Tu contribución a {title} es del 83%
+            </span>
+          </h2>
+          <div className="mt-4">
+            <p className="mb-4">
+              Puedes volver a completar, ampliar o modificar la justifiacion de
+              tus respuestas.
+            </p>
+            <p className="pb-4 mb-4">
+              A continuación te mostraremos el estado de tu encuesta.
+            </p>
+            <p className="pb-4 mb-4">
+              Al estudio le restan {calculateRemainingDays(endDate)} días para
+              finalizar
+            </p>
           </div>
           <div className="max-w-3xl">
             {tecnologias &&
@@ -128,8 +116,8 @@ export default async function Encuestas() {
                 </div>
               ))}
           </div>
-        </section>
-      </div>
-    </main>
+        </LayoutDefault>
+      </main>
+    </>
   );
 }

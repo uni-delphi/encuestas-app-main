@@ -36,7 +36,7 @@ export default function TemasSelect({ tecnologias }: { tecnologias: any }) {
   const index = indexEnunciados.findIndex((enunciado: any) => enunciado === enunciadoSlug);
   
   return (
-    <div className="flex justify-center gap-4 items-center">
+    <div className="flex justify-center gap-4 items-center bg-white">
       <span>{index+1} de {indexEnunciados?.length}: ir a</span>
       <Form {...form}>
         <form>

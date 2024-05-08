@@ -18,30 +18,25 @@ export default function NavBar({
   session: Session;
   title: string;
 }) {
-  
-  return user?.role === "USER" ? (
-    <header className="fixed grid bg-white h-20 w-full z-10">
+  return (
+    <header className="fixed grid h-20 w-full z-10 bg-transparent">
       {encuesta[0]?.tecnologias?.length > 0 && (
         <TemasSelect tecnologias={encuesta[0]?.tecnologias} />
       )}
-      <nav className="flex w-full bg-blue-700 text-white justify-center items-center p-3">
-        <h1 className="scroll-m-20 text-2xl font-bold tracking-tight ">
-          {title}
-        </h1>
-        {!session && (
-          <Button
-            className="ml-6"
-            onClick={() => signIn(undefined, { callbackUrl: "/dashboard" })}
-          >
-            Ingresar/Registrarse
-          </Button>
+      <nav
+        className={`${
+          title
+            ? "flex w-full bg-blue-700 text-white justify-center items-center p-3"
+            : "fixed right-2 top-2 md:right-5 md:top-5 bg-transparent"
+        }`}
+      >
+        {title && (
+          <h1 className="scroll-m-20 text-2xl font-bold tracking-tight ">
+            {title}
+          </h1>
         )}
         {session && <AdminDropDown session={session} />}
       </nav>
-    </header>
-  ) : (
-    <header className="fixed right-2 top-2 md:right-5 md:top-5 ">
-      <nav className="">{session && <AdminDropDown session={session} />}</nav>
     </header>
   );
 }
