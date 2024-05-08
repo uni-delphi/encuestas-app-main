@@ -36,8 +36,8 @@ export default function TemasSelect({ tecnologias }: { tecnologias: any }) {
   const index = indexEnunciados.findIndex((enunciado: any) => enunciado === enunciadoSlug);
   
   return (
-    <div className="flex justify-center gap-4 items-center bg-white">
-      <span>{index+1} de {indexEnunciados?.length}: ir a</span>
+    <div className="flex justify-center gap-4 items-center bg-white px-2">
+      <span className="text-xs">{index+1} de {indexEnunciados?.length}: ir a</span>
       <Form {...form}>
         <form>
           <FormField
@@ -49,10 +49,10 @@ export default function TemasSelect({ tecnologias }: { tecnologias: any }) {
                   onValueChange={handleChange}
                   defaultValue={`/${techSlug}/${enunciadoSlug}`}
                 >
-                  <SelectTrigger className="w-[280px] my-2">
+                  <SelectTrigger className="my-2">
                     <SelectValue placeholder="Elija un enunciado" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="p-2">
                     {tecnologias &&
                       tecnologias.map((tecnologia: any) => (
                         <SelectGroup key={tecnologia.id}>

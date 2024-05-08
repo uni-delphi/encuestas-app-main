@@ -277,13 +277,7 @@ export default async function EncuestaForm({
             />
           )
         )}
-      <div className="flex justify-center items-center gap-5 p-4">
-        <Link href="/estado">Ver avance</Link>
-
-        <Button className="bg-blue-600 text-white md:mx-10 hover:bg-gray-200 hover:text-blue-600">
-          Siguiente
-        </Button>
-      </div>
+      
     </>
   );
 }

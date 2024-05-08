@@ -31,7 +31,7 @@ export default function NavBar({
         }`}
       >
         {title && (
-          <h1 className="scroll-m-20 text-2xl font-bold tracking-tight ">
+          <h1 className="scroll-m-20 text-xl font-semibold tracking-tight ">
             {title}
           </h1>
         )}
