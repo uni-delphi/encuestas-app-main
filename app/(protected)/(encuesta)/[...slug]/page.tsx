@@ -1,15 +1,15 @@
 import { authOptions } from "@/auth.config";
 import { Session, User, getServerSession } from "next-auth";
-import { getAllEncuestas, getEnunciado } from "@/lib/actions";
+import { getAllEncuestas, getEnunciado, getSlugs } from "@/lib/actions";
+import { redirect } from "next/navigation";
+import { Suspense } from "react";
+
+import { IENUNCIADO } from "@/types/encuestas";
+import { surveyHasEnded } from "@/utils/date-formatter";
+
 import EncuestaForm from "@/components/encuesta-form/encuesta-form";
 import NavBar from "@/components/nav-bar/nav-bar";
-
-import { redirect } from "next/navigation";
-import { IENUNCIADO } from "@/types/encuestas";
-import { Suspense } from "react";
-import { surveyHasEnded } from "@/utils/date-formatter";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import RedirectButtons from "@/components/redirect-buttons/redirect-buttons";
 
 export default async function Encuestas({
   params,
@@ -20,7 +20,7 @@ export default async function Encuestas({
   if (!session || !session.user) redirect("/");
 
   const { user } = session;
-  const [techTitle, enunciadoTitle] = params.slug;
+  const [techSlug, enunciadoSlug] = params.slug;
   let emptyEnunciadoSlug: string = "";
   let emptyEnunciadoId: number = 0;
 
@@ -31,14 +31,16 @@ export default async function Encuestas({
     redirect("/finalizado");
   }
 
+  const slugs = await getSlugs();
+
   const techElegida = encuestas[0]?.tecnologias.find(
-    (data: any) => data.slug === techTitle
+    (data: any) => data.slug === techSlug
   );
 
   if (!techElegida) redirect("/estado");
 
   const enunciadoElegido = techElegida.enunciados.find(
-    (data: any) => data.slug === enunciadoTitle
+    (data: any) => data.slug === enunciadoSlug
   );
 
   if (!enunciadoElegido) {
@@ -51,7 +53,7 @@ export default async function Encuestas({
     dataUserId: session?.user.id,
     dataEnunciadoId: enunciadoElegido?.id ?? emptyEnunciadoId,
   });
-  //console.log(encuestas);
+  
   return (
     <main className="">
       <NavBar
@@ -59,6 +61,7 @@ export default async function Encuestas({
         title={techElegida?.title as string}
         session={session as Session}
         user={user as User}
+        slugs={slugs}
       />
 
       <div className="py-5 overflow-hidden">
@@ -97,13 +100,7 @@ export default async function Encuestas({
             user={user as User}
           />
         </Suspense>
-        <div className="flex justify-center items-center gap-5 p-4">
-          <Link href="/estado">Ver avance</Link>
-
-          <Button className="bg-blue-600 text-white md:mx-10 hover:bg-gray-200 hover:text-blue-600 font-bold">
-            Siguiente
-          </Button>
-        </div>
+        <RedirectButtons encuesta={slugs} techActual={techSlug} enunActual={enunciadoSlug}/>
       </div>
     </main>
   );

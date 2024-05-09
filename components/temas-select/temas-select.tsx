@@ -16,10 +16,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 
 const FormSchema = z.object({
-  email: z.string(),
+  slug: z.string(),
 });
 
-export default function TemasSelect({ tecnologias }: { tecnologias: any }) {
+export default function TemasSelect({ tecnologias, slugs }: { tecnologias: any, slugs: any[] }){
   const router = useRouter();
   const params = useParams<{ slug: any }>();
   const [techSlug, enunciadoSlug] = params.slug;
@@ -28,38 +28,36 @@ export default function TemasSelect({ tecnologias }: { tecnologias: any }) {
     resolver: zodResolver(FormSchema),
   });
 
-  const handleChange = (url: any) => {
-    router.push(url);
-  };
+  const handleChange = (url: any) => router.push(url);
 
-  const indexEnunciados = tecnologias.map((item: any) => item.enunciados.map((enunciado: any) => enunciado.slug))[0];
-  const index = indexEnunciados.findIndex((enunciado: any) => enunciado === enunciadoSlug);
+  const index: number = slugs.find((item: any) => item.enunciadoSlug === enunciadoSlug).index;
   
   return (
     <div className="flex justify-center gap-4 items-center bg-white px-2">
-      <span className="text-xs">{index+1} de {indexEnunciados?.length}: ir a</span>
+      <span className="text-xs">{index+1} de {slugs?.length}: ir a</span>
       <Form {...form}>
         <form>
           <FormField
             control={form.control}
-            name="email"
+            name="slug"
             render={({ field }) => (
               <FormItem>
                 <Select
                   onValueChange={handleChange}
                   defaultValue={`/${techSlug}/${enunciadoSlug}`}
                 >
-                  <SelectTrigger className="my-2">
+                  <SelectTrigger className="my-2 text-small">
                     <SelectValue placeholder="Elija un enunciado" />
                   </SelectTrigger>
-                  <SelectContent className="p-2">
+                  <SelectContent className="p-2 text-small">
                     {tecnologias &&
                       tecnologias.map((tecnologia: any) => (
                         <SelectGroup key={tecnologia.id}>
-                          <SelectLabel>{tecnologia.title}</SelectLabel>
+                          <SelectLabel className="text-small">{tecnologia.title}</SelectLabel>
                           {tecnologia.enunciados &&
                             tecnologia.enunciados.map((enunciado: any) => (
                               <SelectItem
+                                className="text-small"
                                 onChange={handleChange}
                                 key={enunciado.id}
                                 value={`/${tecnologia.slug}/${enunciado.slug}`}

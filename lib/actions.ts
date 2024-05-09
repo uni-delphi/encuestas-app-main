@@ -203,3 +203,12 @@ export async function updateEncuesta(surveyId: number, data: any) {
     throw Error("Error getTecnologia", error);
   }
 }
+
+export async function getSlugs() {
+  try {
+    return await Encuestas.getSlugs();
+  } catch (error: any) {
+    console.log(error);
+    throw Error("Error getSlugs", error);
+  }
+}
