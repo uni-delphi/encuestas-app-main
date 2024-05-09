@@ -8,7 +8,7 @@ import {
   getAllUsers,
   getEncuesta,
 } from "@/lib/actions";
-import { TRESPONSE } from "@/types/respuestas";
+import { TCSVRESPONSE } from "@/types/respuestas";
 
 import NavBar from "@/components/nav-bar/nav-bar";
 import LayoutDefault from "@/components/image-layout/image-layout";
@@ -22,7 +22,7 @@ export default async function Dashboard() {
 
   const [encuesta, respuestas, enunciados, users] = await Promise.all([
     getEncuesta(),
-    getResponsesForCSV() as Promise<TRESPONSE[]>,
+    getResponsesForCSV() as Promise<TCSVRESPONSE[]>,
     getAllEnunciados(),
     getAllUsers()
   ]);
@@ -87,6 +87,7 @@ export default async function Dashboard() {
         user={session.user}
         title={"Dashboard" as string}
         session={session as Session}
+        slugs={[]}
       />
       <main>
         <LayoutDefault>

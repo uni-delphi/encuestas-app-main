@@ -93,7 +93,13 @@ const formSchema = z
         "La contraseña debe contener al menos una letra mayúscula y un número",
       path: ["password"],
     }
-  );
+  ).refine((values) => {
+    // Verificar si el valor es un año válido (cuatro dígitos)
+    return /^\d{4}$/.test(values.years);
+  }, {
+    message: "Ingrese un año válido en formato 2003",
+    path: ["years"],
+  });
 
 export default function SignInForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -132,7 +138,6 @@ export default function SignInForm() {
       years: values.years,
       email: values.email,
       password: values.password,
-      //validatedPassword: values.validatedPassword,
     })
       .then(() => {
         signIn("credentials", {
@@ -158,6 +163,45 @@ export default function SignInForm() {
           onSubmit={form.handleSubmit((values) => onSubmit(values))}
           className="space-y-8 "
         >
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
+                <FormControl>
+                  <Input placeholder="Mail*" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
+                <FormControl>
+                  <Input placeholder="Contraseña*" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="validatedPassword"
+            render={({ field }) => (
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
+                <FormControl>
+                  <Input placeholder="Repetir contraseña*" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <hr className="w-full position-absolute" />
           <FormField
             control={form.control}
             name="name"
@@ -215,7 +259,7 @@ export default function SignInForm() {
                   Educación Formal* <br></br> (máximo nivel alcanzado)
                 </FormLabel>
                 <Select onValueChange={field.onChange}>
-                  <SelectTrigger className="w-[280px]">
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Elige nivel" />
                   </SelectTrigger>
                   <SelectContent>
@@ -240,7 +284,7 @@ export default function SignInForm() {
                   Sector en donde desarrolla su actividad principal*
                 </FormLabel>
                 <Select onValueChange={field.onChange}>
-                  <SelectTrigger className="w-[280px]">
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Elige sector" />
                   </SelectTrigger>
                   <SelectContent>
@@ -289,7 +333,7 @@ export default function SignInForm() {
             name="years"
             render={({ field }) => (
               <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto text-left">
-                <FormLabel>Años de experiencia en la especialidad*</FormLabel>
+                <FormLabel>Años de inicialización en la especialidad*</FormLabel>
                 <FormControl>
                   <Input placeholder="" {...field} />
                 </FormControl>
@@ -297,47 +341,9 @@ export default function SignInForm() {
               </FormItem>
             )}
           />
-          <hr className="w-full position-absolute" />
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
-                <FormControl>
-                  <Input placeholder="Mail*" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
-                <FormControl>
-                  <Input placeholder="Contraseña*" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="validatedPassword"
-            render={({ field }) => (
-              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
-                <FormControl>
-                  <Input placeholder="Repetir contraseña*" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                    
           <div className="space-y-2 xl:w-[40%] sm:w-[60%] mx-auto text-center">
-            <Button type="submit" disabled={isLoading}>
+            <Button type="submit" disabled={isLoading} className="bg-blue-600 text-white md:mx-10 hover:bg-gray-200 hover:text-blue-600 my-4">
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />

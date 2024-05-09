@@ -6,12 +6,12 @@ export async function getAllEncuestas(userId: string) {
       tecnologias: {
         include: {
           enunciados: {
-            include: { 
+            include: {
               response: {
                 where: {
-                  respondentId: userId
-                }
-              }
+                  respondentId: userId,
+                },
+              },
             },
           },
         },
@@ -60,9 +60,9 @@ export async function getEncuestaInfo() {
       tecnologias: {
         include: {
           enunciados: {
-            select: { 
+            select: {
               slug: true,
-            }          
+            },
           },
         },
         orderBy: {
@@ -132,7 +132,7 @@ export async function getEnunciado({
 
 export async function getAllEnunciados() {
   return await db.enunciados.findMany({
-    include: { 
+    include: {
       response: true,
       questions: true,
     },
@@ -163,5 +163,29 @@ export async function updateEncuesta(surveyId: number, data: any) {
       id: surveyId,
     },
     data,
-  })
+  });
+}
+
+export async function getSlugs() {
+  let index = 0;
+  const response = await db.tecnologias.findMany({
+    select: {
+      slug: true,
+      enunciados: true,
+    },
+    orderBy: {
+      id: "asc",
+    },
+  });
+  
+  return response.reduce((acc: any, item: any) => {
+    item.enunciados.forEach((enunciado: any) => {
+      acc.push({ 
+        index: index++, 
+        tecnologiaSlug: item.slug,
+        enunciadoSlug: enunciado.slug 
+      });
+    });
+    return acc;
+  }, []);
 }

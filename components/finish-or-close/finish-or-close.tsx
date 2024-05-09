@@ -19,7 +19,7 @@ export default async function FinishOrClose() {
         </p>
       </div>
       <div className="flex justify-center gap-5">
-        <Button className="bg-blue-600 text-white md:mx-10 hover:bg-gray-200  my-4">
+        <Button className="bg-blue-600 text-white md:mx-10 hover:bg-gray-200 hover:text-blue-600 my-4">
           Ver más del estudio
         </Button>
       </div>
