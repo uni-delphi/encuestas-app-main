@@ -93,7 +93,13 @@ const formSchema = z
         "La contraseña debe contener al menos una letra mayúscula y un número",
       path: ["password"],
     }
-  );
+  ).refine((values) => {
+    // Verificar si el valor es un año válido (cuatro dígitos)
+    return /^\d{4}$/.test(values.years);
+  }, {
+    message: "Ingrese un año válido en formato 2003",
+    path: ["years"],
+  });
 
 export default function SignInForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -132,7 +138,6 @@ export default function SignInForm() {
       years: values.years,
       email: values.email,
       password: values.password,
-      //validatedPassword: values.validatedPassword,
     })
       .then(() => {
         signIn("credentials", {
@@ -254,7 +259,7 @@ export default function SignInForm() {
                   Educación Formal* <br></br> (máximo nivel alcanzado)
                 </FormLabel>
                 <Select onValueChange={field.onChange}>
-                  <SelectTrigger className="w-[280px]">
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Elige nivel" />
                   </SelectTrigger>
                   <SelectContent>
@@ -279,7 +284,7 @@ export default function SignInForm() {
                   Sector en donde desarrolla su actividad principal*
                 </FormLabel>
                 <Select onValueChange={field.onChange}>
-                  <SelectTrigger className="w-[280px]">
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Elige sector" />
                   </SelectTrigger>
                   <SelectContent>
@@ -328,7 +333,7 @@ export default function SignInForm() {
             name="years"
             render={({ field }) => (
               <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto text-left">
-                <FormLabel>Años de experiencia en la especialidad*</FormLabel>
+                <FormLabel>Años de inicialización en la especialidad*</FormLabel>
                 <FormControl>
                   <Input placeholder="" {...field} />
                 </FormControl>
