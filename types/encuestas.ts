@@ -38,19 +38,19 @@ export interface IENUNCIADO {
   id: number;
   title: string;
   description: string;
-  slug: string | null;
+  slug: string;
   tecnologiaId: number;
   createdAt: Date;
   updatedAt: Date;
   questions: IQUESTION[];
-  responses: IRESPONSES[];
+  response: IRESPONSES[];
 }
 
 export interface IQUESTION {
   id: number;
   text: string;
   type: string;
-  inputType: string | null;
+  inputType: string;
   additionalInfo: string;
   createdAt: Date;
   updatedAt: Date;
@@ -60,16 +60,16 @@ export interface IQUESTION {
 export interface IRESPONSES {
   id: number;
   respondentId: string;
-  questionId: number | null;
+  questionId: number;
   enunciadosId: number;
   answer: string;
-  responseType: string | null;
+  responseType: string;
   singleChoiceId: number | null;
   checkboxId: number | null;
   createdAt: Date;
   updatedAt: Date;
-  singleChoice?: ISINGLECHOICE | null;
-  checkbox?: ICHECKBOX | null;
+  singleChoice: ISINGLECHOICE;
+  checkbox: ICHECKBOX;
 }
 
 export interface ISINGLECHOICE {
