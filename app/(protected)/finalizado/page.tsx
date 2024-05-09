@@ -22,6 +22,7 @@ export default async function Bienvenido() {
         user={session.user}
         title={""}
         session={session as Session}
+        slugs={[]}
       />
       <main>
         <LayoutDefault>

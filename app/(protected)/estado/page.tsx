@@ -39,6 +39,7 @@ export default async function Encuestas() {
         user={session.user}
         title={""}
         session={session as Session}
+        slugs={[]}
       />
       <main className="">
         <LayoutDefault>

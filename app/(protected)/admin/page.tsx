@@ -87,6 +87,7 @@ export default async function Dashboard() {
         user={session.user}
         title={"Dashboard" as string}
         session={session as Session}
+        slugs={[]}
       />
       <main>
         <LayoutDefault>
