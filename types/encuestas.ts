@@ -1,10 +1,24 @@
-export type Encuestas = {
-  id: string;
-  nombre: string | null;
-  descripcion: string | null;
+export interface ISURVEY {
+  id: number;
+  title: string;
+  description: string | null;
+  createdById: string;
+  tecnologias: any[];
+  responseCount: number;
+  createdAt: Date;
+  updatedAt: Date;
+  isActive: boolean;
   hasEnded: boolean;
-  hasStarted: boolean;
+  endDate: Date;
+  createdBy?: ICREATEDBY;
 };
+
+export interface ICREATEDBY {
+    id: string;
+    name: string | null;
+    lastName: string | null;
+    email: string;
+}
 
 export interface IDATATYPE {
   [key: string]: IDATAQUESTION;
@@ -29,6 +43,7 @@ export interface IENUNCIADO {
   createdAt: Date;
   updatedAt: Date;
   questions: IQUESTION[];
+  response: IRESPONSES[];
 }
 
 export interface IQUESTION {
@@ -49,8 +64,8 @@ export interface IRESPONSES {
   enunciadosId: number;
   answer: string;
   responseType: string;
-  singleChoiceId: number;
-  checkboxId: number;
+  singleChoiceId: number | null;
+  checkboxId: number | null;
   createdAt: Date;
   updatedAt: Date;
   singleChoice: ISINGLECHOICE;
@@ -62,7 +77,7 @@ export interface ISINGLECHOICE {
   questionId: number;
   choice: any;
   createdAt: Date;
-  answer: string;
+  answer: string | null;
   responseId: number;
   enunciadosId: number;
 }
@@ -72,7 +87,7 @@ export interface ICHECKBOX {
   questionId: number;
   choices: TCHOICES[];
   createdAt: Date;
-  answer: string;
+  answer: string | null;
   responseId: number;
   enunciadosId: number;
 }

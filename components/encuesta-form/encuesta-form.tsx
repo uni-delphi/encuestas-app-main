@@ -180,6 +180,57 @@ const data: IDATATYPE = {
       },
     ],
   },
+  DIFUSION_2024:{
+    order: "g",
+    answers: [
+      {
+        id: "hasta30",
+        name: "Hasta 30%",
+      },
+      {
+        id: "hasta50",
+        name: "Hasta 50%",
+      },
+      {
+        id: "hasta70",
+        name: "Hasta 70%",
+      }
+    ],
+  },
+  DIFUSION_2027:{
+    order: "h",
+    answers: [
+      {
+        id: "hasta30",
+        name: "Hasta 30%",
+      },
+      {
+        id: "hasta50",
+        name: "Hasta 50%",
+      },
+      {
+        id: "hasta70",
+        name: "Hasta 70%",
+      }
+    ],
+  },
+  DIFUSION_2030:{
+    order: "i",
+    answers: [
+      {
+        id: "hasta30",
+        name: "Hasta 30%",
+      },
+      {
+        id: "hasta50",
+        name: "Hasta 50%",
+      },
+      {
+        id: "hasta70",
+        name: "Hasta 70%",
+      }
+    ],
+  },
 };
 
 export default async function EncuestaForm({
@@ -189,8 +240,16 @@ export default async function EncuestaForm({
   enunciado: IENUNCIADO;
   user: User;
 }) {
-  const singleChoice = await getSampleRespuestasByEnunciado(enunciado.id, user.id, "SINGLE_CHOICE");
-  const checkbox = await getSampleRespuestasByEnunciado(enunciado.id, user.id, "CHECKBOX");
+  const singleChoice = await getSampleRespuestasByEnunciado(
+    enunciado.id,
+    user.id,
+    "SINGLE_CHOICE"
+  );
+  const checkbox = await getSampleRespuestasByEnunciado(
+    enunciado.id,
+    user.id,
+    "CHECKBOX"
+  );
 
   const { questions, ...props } = enunciado;
 
@@ -218,13 +277,7 @@ export default async function EncuestaForm({
             />
           )
         )}
-      <div className="flex justify-center items-center gap-5 p-4">
-        <Link href="/estado" >
-          Ver avance
-        </Link>
-
-        <Button className="bg-blue-600 text-white md:mx-10 hover:bg-gray-200 hover:text-blue-600">Siguiente</Button>
-      </div>
+      
     </>
   );
 }

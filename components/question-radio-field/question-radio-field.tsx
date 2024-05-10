@@ -221,9 +221,7 @@ export default function QuestionRadioField({
                         >
                           {response.singleChoice?.answer}
                         </CarouselItem>
-                      ) : (
-                        ""
-                      )
+                      ) : null
                     )}
                 </CarouselContent>
               </Carousel>

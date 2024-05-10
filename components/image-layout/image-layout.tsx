@@ -6,7 +6,7 @@ export default function LayoutDefault(props: any) {
   const { children } = props;
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:h-screen">
-      <div className="w-full">
+      <div className="w-full p-5">
         <Image
           src={"/eccampus-temporal.jpg"}
           alt="image"
@@ -15,7 +15,7 @@ export default function LayoutDefault(props: any) {
           sizes="(max-width: 768px) 100vw,
               (max-width: 1200px) 50vw,
               33vw"
-          className="lg:h-lvh  w-full md:sticky top-0"
+          className="lg:h-lvh w-full md:sticky top-0 rounded-2xl"
           style={{ objectFit: "cover" }}
         />
       </div>

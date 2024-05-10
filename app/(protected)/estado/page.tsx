@@ -1,136 +1,91 @@
-import Link from "next/link";
-import Image from "next/image";
 import { authOptions } from "@/auth.config";
 import { Session, getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { getAllEncuestas } from "@/lib/actions";
+import {
+  getAllEncuestas,
+  getAllEnunciados,
+  getAllMyResponses,
+} from "@/lib/actions";
 
-import LogosUnc from "@/components/logos-unc/logos-unc";
 import NavBar from "@/components/nav-bar/nav-bar";
-import { calculateRemainingDays } from "@/utils/date-formatter";
+import LayoutDefault from "@/components/image-layout/image-layout";
+import Enunciado from "@/components/enunciado/enunciado";
+import { IENUNCIADO, ISURVEY, IRESPONSES, IQUESTION, ISINGLECHOICE, ICHECKBOX } from "@/types/encuestas";
+
+import { calculateRemainingDays, surveyHasEnded } from "@/utils/date-formatter";
+import { calculateResponsesPercents } from "@/utils/text-helper";
+import { TRESPONSE } from "@/types/respuestas";
 
 export default async function Encuestas() {
   const session: Session | null = await getServerSession(authOptions);
   if (!session || !session.user) redirect("/");
   const { name, lastName } = session.user;
 
-  const encuestas: any = await getAllEncuestas();
-  const { title, tecnologias, endDate, ...props } = encuestas[0] ?? [];
+  const encuestas: ISURVEY[] = await getAllEncuestas(session.user.id);
+  const { title, tecnologias, endDate, hasEnded, isActive, ...props } =
+    encuestas[0] ?? [];
+
+  const responses: any[] = await getAllMyResponses(session.user.id);
+  const enunciados: any[] = await getAllEnunciados();
+  
+  if (surveyHasEnded({ endDate, isActive, hasEnded })) {
+    redirect("/finalizado");
+  }
 
   return (
-    <main className="">
+    <>
       <NavBar
-        tecnologia={{}}
-        title={"Dashboard" as string}
+        encuesta={[]}
+        user={session.user}
+        title={""}
         session={session as Session}
+        slugs={[]}
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 h-screen">
-        <section className="w-full">
-          <Image
-            src={"/eccampus-temporal.jpg"}
-            alt="image"
-            width={200}
-            height={160}
-            sizes="(max-width: 768px) 100vw,
-              (max-width: 1200px) 50vw,
-              33vw"
-            className="lg:h-lvh  w-full hidden md:block md:sticky top-0"
-            style={{ objectFit: "cover" }}
-          />
-        </section>
-        <section
-          style={{
-            marginTop: "8rem",
-          }}
-          className="w-full px-12 text-textColor my-4"
-        >
-          <div>
-            <LogosUnc />
-            <h2 className="font-bold  mt-10 text-2xl ">
-              <span className="block line-clamp-2">
-                Hola {name} {lastName}!
-              </span>
-              <span className="block line-clamp-2">
-                Tu contribución a {title} es del 83%
-              </span>
-            </h2>
-            <div className="max-w-[80%] mt-1">
-              <p className="mb-4">
-                Puedes volver a completar, ampliar o modificar la justifiacion
-                de tus respuestas.
-              </p>
-              <p className="pb-4 mb-4">
-                A continuación te mostraremos el estado de tu encuesta.
-              </p>
-              <p className="pb-4 mb-4">
-                Al estudio le restan { calculateRemainingDays(endDate) } días para finalizar
-              </p>
-            </div>
+      <main className="">
+        <LayoutDefault>
+          <h2 className="font-bold  mt-10 text-2xl ">
+            <span className="block line-clamp-2">
+              Hola {name} {lastName}!
+            </span>
+            <span className="block line-clamp-2">
+              Tu contribución a {title} es del {calculateResponsesPercents(responses.length, enunciados)}%
+            </span>
+          </h2>
+          <div className="mt-4">
+            <p className="mb-4">
+              Puedes volver a completar, ampliar o modificar la justifiacion de
+              tus respuestas.
+            </p>
+            <p className="pb-4 mb-4">
+              A continuación te mostraremos el estado de tu encuesta.
+            </p>
+            <p className="pb-4 mb-4">
+              Al estudio le restan {calculateRemainingDays(endDate)} días para
+              finalizar
+            </p>
           </div>
           <div className="max-w-3xl">
             {tecnologias &&
               tecnologias.map((tecnologia: any, index: number) => (
                 <div key={tecnologia.id} className="my-4">
-                  <h1 className="text-2xl font-bold mb-4">
+                  <h2 className="text-2xl text-left font-bold mb-4">
                     {index + 1}-{tecnologia.title}
-                  </h1>
+                  </h2>
                   <div className="grid">
                     {tecnologia.enunciados &&
-                      tecnologia.enunciados.map((enunciado: any) => (
-                        <div
+                      tecnologia.enunciados.map((enunciado: IENUNCIADO) => (
+                        <Enunciado
                           key={enunciado.id}
-                          className="bg-[#EAEAEA] shadow-md rounded-lg p-4 flex flex-col md:flex-row cols-12 items-center"
-                        >
-                          <p className="text-gray-800 font-semibold py-2 md:py-0 flex-auto w-full md:w-1/3">
-                            Por Empezar
-                          </p>
-                          <p className="text-gray-600 flex-auto py-2 md:py-0 w-full md:w-1/3">
-                            {enunciado.title}
-                          </p>
-                          <div className="flex-auto w-full py-2 md:py-0 md:w-1/3 text-right">
-                            <Link
-                              href={`/${tecnologia.slug}/${enunciado.slug}`}
-                              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                            >
-                              Responder
-                            </Link>
-                          </div>
-                        </div>
+                          tecnologia={tecnologia}
+                          enunciado={enunciado}
+                        />
                       ))}
-                    {/*
-                    <div className="bg-[#CCE8D4] shadow-md rounded-lg p-4 flex items-center">
-                        <p className="text-gray-800 font-semibold flex-auto w-1/3">
-                          Completa
-                        </p>
-                        <p className="text-gray-600 flex-auto w-1/3">
-                          Enunciado 1
-                        </p>
-                        <div className="flex-auto w-1/3 text-center">
-                          <Button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            Editar
-                          </Button>
-                        </div>
-                      </div>
-                    <div className="bg-[#FFFFBF] shadow-md rounded-lg p-4 flex cols-12 items-center">
-                      <p className="text-gray-800 font-semibold flex-auto w-1/3">
-                        Casi Listo
-                      </p>
-                      <p className="text-gray-600 flex-auto w-1/3">
-                        Enunciado 2
-                      </p>
-                      <div className="flex-auto w-1/3 text-center">
-                        <Button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                          Ampliar
-                        </Button>
-                      </div>
-                    </div>
-                    */}
                   </div>
                 </div>
               ))}
           </div>
-        </section>
-      </div>
-    </main>
+        </LayoutDefault>
+      </main>
+    </>
   );
 }

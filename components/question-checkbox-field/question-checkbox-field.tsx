@@ -245,9 +245,7 @@ export default function QuestionCheckboxField({
                         >
                           {response.checkbox?.answer}
                         </CarouselItem>
-                      ) : (
-                        ""
-                      )
+                      ) : null
                     )}
                 </CarouselContent>
               </Carousel>

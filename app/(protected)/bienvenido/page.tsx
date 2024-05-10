@@ -8,12 +8,19 @@ import { redirect } from "next/navigation";
 import CreateEncuestaButton from "@/components/create-encuesta-button/create-encuesta-button";
 import { getAllEncuestasInfo } from "@/lib/actions";
 import LayoutDefault from "@/components/image-layout/image-layout";
+import { surveyHasEnded } from "@/utils/date-formatter";
 
 export default async function Bienvenido() {
   const session: Session | null = await getServerSession(authOptions);
   if (!session || !session.user) redirect("/");
 
   const encuestas: any = await getAllEncuestasInfo();
+  const { hasEnded, endDate, isActive } = encuestas[0];
+  
+  if(surveyHasEnded({ endDate, isActive, hasEnded })) {
+    redirect("/finalizado")
+  }
+  
   const encuestaUrl = `/${encuestas[0]?.tecnologias[0]?.slug}/${encuestas[0]?.tecnologias[0]?.enunciados[0].slug}`;
 
   return (

@@ -15,8 +15,8 @@ export default function GoogleLoginButton() {
 
   return (
     <div className="md:flex-col">
-      <p className="mt-4">Si estas registrado</p>
-      <Button onClick={handleGoogleLogin}>
+      <p className="mt-4 text-sm ">Si estas registrado</p>
+      <Button onClick={handleGoogleLogin} className="bg-blue-600 text-white md:mx-10 hover:bg-gray-200 hover:text-blue-600 my-4">
         {isLoading ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
