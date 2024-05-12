@@ -18,7 +18,7 @@ const nextSlugFinder = (slug: string, encuesta: any[]) => {
   if (nextIndex < encuesta.length) {
     return `/${encuesta[nextIndex].tecnologiaSlug}/${encuesta[nextIndex].enunciadoSlug}`;
   } else {
-    return "/estado";
+    return "/finalizado";
   }
 };
 
