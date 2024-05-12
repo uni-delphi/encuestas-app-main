@@ -48,9 +48,9 @@ export default async function FinishOrClose() {
         >
           Ver mis respuestas
         </Link>
-        <Button className="bg-blue-600 text-white md:mx-10 hover:bg-gray-200  my-4">
+        <Link target="_blank" href={`https://campusnorte.unc.edu.ar/prospectiva-tecnologica-ocupacional/agrobioindustria-alimentaria/`} className="bg-blue-600 text-white md:mx-10 hover:bg-gray-200  my-4">
           Ver más del estudio
-        </Button>
+        </Link>
       </div>
     </>
   );

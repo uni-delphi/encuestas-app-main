@@ -55,7 +55,7 @@ export default function ModalCloseSurvey({ action, open, encuesta }: Props) {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
-    
+
     const endedSurveyResponse = await updateEncuesta(encuesta.id, {
       isActive: false,
     });
@@ -79,19 +79,24 @@ export default function ModalCloseSurvey({ action, open, encuesta }: Props) {
                 <form
                   onSubmit={form.handleSubmit((values) => onSubmit(values))}
                 >
-                  <div className="text-center">
-                    <h3 className="text-md mb-4 p-5">
-                      Detiene el estudio {encuesta.title} completando el
-                      siguiente campo con el nombre del estudio.
+                  <div className="text-center p-5">
+                    <h3 className="text-lg font-bold mb-2">
+                      Estas por finalizar la recepción de respuestas del estudio{" "}
+                      {encuesta.title}. Esta acción es irreversible.
                     </h3>
+                    <p className="text-sm mb-4">
+                      Para detener el estudio escribe "<b>{encuesta.title}</b>" en el
+                      campo debajo y presiona confirmar.
+                    </p>
                     <FormField
                       control={form.control}
                       name="password"
                       render={({ field }) => (
-                        <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
+                        <FormItem className="mx-auto">
                           <FormControl>
                             <Input
-                              placeholder="Contraseña"
+                              className="w-[100%]"
+                              placeholder=""
                               type="password"
                               {...field}
                             />
