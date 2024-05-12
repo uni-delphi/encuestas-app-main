@@ -1,14 +1,11 @@
-import Image from "next/image";
 import { authOptions } from "@/auth.config";
 import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Session } from "next-auth";
-
 import LogInForm from "@/components/login-form/login-form";
 import { Button } from "@/components/ui/button";
 import GoogleLoginButton from "@/components/google-login-button/google-login-button";
-import { useToast } from "@/components/ui/use-toast";
 import LayoutDefault from "@/components/image-layout/image-layout";
 
 export default async function Home({ searchParams }: any) {
