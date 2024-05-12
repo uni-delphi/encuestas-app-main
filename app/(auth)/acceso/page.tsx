@@ -21,8 +21,9 @@ export default async function LogIn() {
   return (
     <main>
       <LayoutDefault>
-        <h2 className="font-bold text-3xl my-4 pb-4">Ingresar</h2>
-        <LogInForm />
+        <h2 className="font-bold text-3xl my-4 pb-4">
+          Es tu primera vez en la plataforma, registrate acá!
+        </h2>
         <div className="md:flex justify-center mt-4">
           <Button className="bg-transparent text-black hover:bg-gray-200">
             Recuperar contraseña
@@ -33,9 +34,10 @@ export default async function LogIn() {
           >
             Registrarme
           </Link>
-          
         </div>
-          <GoogleLoginButton />
+        <h2 className="font-bold text-3xl my-4 pb-4">Ingresar</h2>
+        <LogInForm />
+        <GoogleLoginButton />
       </LayoutDefault>
     </main>
   );

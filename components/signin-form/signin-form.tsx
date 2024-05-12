@@ -35,6 +35,12 @@ import {
 
 type TEducation = "Secundaria" | "Terciario" | "Universitario";
 
+type TSector =
+  | "Pública - gubernamental"
+  | "Privada - empresarial"
+  | "Cientifica - académica"
+  | "Gremial - sindicalia";
+
 const education: TEducation[] = ["Secundaria", "Terciario", "Universitario"];
 
 const sectors: any[] = [
@@ -346,11 +352,9 @@ export default function SignInForm() {
             name="years"
             render={({ field }) => (
               <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto text-left">
-                <FormLabel>
-                  Años de inicialización en la especialidad*
-                </FormLabel>
+                <FormLabel>Años de inicialización en la especialidad*</FormLabel>
                 <FormControl>
-                  <Input placeholder="" {...field} />
+                  <Input placeholder="Ej: 2006" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

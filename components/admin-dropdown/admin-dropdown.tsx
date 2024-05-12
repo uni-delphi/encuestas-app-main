@@ -11,6 +11,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
 
@@ -28,12 +30,18 @@ export default function AdminDropDown({ session }: { session: Session }) {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
+        <DropdownMenuLabel>
+          {session.user.lastName} {session.user.name}
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link
-            href={"/dashboard/configuracion/perfil"}
-            className="font-bold cursor-pointer"
-          >
-            {session.user.lastName} {session.user.name}
+          <Link href={"/estado"} className="font-bold cursor-pointer">
+            Estado
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link href={"/finalizado"} className="font-bold cursor-pointer">
+            Finalizado
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>

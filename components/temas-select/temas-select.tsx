@@ -19,7 +19,13 @@ const FormSchema = z.object({
   slug: z.string(),
 });
 
-export default function TemasSelect({ tecnologias, slugs }: { tecnologias: any, slugs: any[] }){
+export default function TemasSelect({
+  tecnologias,
+  slugs,
+}: {
+  tecnologias: any;
+  slugs: any[];
+}) {
   const router = useRouter();
   const params = useParams<{ slug: any }>();
   const [techSlug, enunciadoSlug] = params.slug;
@@ -30,11 +36,16 @@ export default function TemasSelect({ tecnologias, slugs }: { tecnologias: any, 
 
   const handleChange = (url: any) => router.push(url);
 
-  const index: number = slugs.find((item: any) => item.enunciadoSlug === enunciadoSlug).index;
-  
+  const index: number = slugs.find(
+    (item: any) => item.enunciadoSlug === enunciadoSlug
+  ).index;
+
   return (
     <div className="flex justify-center gap-4 items-center bg-white px-2">
-      <span className="text-xs">{index+1} de {slugs?.length}: ir a</span>
+      <span className="text-xs">
+        {index + 1} de {slugs?.length}: Si este enunciado no es de tu
+        especialidad
+      </span>
       <Form {...form}>
         <form>
           <FormField
@@ -44,16 +55,18 @@ export default function TemasSelect({ tecnologias, slugs }: { tecnologias: any, 
               <FormItem>
                 <Select
                   onValueChange={handleChange}
-                  defaultValue={`/${techSlug}/${enunciadoSlug}`}
+                  //defaultValue={`/${techSlug}/${enunciadoSlug}`}
                 >
                   <SelectTrigger className="my-2 text-small">
-                    <SelectValue placeholder="Elija un enunciado" />
+                    <SelectValue placeholder="Seleccioná otro enunciado" />
                   </SelectTrigger>
                   <SelectContent className="p-2 text-small">
                     {tecnologias &&
                       tecnologias.map((tecnologia: any) => (
                         <SelectGroup key={tecnologia.id}>
-                          <SelectLabel className="text-small">{tecnologia.title}</SelectLabel>
+                          <SelectLabel className="text-small">
+                            {tecnologia.title}
+                          </SelectLabel>
                           {tecnologia.enunciados &&
                             tecnologia.enunciados.map((enunciado: any) => (
                               <SelectItem

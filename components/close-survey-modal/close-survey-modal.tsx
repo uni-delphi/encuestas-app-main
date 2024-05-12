@@ -81,12 +81,10 @@ export default function ModalCloseSurvey({ action, open, encuesta }: Props) {
                 >
                   <div className="text-center p-5">
                     <h3 className="text-lg font-bold mb-2">
-                      Estas por finalizar la recepción de respuestas del estudio{" "}
-                      {encuesta.title}. Esta acción es irreversible.
+                      Estas por finalizar la recepción de respuestas del estudio {encuesta.title}. Esta acción es irreversible.
                     </h3>
                     <p className="text-sm mb-4">
-                      Para detener el estudio escribe "<b>{encuesta.title}</b>" en el
-                      campo debajo y presiona confirmar.
+                      Para detener el estudio escribe <b>{encuesta.title}</b> en el campo debajo y presiona confirmar.
                     </p>
                     <FormField
                       control={form.control}
