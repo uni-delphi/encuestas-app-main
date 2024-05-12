@@ -16,10 +16,10 @@ export default async function SignIn() {
     <div className="grid grid-cols-1 md:grid-cols-2 xl:h-screen">
       <section className="w-full">
         <Image
-          src={"/eccampus-temporal.jpg"}
+          src={"/ecampus.jpg"}
           alt="image"
-          width={200}
-          height={160}
+          width={500}
+          height={360}
           sizes="(max-width: 768px) 100vw,
               (max-width: 1200px) 50vw,
               33vw"
