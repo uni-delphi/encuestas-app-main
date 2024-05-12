@@ -35,15 +35,24 @@ import {
 
 type TEducation = "Secundaria" | "Terciario" | "Universitario";
 
-type TSector = "Pública - gubernamental" | "Privada - empresarial" | "Cientifica - académica" | "Gremial - sindicalia";
-
 const education: TEducation[] = ["Secundaria", "Terciario", "Universitario"];
 
-const sectors: TSector[] = [
-  "Pública - gubernamental",
-  "Privada - empresarial",
-  "Cientifica - académica",
-  "Gremial - sindicalia",
+const sectors: any[] = [
+  "Ingeniero Electricista",
+  "Ingeniero Electrónico",
+  "Ingeniero de Sistemas",
+  "Ingeniero Industrial",
+  "Diseñador industrial",
+  "Mecánico de Sistemas Electrónicos",
+  "Mecánico Electricista",
+  "Mecánico Chapista",
+  "Pintor",
+  "Preparador de Pintura",
+  "Ingeniero Agrónomo, Médico Veterinario y otras profesiones vinculadas",
+  "Ingeniero de Sistemas",
+  "Ingeniero Industrial",
+  "Diseñador industrial",
+  "Gerentes de ventas y comercializadores de las tecnologías",
 ];
 
 const formSchema = z
@@ -93,13 +102,17 @@ const formSchema = z
         "La contraseña debe contener al menos una letra mayúscula y un número",
       path: ["password"],
     }
-  ).refine((values) => {
-    // Verificar si el valor es un año válido (cuatro dígitos)
-    return /^\d{4}$/.test(values.years);
-  }, {
-    message: "Ingrese un año válido en formato 2003",
-    path: ["years"],
-  });
+  )
+  .refine(
+    (values) => {
+      // Verificar si el valor es un año válido (cuatro dígitos)
+      return /^\d{4}$/.test(values.years);
+    },
+    {
+      message: "Ingrese un año válido en formato 2003",
+      path: ["years"],
+    }
+  );
 
 export default function SignInForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -161,7 +174,7 @@ export default function SignInForm() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit((values) => onSubmit(values))}
-          className="space-y-8 "
+          className="space-y-8 text-left"
         >
           <FormField
             control={form.control}
@@ -289,7 +302,7 @@ export default function SignInForm() {
                   </SelectTrigger>
                   <SelectContent>
                     {sectors &&
-                      sectors.map((edu: TSector, index: number) => (
+                      sectors.map((edu: any, index: number) => (
                         <SelectGroup key={index}>
                           <SelectItem value={edu}>{edu}</SelectItem>
                         </SelectGroup>
@@ -333,7 +346,9 @@ export default function SignInForm() {
             name="years"
             render={({ field }) => (
               <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto text-left">
-                <FormLabel>Años de inicialización en la especialidad*</FormLabel>
+                <FormLabel>
+                  Años de inicialización en la especialidad*
+                </FormLabel>
                 <FormControl>
                   <Input placeholder="" {...field} />
                 </FormControl>
@@ -341,9 +356,13 @@ export default function SignInForm() {
               </FormItem>
             )}
           />
-                    
+
           <div className="space-y-2 xl:w-[40%] sm:w-[60%] mx-auto text-center">
-            <Button type="submit" disabled={isLoading} className="bg-blue-600 text-white md:mx-10 hover:bg-gray-200 hover:text-blue-600 my-4">
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="bg-blue-600 text-white md:mx-10 hover:bg-gray-200 hover:text-blue-600 my-4"
+            >
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
