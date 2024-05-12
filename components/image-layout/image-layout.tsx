@@ -8,7 +8,7 @@ export default function LayoutDefault(props: any) {
     <div className="grid grid-cols-1 md:grid-cols-2 xl:h-screen">
       <div className="w-full p-5">
         <Image
-          src={"/eccampus-temporal.jpg"}
+          src={"/ecampus.jpg"}
           alt="image"
           width={200}
           height={160}
