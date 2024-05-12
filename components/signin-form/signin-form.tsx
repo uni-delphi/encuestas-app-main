@@ -35,19 +35,24 @@ import {
 
 type TEducation = "Secundaria" | "Terciario" | "Universitario";
 
-type TSector =
-  | "Pública - gubernamental"
-  | "Privada - empresarial"
-  | "Cientifica - académica"
-  | "Gremial - sindicalia";
-
 const education: TEducation[] = ["Secundaria", "Terciario", "Universitario"];
 
-const sectors: TSector[] = [
-  "Pública - gubernamental",
-  "Privada - empresarial",
-  "Cientifica - académica",
-  "Gremial - sindicalia",
+const sectors: any[] = [
+  "Ingeniero Electricista",
+  "Ingeniero Electrónico",
+  "Ingeniero de Sistemas",
+  "Ingeniero Industrial",
+  "Diseñador industrial",
+  "Mecánico de Sistemas Electrónicos",
+  "Mecánico Electricista",
+  "Mecánico Chapista",
+  "Pintor",
+  "Preparador de Pintura",
+  "Ingeniero Agrónomo, Médico Veterinario y otras profesiones vinculadas",
+  "Ingeniero de Sistemas",
+  "Ingeniero Industrial",
+  "Diseñador industrial",
+  "Gerentes de ventas y comercializadores de las tecnologías",
 ];
 
 const formSchema = z
@@ -169,7 +174,7 @@ export default function SignInForm() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit((values) => onSubmit(values))}
-          className="space-y-8 "
+          className="space-y-8 text-left"
         >
           <FormField
             control={form.control}
@@ -297,7 +302,7 @@ export default function SignInForm() {
                   </SelectTrigger>
                   <SelectContent>
                     {sectors &&
-                      sectors.map((edu: TSector, index: number) => (
+                      sectors.map((edu: any, index: number) => (
                         <SelectGroup key={index}>
                           <SelectItem value={edu}>{edu}</SelectItem>
                         </SelectGroup>
@@ -341,7 +346,9 @@ export default function SignInForm() {
             name="years"
             render={({ field }) => (
               <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto text-left">
-                <FormLabel>Año en que iniciaste en la especialidad*</FormLabel>
+                <FormLabel>
+                  Años de inicialización en la especialidad*
+                </FormLabel>
                 <FormControl>
                   <Input placeholder="Ej: 2006" {...field} />
                 </FormControl>
