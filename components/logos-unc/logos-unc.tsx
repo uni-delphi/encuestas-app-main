@@ -2,7 +2,7 @@ import Image from "next/image";
 
 const LogosUnc = () => {
   return (
-    <div className="mx-auto md:w-[550px]">
+    <div className="mx-auto">
       <Image
         src={"/logos-unc.png"}
         alt="image"
@@ -13,7 +13,7 @@ const LogosUnc = () => {
           width: "auto",
           objectFit: "cover",
           margin: "0 auto",
-          maxWidth: "350px",
+          maxWidth: "300px",
         }}
       />
     </div>

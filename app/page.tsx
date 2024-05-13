@@ -24,7 +24,7 @@ export default async function Home({ searchParams }: any) {
   return (
     <main>
       <LayoutDefault>
-        <h2 className="font-bold text-3xl my-4 pb-4">
+        <h2 className="font-bold text-2xl my-4 pb-4">
           Es tu primera vez en la plataforma, registrate acá!
         </h2>
         <div className="md:flex justify-center mt-4">
@@ -38,9 +38,9 @@ export default async function Home({ searchParams }: any) {
             Registrarme
           </Link>
         </div>
-        <h2 className="font-bold text-3xl my-4 pb-4">Ingresar</h2>
+        <h2 className="font-bold text-2xl my-4 pb-4">Ingresar</h2>
         <LogInForm />
-        <GoogleLoginButton />
+        
       </LayoutDefault>
     </main>
   );
