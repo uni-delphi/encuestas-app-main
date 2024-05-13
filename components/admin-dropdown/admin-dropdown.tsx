@@ -33,7 +33,7 @@ export default function AdminDropDown({
           }`}
         >
           {/* <AvatarImage alt="@shadcn" src={session.user?.image as string} /> */}
-          <AvatarFallback className="text-blue-700">
+          <AvatarFallback className="text-blue-600">
             <Image src={"/menu.svg"} alt="image" width={15} height={15} />
           </AvatarFallback>
 
@@ -43,17 +43,21 @@ export default function AdminDropDown({
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>¡Hola {session.user.name}!</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link href={"/estado"} className="cursor-pointer">
-            Estado
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link href={"/finalizado"} className="cursor-pointer">
-            Finalizado
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
+        {session.user.role === "USER" ? (
+          <>
+            <DropdownMenuItem>
+              <Link href={"/estado"} className="cursor-pointer">
+                Estado
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link href={"/finalizado"} className="cursor-pointer">
+                Finalizado
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+          </>
+        ) : null}
         <Button
           onClick={() =>
             signOut({
