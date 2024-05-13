@@ -30,7 +30,7 @@ export default async function SignIn() {
       <section className="w-full px-12 text-textColor my-4 text-center">
         <div>
           <LogosUnc />
-          <h2 className="font-bold text-3xl my-4 pb-4">
+          <h2 className="font-bold text-2xl my-4 pb-4">
             ¿Primera vez en la plataforma?
           </h2>
           <p className="pb-4 mb-4">
