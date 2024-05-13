@@ -72,13 +72,13 @@ export default function LogInForm() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit((values) => onSubmit(values))}
-          className="space-y-8 w-[100%]"
+          className="space-y-4 w-[100%]"
         >
           <FormField
             control={form.control}
             name="email"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
                 <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input placeholder="" {...field} />
@@ -92,7 +92,7 @@ export default function LogInForm() {
             control={form.control}
             name="password"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
                 <FormLabel>Contraseña</FormLabel>
                 <FormControl>
                   <Input placeholder="" type="password" {...field} />
@@ -101,8 +101,8 @@ export default function LogInForm() {
               </FormItem>
             )}
           />
-          <div className="flex justify-center gap-4">
-            <Button type="submit" disabled={isLoading} className="bg-blue-600 text-white md:mx-10 hover:bg-gray-200 hover:text-blue-600 my-4">
+          <div className="flex items-end justify-center gap-4">
+            <Button type="submit" disabled={isLoading} className="bg-blue-600 text-white hover:bg-gray-200 hover:text-blue-600 ">
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -112,6 +112,7 @@ export default function LogInForm() {
                 "Ingresar"
               )}
             </Button>
+            <GoogleLoginButton />
           </div>
         </form>
       </Form>

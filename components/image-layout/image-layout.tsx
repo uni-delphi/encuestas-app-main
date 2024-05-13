@@ -6,12 +6,12 @@ export default function LayoutDefault(props: any) {
   const { children } = props;
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:h-screen">
-      <div className="w-full p-5">
+      <div className="w-full p-10">
         <Image
           src={"/ecampus.jpg"}
           alt="image"
-          width={200}
-          height={160}
+          width={1800}
+          height={1013}
           sizes="(max-width: 768px) 100vw,
               (max-width: 1200px) 50vw,
               33vw"

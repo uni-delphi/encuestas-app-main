@@ -43,11 +43,22 @@ type TSector =
 
 const education: TEducation[] = ["Secundaria", "Terciario", "Universitario"];
 
-const sectors: TSector[] = [
-  "Pública - gubernamental",
-  "Privada - empresarial",
-  "Cientifica - académica",
-  "Gremial - sindicalia",
+const sectors: any[] = [
+  "Ingeniero Electricista",
+  "Ingeniero Electrónico",
+  "Ingeniero de Sistemas",
+  "Ingeniero Industrial",
+  "Diseñador industrial",
+  "Mecánico de Sistemas Electrónicos",
+  "Mecánico Electricista",
+  "Mecánico Chapista",
+  "Pintor",
+  "Preparador de Pintura",
+  "Ingeniero Agrónomo, Médico Veterinario y otras profesiones vinculadas",
+  "Ingeniero de Sistemas",
+  "Ingeniero Industrial",
+  "Diseñador industrial",
+  "Gerentes de ventas y comercializadores de las tecnologías",
 ];
 
 const formSchema = z
@@ -169,7 +180,7 @@ export default function SignInForm() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit((values) => onSubmit(values))}
-          className="space-y-8 "
+          className="space-y-8 text-left"
         >
           <FormField
             control={form.control}
@@ -297,7 +308,7 @@ export default function SignInForm() {
                   </SelectTrigger>
                   <SelectContent>
                     {sectors &&
-                      sectors.map((edu: TSector, index: number) => (
+                      sectors.map((edu: any, index: number) => (
                         <SelectGroup key={index}>
                           <SelectItem value={edu}>{edu}</SelectItem>
                         </SelectGroup>
@@ -341,7 +352,9 @@ export default function SignInForm() {
             name="years"
             render={({ field }) => (
               <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto text-left">
-                <FormLabel>Año en que iniciaste en la especialidad*</FormLabel>
+                <FormLabel>
+                  Años de inicialización en la especialidad*
+                </FormLabel>
                 <FormControl>
                   <Input placeholder="Ej: 2006" {...field} />
                 </FormControl>
@@ -350,11 +363,11 @@ export default function SignInForm() {
             )}
           />
 
-          <div className="space-y-2 xl:w-[40%] sm:w-[60%] mx-auto text-center">
+          <div className="gap-4 xl:w-[40%] sm:w-[60%] mx-auto flex items-center">
             <Button
               type="submit"
               disabled={isLoading}
-              className="bg-blue-600 text-white md:mx-10 hover:bg-gray-200 hover:text-blue-600 my-4"
+              className="bg-blue-600 text-white hover:bg-gray-200 hover:text-blue-600"
             >
               {isLoading ? (
                 <>
@@ -365,6 +378,12 @@ export default function SignInForm() {
                 "Confirmar mail"
               )}
             </Button>
+            <Link
+              href={"/"}
+              className="text-blue-600 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-white hover:bg-gray-200 border my-4"
+              >
+              Ingresar
+            </Link>
           </div>
         </form>
       </Form>
