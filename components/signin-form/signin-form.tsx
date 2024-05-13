@@ -357,11 +357,11 @@ export default function SignInForm() {
             )}
           />
 
-          <div className="space-y-2 xl:w-[40%] sm:w-[60%] mx-auto text-center">
+          <div className="gap-4 xl:w-[40%] sm:w-[60%] mx-auto flex items-center">
             <Button
               type="submit"
               disabled={isLoading}
-              className="bg-blue-600 text-white md:mx-10 hover:bg-gray-200 hover:text-blue-600 my-4"
+              className="bg-blue-600 text-white hover:bg-gray-200 hover:text-blue-600"
             >
               {isLoading ? (
                 <>
@@ -372,6 +372,12 @@ export default function SignInForm() {
                 "Confirmar mail"
               )}
             </Button>
+            <Link
+              href={"/"}
+              className="text-blue-600 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-white hover:bg-gray-200 border my-4"
+              >
+              Ingresar
+            </Link>
           </div>
         </form>
       </Form>

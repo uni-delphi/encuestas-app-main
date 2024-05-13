@@ -30,7 +30,7 @@ export default async function Home({ searchParams }: any) {
           </Button>
           <Link
             href={"/registro"}
-            className="bg-transparent text-black hover:text-blue-600 hover:bg-gray-200 font-bold py-2 px-4 rounded"
+            className="bg-transparent text-blue-600 border hover:bg-gray-200 text-sm font-semibold py-2 px-4 rounded"
           >
             Registrarme
           </Link>
