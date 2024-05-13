@@ -15,23 +15,37 @@ import {
   DropdownMenuSeparator,
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
+import Image from "next/image";
 
-export default function AdminDropDown({ session }: { session: Session }) {
+export default function AdminDropDown({
+  session,
+  title,
+}: {
+  session: Session;
+  title: string;
+}) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="relative" asChild>
-        <Avatar className="h-9 w-9 ml-4 cursor-pointer relative">
+        <Avatar
+          className={`h-9 w-9 ml-4 cursor-pointer ${
+            title && "fixed top-16 right-2"
+          }`}
+        >
           {/* <AvatarImage alt="@shadcn" src={session.user?.image as string} /> */}
           <AvatarFallback className="text-blue-700">
-            {session.user?.name?.charAt(0)}
+            <Image src={"/menu.svg"} alt="image" width={15} height={15} />
           </AvatarFallback>
 
           <span className="sr-only">Desplegar menú de usuario</span>
         </Avatar>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" className="pt-8">
+        <Button className="bg-white absolute right-0 top-1">
+          <Image src={"/x.svg"} alt="image" width={20} height={20} />
+        </Button>
         <DropdownMenuLabel>
-          {session.user.lastName} {session.user.name}
+          ¡Hola {session.user.lastName} {session.user.name}!
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
