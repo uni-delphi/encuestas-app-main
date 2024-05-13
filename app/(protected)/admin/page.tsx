@@ -85,7 +85,7 @@ export default async function Dashboard() {
       <NavBar
         encuesta={[]}
         user={session.user}
-        title={"Dashboard" as string}
+        title={""}
         session={session as Session}
         slugs={[]}
       />
