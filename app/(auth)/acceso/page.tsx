@@ -1,7 +1,6 @@
 import React from "react";
 
 import Link from "next/link";
-import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 import LogInForm from "@/components/login-form/login-form";
@@ -21,21 +20,25 @@ export default async function LogIn() {
   return (
     <main>
       <LayoutDefault>
-        <h2 className="font-bold text-3xl my-4 pb-4">Ingresar</h2>
-        <LogInForm />
-        <div className="md:flex justify-center mt-4">
-          <Button className="bg-transparent text-black hover:bg-gray-200">
+        <h2 className="font-bold text-2xl mt-10 pb-4 w-[80%] mx-auto">
+          Es tu primera vez en la plataforma, registrate acá!
+        </h2>
+        <div className="md:flex justify-center my-4 gap-4">
+          <Button className="hidden bg-transparent text-black hover:bg-gray-200">
             Recuperar contraseña
           </Button>
           <Link
             href={"/registro"}
-            className="bg-transparent text-black hover:bg-gray-200 font-bold py-2 px-4 rounded"
+            className="bg-transparent text-black hover:text-blue-600 hover:bg-gray-200 font-bold py-2 px-4 rounded"
           >
             Registrarme
           </Link>
-          
         </div>
-          <GoogleLoginButton />
+        <hr className="w-full position-absolute" />
+        <div className="mt-10">
+          <h2 className="font-bold text-2xl my-4 pb-4">Ingresar</h2>
+          <LogInForm />
+        </div>
       </LayoutDefault>
     </main>
   );

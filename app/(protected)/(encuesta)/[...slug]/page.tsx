@@ -53,9 +53,9 @@ export default async function Encuestas({
     dataUserId: session?.user.id,
     dataEnunciadoId: enunciadoElegido?.id ?? emptyEnunciadoId,
   });
-  
+
   return (
-    <main className="">
+    <main className="relative">
       <NavBar
         encuesta={encuestas}
         title={techElegida?.title as string}
@@ -100,7 +100,11 @@ export default async function Encuestas({
             user={user as User}
           />
         </Suspense>
-        <RedirectButtons encuesta={slugs} techActual={techSlug} enunActual={enunciadoSlug}/>
+        <RedirectButtons
+          encuesta={slugs}
+          techActual={techSlug}
+          enunActual={enunciadoSlug}
+        />
       </div>
     </main>
   );

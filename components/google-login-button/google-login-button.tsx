@@ -8,15 +8,19 @@ import { Loader2 } from "lucide-react";
 export default function GoogleLoginButton() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const handleGoogleLogin = async () => {
+  const handleGoogleLogin = async (e: any) => {
+    e.preventDefault();
     setIsLoading(true);
     await signIn("google");
   };
 
   return (
     <div className="md:flex-col">
-      <p className="mt-4 text-sm ">Si estas registrado</p>
-      <Button onClick={handleGoogleLogin} className="bg-blue-600 text-white md:mx-10 hover:bg-gray-200 hover:text-blue-600 my-4">
+      <p className="mt-4 text-sm mb-2">Si estas registrado</p>
+      <Button
+        onClick={handleGoogleLogin}
+        className="bg-white text-blue-600 hover:bg-gray-200 border"
+      >
         {isLoading ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -26,7 +30,6 @@ export default function GoogleLoginButton() {
           "Ingresar con Google"
         )}
       </Button>
-      
     </div>
   );
 }

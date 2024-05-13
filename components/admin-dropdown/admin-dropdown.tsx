@@ -11,44 +11,64 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
+import Image from "next/image";
 
-export default function AdminDropDown({ session }: { session: Session }) {
+export default function AdminDropDown({
+  session,
+  title,
+}: {
+  session: Session;
+  title: string;
+}) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="relative" asChild>
-        <Avatar className="h-9 w-9 ml-4 cursor-pointer relative">
+        <Avatar
+          className={`h-9 w-9 ml-4 cursor-pointer ${
+            title && "fixed top-16 right-2"
+          }`}
+        >
           {/* <AvatarImage alt="@shadcn" src={session.user?.image as string} /> */}
-          <AvatarFallback className="text-blue-700">
-            {session.user?.name?.charAt(0)}
+          <AvatarFallback className="text-blue-600">
+            <Image src={"/menu.svg"} alt="image" width={15} height={15} />
           </AvatarFallback>
 
           <span className="sr-only">Desplegar menú de usuario</span>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem asChild>
-          <Link
-            href={"/dashboard/configuracion/perfil"}
-            className="font-bold cursor-pointer"
-          >
-            {session.user.lastName} {session.user.name}
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Button
-            onClick={() =>
-              signOut({
-                redirect: true,
-                callbackUrl: "/",
-              })
-            }
-            className="cursor-pointer"
-          >
-            Cerrar sesión
-          </Button>
-        </DropdownMenuItem>
+        <DropdownMenuLabel>¡Hola {session.user.name}!</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        {session.user.role === "USER" ? (
+          <>
+            <DropdownMenuItem>
+              <Link href={"/estado"} className="cursor-pointer">
+                Estado
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link href={"/finalizado"} className="cursor-pointer">
+                Finalizado
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+          </>
+        ) : null}
+        <Button
+          onClick={() =>
+            signOut({
+              redirect: true,
+              callbackUrl: "/",
+            })
+          }
+          className="bg-blue-600 text-white hover:bg-gray-200 hover:text-blue-600"
+        >
+          Cerrar sesión
+        </Button>
       </DropdownMenuContent>
     </DropdownMenu>
   );
