@@ -13,7 +13,7 @@ const LogosUnc = () => {
           width: "auto",
           objectFit: "cover",
           margin: "0 auto",
-          maxWidth: "300px",
+          maxWidth: "400px",
         }}
       />
     </div>
