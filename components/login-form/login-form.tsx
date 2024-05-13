@@ -72,7 +72,7 @@ export default function LogInForm() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit((values) => onSubmit(values))}
-          className="space-y-8 w-[100%]"
+          className="space-y-4 w-[100%]"
         >
           <FormField
             control={form.control}
