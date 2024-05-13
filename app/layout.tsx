@@ -10,7 +10,7 @@ import { Toaster } from "@/components/ui/toaster";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Campus Norte UNC",
+  title: "Entrevistas Delphi - Campus Norte UNC",
   description: "Estudios e investigaciones.",
 };
 
