@@ -6,7 +6,7 @@ export default function LayoutDefault(props: any) {
   const { children } = props;
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:h-screen">
-      <div className="w-full p-5">
+      <div className="w-full p-10">
         <Image
           src={"/ecampus.jpg"}
           alt="image"

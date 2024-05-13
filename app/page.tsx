@@ -21,23 +21,25 @@ export default async function Home({ searchParams }: any) {
   return (
     <main>
       <LayoutDefault>
-        <h2 className="font-bold text-2xl my-4 pb-4">
+        <h2 className="font-bold text-2xl mt-10 pb-4 w-[80%] mx-auto">
           Es tu primera vez en la plataforma, registrate acá!
         </h2>
-        <div className="md:flex justify-center mt-4">
-          <Button className="bg-transparent text-black hover:bg-gray-200">
+        <div className="md:flex justify-center my-4 gap-4">
+          <Button className="hidden bg-transparent text-black hover:bg-gray-200">
             Recuperar contraseña
           </Button>
           <Link
             href={"/registro"}
-            className="bg-transparent text-black hover:bg-gray-200 font-bold py-2 px-4 rounded"
+            className="bg-transparent text-black hover:text-blue-600 hover:bg-gray-200 font-bold py-2 px-4 rounded"
           >
             Registrarme
           </Link>
         </div>
-        <h2 className="font-bold text-2xl my-4 pb-4">Ingresar</h2>
-        <LogInForm />
-        
+        <hr className="w-full position-absolute" />
+        <div className="mt-10">
+          <h2 className="font-bold text-2xl my-4 pb-4">Ingresar</h2>
+          <LogInForm />
+        </div>
       </LayoutDefault>
     </main>
   );
