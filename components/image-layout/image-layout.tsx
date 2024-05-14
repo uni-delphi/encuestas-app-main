@@ -12,9 +12,6 @@ export default function LayoutDefault(props: any) {
           alt="image"
           width={1800}
           height={1013}
-          sizes="(max-width: 768px) 100vw,
-              (max-width: 1200px) 50vw,
-              33vw"
           className="lg:h-lvh w-full md:sticky top-0 rounded-2xl"
           style={{ objectFit: "cover" }}
         />
