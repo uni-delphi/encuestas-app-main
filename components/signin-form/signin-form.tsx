@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,6 +8,7 @@ import { createUser } from "@/lib/actions";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -32,33 +33,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { Checkbox } from "../ui/checkbox";
 
-type TEducation = "Secundaria" | "Terciario" | "Universitario";
+const education: string[] = ["Secundaria", "Terciario", "Universitario"];
 
-type TSector =
-  | "Pública - gubernamental"
-  | "Privada - empresarial"
-  | "Cientifica - académica"
-  | "Gremial - sindicalia";
-
-const education: TEducation[] = ["Secundaria", "Terciario", "Universitario"];
-
-const sectors: any[] = [
+const sectors: string[] = [
   "Ingeniero Electricista",
   "Ingeniero Electrónico",
   "Ingeniero de Sistemas",
   "Ingeniero Industrial",
-  "Diseñador industrial",
+  "Diseñador Industrial",
+  "Ingeniero Agrónomo",
   "Mecánico de Sistemas Electrónicos",
   "Mecánico Electricista",
   "Mecánico Chapista",
   "Pintor",
   "Preparador de Pintura",
-  "Ingeniero Agrónomo, Médico Veterinario y otras profesiones vinculadas",
-  "Ingeniero de Sistemas",
-  "Ingeniero Industrial",
-  "Diseñador industrial",
-  "Gerentes de ventas y comercializadores de las tecnologías",
+  "Médico Veterinario",
+  "Gerentes de ventas",
+  "Comercializadores de tecnologías",
 ];
 
 const formSchema = z
@@ -74,9 +67,9 @@ const formSchema = z
     education: z.string().min(1, {
       message: "Este campo es requerido",
     }),
-    sector: z.string().min(1, {
-      message: "Este campo es requerido",
-    }),
+    sector: z.string(),
+    otherSector: z.boolean(),
+    otherSectorText: z.string(),
     institution: z.string().min(1, {
       message: "Este campo es requerido",
     }),
@@ -94,6 +87,24 @@ const formSchema = z
       message: "Este campo es requerido",
     }),
   })
+  .refine(
+    (values) => {
+      return values.otherSector === true || values.sector !== "";
+    },
+    {
+      message: "Este campo es requerido",
+      path: ["sector"],
+    }
+  )
+  .refine(
+    (values) => {
+      return !values.otherSector || values.otherSectorText !== "";
+    },
+    {
+      message: "Este campo es requerido",
+      path: ["otherSectorText"],
+    }
+  )
   .refine((values) => values.password === values.validatedPassword, {
     message: "Confirme el password",
     path: ["validatedPassword"],
@@ -123,6 +134,10 @@ const formSchema = z
 export default function SignInForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { toast } = useToast();
+  const [isOtherCheckboxDisabled, setIsOtherCheckboxDisabled] =
+    useState<boolean>(false);
+  const [isOtherSectorSelected, setIsOtherSectorSelected] =
+    useState<boolean>(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -133,6 +148,8 @@ export default function SignInForm() {
       state: "",
       education: "",
       sector: "",
+      otherSector: false,
+      otherSectorText: "",
       institution: "",
       expertees: "",
       years: "",
@@ -141,6 +158,15 @@ export default function SignInForm() {
       validatedPassword: "",
     },
   });
+
+  const handleOtherChecked = (value: boolean) => {
+    setIsOtherCheckboxDisabled(value);
+    form.setValue("otherSector", value);
+    setIsOtherSectorSelected(value);
+    if (value) {
+      form.setValue("sector", ""); // Reiniciar el valor del sector
+    }
+  };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
@@ -151,7 +177,7 @@ export default function SignInForm() {
       country: values.country,
       state: values.state,
       education: values.education,
-      sector: values.sector,
+      sector: values.otherSector ? values.otherSectorText : values.sector,
       institution: values.institution,
       expertees: values.expertees,
       years: values.years,
@@ -283,13 +309,14 @@ export default function SignInForm() {
                   </SelectTrigger>
                   <SelectContent>
                     {education &&
-                      education.map((edu: TEducation, index: number) => (
+                      education.map((edu: string, index: number) => (
                         <SelectGroup key={index}>
                           <SelectItem value={edu}>{edu}</SelectItem>
                         </SelectGroup>
                       ))}
                   </SelectContent>
                 </Select>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -303,21 +330,63 @@ export default function SignInForm() {
                   Sector en donde desarrolla su actividad principal*
                 </FormLabel>
                 <Select onValueChange={field.onChange}>
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger
+                    className="w-full"
+                    disabled={isOtherSectorSelected}
+                  >
                     <SelectValue placeholder="Elige sector" />
                   </SelectTrigger>
                   <SelectContent>
                     {sectors &&
-                      sectors.map((edu: any, index: number) => (
+                      sectors.map((edu: string, index: number) => (
                         <SelectGroup key={index}>
                           <SelectItem value={edu}>{edu}</SelectItem>
                         </SelectGroup>
                       ))}
                   </SelectContent>
                 </Select>
+                <FormMessage />
               </FormItem>
             )}
           />
+
+          <div className="flex items-center xl:w-[40%] sm:w-[60%] mx-auto text-left">
+            <FormField
+              control={form.control}
+              name="otherSector"
+              render={({ field }) => (
+                <FormItem className="text-left pr-4">
+                  <FormControl>
+                    <div className="flex items-center ">
+                      <Checkbox
+                        checked={isOtherCheckboxDisabled}
+                        onCheckedChange={handleOtherChecked}
+                        className="mr-2"
+                      />
+                      <FormLabel className="text-xs">Otro sector</FormLabel>
+                    </div>
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="otherSectorText"
+              render={({ field }) => (
+                <FormItem className="text-left">
+                  <FormControl>
+                    <Input
+                      placeholder=""
+                      {...field}
+                      disabled={!isOtherCheckboxDisabled}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
           <FormField
             control={form.control}
@@ -363,7 +432,7 @@ export default function SignInForm() {
             )}
           />
 
-          <div className="gap-4 xl:w-[40%] sm:w-[60%] mx-auto flex items-center">
+          <div className="gap-4 xl:w-[40%] sm:w-[60%] mx-auto flex items-center justify-center">
             <Button
               type="submit"
               disabled={isLoading}
@@ -375,14 +444,14 @@ export default function SignInForm() {
                   Cargando...
                 </>
               ) : (
-                "Confirmar mail"
+                "Registrar"
               )}
             </Button>
             <Link
               href={"/"}
               className="text-blue-600 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-white hover:bg-gray-200 border my-4"
-              >
-              Ingresar
+            >
+              Acceso
             </Link>
           </div>
         </form>

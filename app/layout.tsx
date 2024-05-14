@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 
 import "./global.scss";
@@ -11,7 +11,15 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Delphi - Campus Norte UNC",
-  description: "Herramienta desarrollada por Campus Norte UNC que utiliza el modelo SENAI de Prospectiva Ocupacional para anticipar los efectos de tecnologías emergentes en el trabajo y la formación.",
+  description:
+    "Herramienta desarrollada por Campus Norte UNC que utiliza el modelo SENAI de Prospectiva Ocupacional para anticipar los efectos de tecnologías emergentes en el trabajo y la formación.",
+};
+
+export const viewport: Viewport = {
+  initialScale: 1,
+  width: 'device-width',
+  maximumScale: 1,
+  viewportFit: 'cover',
 };
 
 export default async function RootLayout({
@@ -23,9 +31,17 @@ export default async function RootLayout({
 
   return (
     <html lang="es">
+      <head>
+        <title>Delphi - Campus Norte UNC</title>
+        <meta
+          name="description"
+          content="Herramienta desarrollada por Campus Norte UNC que utiliza el Modelo SENAI de Prospectiva Ocupacional para anticipar los efectos de tecnologías emergentes en el trabajo y la formación"
+        />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+      </head>
       <body className={inter.className}>
         <SessionProvider session={session}>
-        {/*<NavBar user={user} session={session as Session} />*/}
+          {/*<NavBar user={user} session={session as Session} />*/}
           {children}
         </SessionProvider>
         <Toaster />
