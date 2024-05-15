@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import LogosUnc from "../logos-unc/logos-unc";
+import imageUnc from "/public/ecampus.jpg";
 
 export default function LayoutDefault(props: any) {
   const { children } = props;
@@ -8,7 +9,7 @@ export default function LayoutDefault(props: any) {
     <div className="grid grid-cols-1 md:grid-cols-2 xl:h-screen">
       <div className="w-full">
         <Image
-          src={"/ecampus.jpg"}
+          src={imageUnc}
           alt="image"
           width={1800}
           height={1013}
@@ -18,6 +19,7 @@ export default function LayoutDefault(props: any) {
             border: "35px solid #fff",
             borderRadius: "60px",
           }}
+          priority
         />
       </div>
       <div className="w-full px-6 md:px-12 text-textColor my-4 text-center">
