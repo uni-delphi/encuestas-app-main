@@ -17,5 +17,5 @@ export const surveyHasEnded = ({
   isActive: boolean;
   hasEnded: boolean;
 }): boolean => {
-  return (!isActive || hasEnded) && new Date(endDate) >= new Date();
+  return (!isActive || hasEnded) || (new Date(endDate).getTime() <= new Date().getTime());
 };
