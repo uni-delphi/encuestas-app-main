@@ -144,6 +144,8 @@ export default function QuestionCheckboxField({
     const response = await createResponse(responseData);
   };
 
+  const answersHasTexts = checkboxResponse.some((item: any) => item.checkbox.answer.length > 0);
+
   return (
     <>
       <Form {...form}>
@@ -221,12 +223,12 @@ export default function QuestionCheckboxField({
 
             <div className="flex-auto w-full md:w-1/3 h-100">
               <p className="font-bold">Otros comentarios</p>
-              {checkboxResponse.length === 0 && (
+              {(checkboxResponse.length === 0 || !answersHasTexts) && (
                 <div className="text-center pt-2 italic h-100 select-none">
                   No hay respuestas
                 </div>
               )}
-              {checkboxResponse.length > 0 && (
+              {(checkboxResponse.length > 0 && answersHasTexts) && (
                 <>
                   <Carousel
                     opts={{

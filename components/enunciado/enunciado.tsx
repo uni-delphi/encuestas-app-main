@@ -44,7 +44,7 @@ export default function Enunciado({
   tecnologia: any;
   enunciado: IENUNCIADO;
 }) {
-console.log(enunciado.response?.length)
+  
   return (
     <div
       className={`${
