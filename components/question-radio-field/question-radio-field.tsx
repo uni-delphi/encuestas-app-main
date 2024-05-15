@@ -130,6 +130,8 @@ export default function QuestionRadioField({
     const response = await createResponse(responseData);
   };
   
+  const answersHasTexts = singleChoiceResponse.some((item: any) => item.singleChoice.answer.length > 0);
+
   return (
     <>
       <Form {...form}>
@@ -198,36 +200,39 @@ export default function QuestionRadioField({
             </div>
             <div className="flex-auto w-full md:w-1/3">
               <p className="font-bold">Otros comentarios</p>
-              <Carousel
-                opts={{
-                  align: "start",
-                  loop: true,
-                }}
-                setApi={setApi}
-              >
-                <CarouselContent className="text-center h-100 cursor-grab">
-                  {singleChoiceResponse.length === 0 && (
-                    <CarouselItem className="text-justify pt-2">
-                      No hay respuestas
-                    </CarouselItem>
-                  )}
-                  {singleChoiceResponse &&
-                    singleChoiceResponse.map((response: any, index:number) =>
-                      values.id === response.questionId &&
-                      response.singleChoice.answer ? (
-                        <CarouselItem
-                          key={response.singleChoice?.id}
-                          className="text-justify pt-2 italic h-100 select-none"
-                        >
-                          {response.singleChoice?.answer}
-                        </CarouselItem>
-                      ) : null
-                    )}
-                </CarouselContent>
-              </Carousel>
-              <div className="py-2 text-center text-sm text-muted-foreground">
-                Respuesta {current} de {count}
-              </div>
+              {(singleChoiceResponse.length === 0 || !answersHasTexts) && (
+                <div className="text-center pt-2 italic h-100 select-none">No hay respuestas</div>
+              )}
+              {(singleChoiceResponse.length > 0 && answersHasTexts) && (
+                <>
+                  <Carousel
+                    opts={{
+                      align: "start",
+                      loop: true,
+                    }}
+                    setApi={setApi}
+                  >
+                    <CarouselContent className="text-center h-100 cursor-grab">
+                      {singleChoiceResponse &&
+                        singleChoiceResponse.map(
+                          (response: any, index: number) =>
+                            values.id === response.questionId &&
+                            response.singleChoice.answer.length > 14 ? (
+                              <CarouselItem
+                                key={response.singleChoice?.id}
+                                className="text-justify pt-2 italic h-100 select-none"
+                              >
+                                {response.singleChoice?.answer}
+                              </CarouselItem>
+                            ) : null
+                        )}
+                    </CarouselContent>
+                  </Carousel>
+                  <div className="py-2 text-center text-sm text-muted-foreground">
+                    Respuesta {current} de {count}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </form>

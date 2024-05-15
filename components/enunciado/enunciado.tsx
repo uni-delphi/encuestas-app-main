@@ -27,6 +27,11 @@ const levelOfCompletion = (responses: number | undefined) => {
       text: "Completa",
       buttonText: "Editar",
     },
+    9: {
+      color: "bg-[#CCE8D4]",
+      text: "Completa",
+      buttonText: "Editar",
+    },
   };
 
   return resp[responses || 0];
@@ -39,7 +44,7 @@ export default function Enunciado({
   tecnologia: any;
   enunciado: IENUNCIADO;
 }) {
-
+  
   return (
     <div
       className={`${
