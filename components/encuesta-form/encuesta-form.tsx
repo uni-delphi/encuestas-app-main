@@ -68,33 +68,8 @@ const data: IDATATYPE = {
       },
     ],
   },
-  DIFUSION: {
-    order: "c",
-    answers: [
-      {
-        id: "12Meses",
-        name: "12 Meses",
-      },
-      {
-        id: "3Años",
-        name: "3 Años",
-      },
-      {
-        id: "5Años",
-        name: "5 Años",
-      },
-      {
-        id: "7Años",
-        name: "7 Años",
-      },
-      {
-        id: "10Años",
-        name: "10 Años",
-      },
-    ],
-  },
   ACELERAN: {
-    order: "d",
+    order: "c",
     answers: [
       {
         id: "social",
@@ -123,7 +98,7 @@ const data: IDATATYPE = {
     ],
   },
   FRENAN: {
-    order: "e",
+    order: "d",
     answers: [
       {
         id: "social",
@@ -152,7 +127,7 @@ const data: IDATATYPE = {
     ],
   },
   IMPACTO: {
-    order: "f",
+    order: "e",
     answers: [
       {
         id: "social",
@@ -181,7 +156,7 @@ const data: IDATATYPE = {
     ],
   },
   DIFUSION_2024:{
-    order: "g",
+    order: "f",
     answers: [
       {
         id: "hasta30",
@@ -198,7 +173,7 @@ const data: IDATATYPE = {
     ],
   },
   DIFUSION_2027:{
-    order: "h",
+    order: "g",
     answers: [
       {
         id: "hasta30",
@@ -215,7 +190,7 @@ const data: IDATATYPE = {
     ],
   },
   DIFUSION_2030:{
-    order: "i",
+    order: "h",
     answers: [
       {
         id: "hasta30",

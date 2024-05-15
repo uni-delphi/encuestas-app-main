@@ -52,7 +52,6 @@ export default function QuestionCheckboxField({
   checkboxResponse: any;
   user: User;
 }) {
-  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -145,6 +144,8 @@ export default function QuestionCheckboxField({
     const response = await createResponse(responseData);
   };
 
+  const answersHasTexts = checkboxResponse.some((item: any) => item.checkbox.answer.length > 0);
+
   return (
     <>
       <Form {...form}>
@@ -222,36 +223,41 @@ export default function QuestionCheckboxField({
 
             <div className="flex-auto w-full md:w-1/3 h-100">
               <p className="font-bold">Otros comentarios</p>
-              <Carousel
-                opts={{
-                  align: "start",
-                  loop: true,
-                }}
-                setApi={setApi}
-                className="h-100"
-              >
-                <CarouselContent className="text-center h-100 cursor-grab">
-                  {checkboxResponse.length === 0 &&  (
-                    <CarouselItem className="text-justify pt-2">
-                      No hay respuestas
-                    </CarouselItem>
-                  )}
-                  {checkboxResponse &&
-                    checkboxResponse.map((response: any, index: number) =>
-                      values.id === response.questionId ? (
-                        <CarouselItem
-                          key={response.checkbox?.id}
-                          className="text-justify pt-2 italic h-100 select-none"
-                        >
-                          {response.checkbox?.answer}
-                        </CarouselItem>
-                      ) : null
-                    )}
-                </CarouselContent>
-              </Carousel>
-              <div className="py-2 text-center text-sm text-muted-foreground">
-                Respuesta {current} de {count}
-              </div>
+              {(checkboxResponse.length === 0 || !answersHasTexts) && (
+                <div className="text-center pt-2 italic h-100 select-none">
+                  No hay respuestas
+                </div>
+              )}
+              {(checkboxResponse.length > 0 && answersHasTexts) && (
+                <>
+                  <Carousel
+                    opts={{
+                      align: "start",
+                      loop: true,
+                    }}
+                    setApi={setApi}
+                    className="h-100"
+                  >
+                    <CarouselContent className="text-center h-100 cursor-grab">
+                      {checkboxResponse &&
+                        checkboxResponse.map((response: any, index: number) =>
+                          values.id === response.questionId &&
+                          response.checkbox.answer.length > 14 ? (
+                            <CarouselItem
+                              key={response.checkbox?.id}
+                              className="text-justify pt-2 italic h-100 select-none"
+                            >
+                              {response.checkbox?.answer}
+                            </CarouselItem>
+                          ) : null
+                        )}
+                    </CarouselContent>
+                  </Carousel>
+                  <div className="py-2 text-center text-sm text-muted-foreground">
+                    Respuesta {current} de {count}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </form>
