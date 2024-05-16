@@ -29,9 +29,9 @@ import { signIn } from "next-auth/react";
 import GoogleLoginButton from "../google-login-button/google-login-button";
 
 const formSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
+  email: z.string().email({ message: "Email inválido" }),
   password: z.string().min(1, {
-    message: "Password is required",
+    message: "La contraseña es requerida",
   }),
 });
 
@@ -102,7 +102,11 @@ export default function LogInForm() {
             )}
           />
           <div className="flex items-end justify-center gap-4">
-            <Button type="submit" disabled={isLoading} className="bg-blue-600 text-white hover:bg-gray-200 hover:text-blue-600 ">
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="bg-blue-600 text-white hover:bg-gray-200 hover:text-blue-600 "
+            >
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />

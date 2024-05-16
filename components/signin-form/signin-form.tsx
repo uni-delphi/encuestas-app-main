@@ -433,6 +433,12 @@ export default function SignInForm() {
           />
 
           <div className="gap-4 xl:w-[40%] sm:w-[60%] mx-auto flex items-center justify-center">
+            <Link
+              href={"/"}
+              className="text-blue-600 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-white hover:bg-gray-200 border my-4"
+            >
+              Volver
+            </Link>
             <Button
               type="submit"
               disabled={isLoading}
@@ -447,12 +453,6 @@ export default function SignInForm() {
                 "Registrar"
               )}
             </Button>
-            <Link
-              href={"/"}
-              className="text-blue-600 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-white hover:bg-gray-200 border my-4"
-            >
-              Acceso
-            </Link>
           </div>
         </form>
       </Form>
