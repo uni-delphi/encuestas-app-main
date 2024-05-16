@@ -13,7 +13,7 @@ export default function LayoutDefault(props: any) {
           alt="image"
           width={1800}
           height={1013}
-          className="lg:h-lvh w-full md:sticky top-0 overflow-hidden"
+          className="lg:h-lvh  md:h-dvh w-full md:sticky top-0 overflow-hidden"
           style={{
             objectFit: "cover",
             border: "35px solid #fff",

@@ -10,7 +10,7 @@ const LogosUnc = () => {
         height={250}
         style={{
           height: "auto",
-          width: "auto",
+          width: "100%",
           objectFit: "cover",
           margin: "0 auto",
           maxWidth: "400px",

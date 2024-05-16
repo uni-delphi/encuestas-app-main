@@ -5,7 +5,6 @@ import Link from "next/link";
 import { Session } from "next-auth";
 import LogInForm from "@/components/login-form/login-form";
 import { Button } from "@/components/ui/button";
-import GoogleLoginButton from "@/components/google-login-button/google-login-button";
 import LayoutDefault from "@/components/image-layout/image-layout";
 
 export default async function Home({ searchParams }: any) {
