@@ -33,7 +33,6 @@ export default async function RootLayout({
     <html lang="es">
       <body className={inter.className}>
         <SessionProvider session={session}>
-          {/*<NavBar user={user} session={session as Session} />*/}
           {children}
         </SessionProvider>
         <Toaster />
