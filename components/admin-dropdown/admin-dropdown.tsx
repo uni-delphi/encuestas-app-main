@@ -34,7 +34,7 @@ export default function AdminDropDown({
         >
           {/* <AvatarImage alt="@shadcn" src={session.user?.image as string} /> */}
           <AvatarFallback className="text-blue-600">
-            <Image src={"/menu.svg"} alt="image" width={15} height={15} />
+            <Image src={"/menu.svg"} alt="hamburger" width={15} height={15} />
           </AvatarFallback>
 
           <span className="sr-only">Desplegar menú de usuario</span>
@@ -46,13 +46,13 @@ export default function AdminDropDown({
         {session.user.role === "USER" ? (
           <>
             <DropdownMenuItem>
-              <Link href={"/estado"} className="cursor-pointer">
+              <Link href={"/estado"} className="cursor-pointer w-[100%]">
                 Estado
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <Link href={"/finalizado"} className="cursor-pointer">
-                Finalizado
+              <Link href={"/finalizado"} className="cursor-pointer w-[100%]">
+                Más del estudio
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
