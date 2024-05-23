@@ -106,7 +106,7 @@ const formSchema = z
     }
   )
   .refine((values) => values.password === values.validatedPassword, {
-    message: "Confirme el password",
+    message: "Las contraseñas deben coincidir",
     path: ["validatedPassword"],
   })
   .refine(
@@ -227,7 +227,7 @@ export default function SignInForm() {
             render={({ field }) => (
               <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
                 <FormControl>
-                  <Input placeholder="Contraseña*" {...field} />
+                  <Input type="password" placeholder="Contraseña*" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -240,7 +240,11 @@ export default function SignInForm() {
             render={({ field }) => (
               <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto">
                 <FormControl>
-                  <Input placeholder="Repetir contraseña*" {...field} />
+                  <Input
+                    type="password"
+                    placeholder="Repetir contraseña*"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -144,7 +144,9 @@ export default function QuestionCheckboxField({
     const response = await createResponse(responseData);
   };
 
-  const answersHasTexts = checkboxResponse.some((item: any) => item.checkbox.answer.length > 0);
+  const answersHasTexts = checkboxResponse.some(
+    (item: any) => item.checkbox.answer.length > 0
+  );
 
   return (
     <>
@@ -158,7 +160,7 @@ export default function QuestionCheckboxField({
                 render={({ field }) => (
                   <FormItem>
                     <div className="mb-4 flex">
-                      <FormLabel className="text-base mr-4 font-bold">
+                      <FormLabel className="text-base mr-4 font-bold text-muted-foreground">
                         {data.order}
                       </FormLabel>
                       <FormDescription className="font-bold w-[80%]">
@@ -228,7 +230,7 @@ export default function QuestionCheckboxField({
                   No hay respuestas
                 </div>
               )}
-              {(checkboxResponse.length > 0 && answersHasTexts) && (
+              {checkboxResponse.length > 0 && answersHasTexts && (
                 <>
                   <Carousel
                     opts={{

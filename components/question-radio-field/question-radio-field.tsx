@@ -129,8 +129,10 @@ export default function QuestionRadioField({
 
     const response = await createResponse(responseData);
   };
-  
-  const answersHasTexts = singleChoiceResponse.some((item: any) => item.singleChoice.answer.length > 0);
+
+  const answersHasTexts = singleChoiceResponse.some(
+    (item: any) => item.singleChoice.answer.length > 0
+  );
 
   return (
     <>
@@ -144,7 +146,7 @@ export default function QuestionRadioField({
                 render={({ field }) => (
                   <FormItem className="space-y-3">
                     <div className="flex">
-                      <FormLabel className="mr-4 font-bold">
+                      <FormLabel className="mr-4 font-bold text-muted-foreground">
                         {data.order}
                       </FormLabel>
                       <FormDescription className="font-bold w-[80%]">
@@ -201,9 +203,11 @@ export default function QuestionRadioField({
             <div className="flex-auto w-full md:w-1/3">
               <p className="font-bold">Otros comentarios</p>
               {(singleChoiceResponse.length === 0 || !answersHasTexts) && (
-                <div className="text-center pt-2 italic h-100 select-none">No hay respuestas</div>
+                <div className="text-center pt-2 italic h-100 select-none">
+                  No hay respuestas
+                </div>
               )}
-              {(singleChoiceResponse.length > 0 && answersHasTexts) && (
+              {singleChoiceResponse.length > 0 && answersHasTexts && (
                 <>
                   <Carousel
                     opts={{
