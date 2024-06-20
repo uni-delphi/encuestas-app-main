@@ -46,6 +46,9 @@ export default function AdminDropDown({
         {session.user.role === "USER" ? (
           <>
             <DropdownMenuItem>
+              <Link href={"/bienvenido"} className="cursor-pointer w-[100%]">
+                Bienvenido
+              </Link>
               <Link href={"/estado"} className="cursor-pointer w-[100%]">
                 Estado
               </Link>

@@ -35,7 +35,12 @@ import {
 } from "../ui/select";
 import { Checkbox } from "../ui/checkbox";
 
-const education: string[] = ["Secundaria", "Terciario", "Universitario"];
+const education: string[] = [
+  "Secundaria",
+  "Terciario",
+  "Universitario",
+  "Posgrado",
+];
 
 const sectors: string[] = [
   "Ingeniero Electricista",
@@ -330,15 +335,13 @@ export default function SignInForm() {
             name="sector"
             render={({ field }) => (
               <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto text-left">
-                <FormLabel>
-                  Sector en donde desarrolla su actividad principal*
-                </FormLabel>
+                <FormLabel>Actividad principal de su desempeño* </FormLabel>
                 <Select onValueChange={field.onChange}>
                   <SelectTrigger
                     className="w-full"
                     disabled={isOtherSectorSelected}
                   >
-                    <SelectValue placeholder="Elige sector" />
+                    <SelectValue placeholder="Elige actividad" />
                   </SelectTrigger>
                   <SelectContent>
                     {sectors &&
@@ -367,7 +370,7 @@ export default function SignInForm() {
                         onCheckedChange={handleOtherChecked}
                         className="mr-2"
                       />
-                      <FormLabel className="text-xs">Otro sector</FormLabel>
+                      <FormLabel className="text-xs">Otra actividad</FormLabel>
                     </div>
                   </FormControl>
                 </FormItem>
@@ -426,7 +429,7 @@ export default function SignInForm() {
             render={({ field }) => (
               <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto text-left">
                 <FormLabel>
-                  Años de inicialización en la especialidad*
+                  Año de inicio en el sector de maquinaria agrícola
                 </FormLabel>
                 <FormControl>
                   <Input placeholder="Ej: 2006" {...field} />
