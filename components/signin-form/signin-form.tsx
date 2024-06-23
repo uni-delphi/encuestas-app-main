@@ -8,21 +8,17 @@ import { createUser } from "@/lib/actions";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 
-import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 
-import { TUser } from "@/types/user";
 import { Loader2 } from "lucide-react";
 import { signIn } from "next-auth/react";
 import {

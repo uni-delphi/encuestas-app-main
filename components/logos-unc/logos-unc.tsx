@@ -15,6 +15,7 @@ const LogosUnc = () => {
           margin: "0 auto",
           maxWidth: "400px",
         }}
+        priority={false}
       />
     </div>
   );

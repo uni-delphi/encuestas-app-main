@@ -9,9 +9,11 @@ import LayoutDefault from "@/components/image-layout/image-layout";
 
 export default async function Home({ searchParams }: any) {
   const session: Session | null = await getServerSession(authOptions);
-  const redirectUrl = session?.user.role === "ADMIN" ? "/admin" : "/estado/1";
-
-  if (session) redirect(redirectUrl);
+  
+  if (session) {
+    const redirectUrl = session?.user.role === "ADMIN" ? "/admin" : "/estado";
+    redirect(redirectUrl);
+  }
 
   if (searchParams.error === "AccessDenied") {
     console.log("Access Denied");
