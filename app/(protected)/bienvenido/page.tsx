@@ -63,7 +63,7 @@ export default async function Bienvenido() {
           </p>
           <p className="pb-4 mb-4">
             La encuesta demora unos 20 minutos en ser finalizada totalmente y
-            deberá ser completada antes del 17 de mayo de 2024 (fecha límite)
+            deberá ser completada antes del 26 de julio de 2024 (fecha límite)
             para ser incorporada en el procesamiento general y, por ende, en los
             resultados del Estudio.
           </p>
