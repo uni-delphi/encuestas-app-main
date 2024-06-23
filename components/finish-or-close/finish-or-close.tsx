@@ -32,7 +32,7 @@ export default async function FinishOrClose() {
     <>
       <div className="w-full md:max-w-[80%] md:mx-auto mt-14">
         <p className="pb-4 mb-4 text-justify md:text-center">
-          Te recordamos que hasta el 14 de mayo puedes volver a ingresar al
+          Te recordamos que hasta el 26 de julio puedes volver a ingresar al
           estudio y modificar o ampliar la información según consideres.
         </p>
         <p className="pb-4 mb-4 text-justify md:text-center">
