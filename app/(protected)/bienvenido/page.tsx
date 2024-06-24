@@ -62,9 +62,10 @@ export default async function Bienvenido() {
             específicas.
           </p>
           <p className="pb-4 mb-4">
-            La encuesta demora unos 20 minutos en ser finalizada totalmente y
-            deberá ser completada antes del 26 de julio de 2024 (fecha límite)
-            para ser incorporada en el procesamiento general y, por ende, en los
+            La encuesta demora unos <b>20 minutos en ser finalizada</b>{" "}
+            totalmente y deberá ser completada{" "}
+            <b>antes del 26 de julio de 2024</b> (fecha límite) para ser
+            incorporada en el procesamiento general y, por ende, en los
             resultados del Estudio.
           </p>
           <p className="pb-4 mb-4">

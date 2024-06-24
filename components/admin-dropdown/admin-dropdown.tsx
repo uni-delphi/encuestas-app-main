@@ -47,7 +47,7 @@ export default function AdminDropDown({
           <>
             <DropdownMenuItem>
               <Link href={"/bienvenido"} className="cursor-pointer w-[100%]">
-                Bienvenido
+                Bienvenida
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem>
