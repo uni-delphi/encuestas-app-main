@@ -6,15 +6,27 @@ import { getServerSession } from "next-auth";
 import SessionProvider from "@/components/session-provider/session-provider";
 import { authOptions } from "@/auth.config";
 import { Toaster } from "@/components/ui/toaster";
+import {
+  GOOGLE_ANALYTICS_ID,
+  IS_PROD,
+  SITE_DESCRPTION,
+  SITE_LANG,
+  SITE_NAME,
+  SITE_URL,
+} from "@/lib/constants";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Delphi - Campus Norte UNC",
-  description:
-    "Herramienta desarrollada por Campus Norte UNC que utiliza el modelo SENAI de Prospectiva Ocupacional para anticipar los efectos de tecnologías emergentes en el trabajo y la formación.",
+  title: {
+    template: `%s | ${SITE_NAME}`,
+    default: SITE_NAME,
+  },
+  description: SITE_DESCRPTION,
+  metadataBase: new URL(SITE_URL),
 };
 
 export const viewport: Viewport = {
@@ -32,11 +44,14 @@ export default async function RootLayout({
   const session = await getServerSession(authOptions);
 
   return (
-    <html lang="es">
+    <html lang={SITE_LANG}>
       <body className={inter.className}>
         <SessionProvider session={session}>
           {children}
         </SessionProvider>
+        {IS_PROD && GOOGLE_ANALYTICS_ID && (
+          <GoogleAnalytics gaId={GOOGLE_ANALYTICS_ID} />
+        )}
         <Toaster />
         <Analytics/>
         <SpeedInsights/>
