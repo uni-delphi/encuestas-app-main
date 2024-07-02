@@ -21,7 +21,7 @@ export default async function Home({ searchParams }: any) {
     <main>
       <LayoutDefault>
         <h2 className="font-bold text-2xl mt-10 pb-4 w-[80%] mx-auto">
-          ¿Es tu primera vez en la plataforma?. ¡Regístrate aquí!.
+          ¿Es tu primera vez en la plataforma? ¡Regístrate aquí!
         </h2>
         <div className="md:flex justify-center my-4 gap-4">
           <Button className="hidden bg-transparent text-black hover:bg-gray-200">
