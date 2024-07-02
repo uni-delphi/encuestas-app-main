@@ -16,11 +16,11 @@ export default async function Bienvenido() {
 
   const encuestas: any = await getAllEncuestasInfo();
   const { hasEnded, endDate, isActive } = encuestas[0];
-  
-  if(surveyHasEnded({ endDate, isActive, hasEnded })) {
-    redirect("/finalizado")
+
+  if (surveyHasEnded({ endDate, isActive, hasEnded })) {
+    redirect("/finalizado");
   }
-  
+
   const encuestaUrl = `/${encuestas[0]?.tecnologias[0]?.slug}/${encuestas[0]?.tecnologias[0]?.enunciados[0].slug}`;
 
   return (
@@ -62,17 +62,20 @@ export default async function Bienvenido() {
             específicas.
           </p>
           <p className="pb-4 mb-4">
-            La encuesta demora unos 20 minutos en ser finalizada totalmente y
-            deberá ser completada antes del 17 de mayo de 2024 (fecha límite)
-            para ser incorporada en el procesamiento general y, por ende, en los
+            La encuesta demora unos <b>20 minutos en ser finalizada</b>{" "}
+            totalmente y deberá ser completada{" "}
+            <b>antes del 26 de julio de 2024</b> (fecha límite) para ser
+            incorporada en el procesamiento general y, por ende, en los
             resultados del Estudio.
           </p>
           <p className="pb-4 mb-4">
-            Solo debe responder aquellas preguntas que considere puede contestar
-            en función de sus conocimientos y/o experiencias. Se acepta dejar
-            preguntas sin contestar. Siéntase libre de compartir las
-            argumentaciones o justificaciones que estime pertinente en cada
-            enunciado.
+            <b>
+              Solo debe responder aquellas preguntas que considere puede
+              contestar en función de sus conocimientos y/o experiencias. Se
+              acepta dejar preguntas sin contestar. Siéntase libre de compartir
+              las argumentaciones o justificaciones que estime pertinente en
+              cada enunciado.
+            </b>
           </p>
           <p className="pb-4 mb-4">
             Asimismo, conforme a las previsiones de la Ley 17.622 se garantiza

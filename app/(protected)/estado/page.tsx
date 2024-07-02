@@ -10,11 +10,10 @@ import {
 import NavBar from "@/components/nav-bar/nav-bar";
 import LayoutDefault from "@/components/image-layout/image-layout";
 import Enunciado from "@/components/enunciado/enunciado";
-import { IENUNCIADO, ISURVEY, IRESPONSES, IQUESTION, ISINGLECHOICE, ICHECKBOX } from "@/types/encuestas";
+import { IENUNCIADO, ISURVEY } from "@/types/encuestas";
 
 import { calculateRemainingDays, surveyHasEnded } from "@/utils/date-formatter";
 import { calculateResponsesPercents } from "@/utils/text-helper";
-import { TRESPONSE } from "@/types/respuestas";
 
 export default async function Encuestas() {
   const session: Session | null = await getServerSession(authOptions);
@@ -66,10 +65,10 @@ export default async function Encuestas() {
           </div>
           <div className="max-w-3xl">
             {tecnologias &&
-              tecnologias.map((tecnologia: any, index: number) => (
+              tecnologias.map((tecnologia: any) => (
                 <div key={tecnologia.id} className="my-4">
                   <h2 className="text-2xl text-left font-bold mb-4">
-                    {index + 1}-{tecnologia.title}
+                    {tecnologia.title}
                   </h2>
                   <div className="grid">
                     {tecnologia.enunciados &&

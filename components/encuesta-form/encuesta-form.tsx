@@ -160,15 +160,15 @@ const data: IDATATYPE = {
     answers: [
       {
         id: "hasta30",
-        name: "Hasta 30%",
+        name: "Baja (hasta 30%)",
       },
       {
         id: "hasta50",
-        name: "Hasta 50%",
+        name: "Media (hasta 50%)",
       },
       {
         id: "hasta70",
-        name: "Hasta 70%",
+        name: "Alta (hasta 70%)",
       }
     ],
   },
@@ -177,15 +177,15 @@ const data: IDATATYPE = {
     answers: [
       {
         id: "hasta30",
-        name: "Hasta 30%",
+        name: "Baja (hasta 30%)",
       },
       {
         id: "hasta50",
-        name: "Hasta 50%",
+        name: "Media (hasta 50%)",
       },
       {
         id: "hasta70",
-        name: "Hasta 70%",
+        name: "Alta (hasta 70%)",
       }
     ],
   },
@@ -194,15 +194,15 @@ const data: IDATATYPE = {
     answers: [
       {
         id: "hasta30",
-        name: "Hasta 30%",
+        name: "Baja (hasta 30%)",
       },
       {
         id: "hasta50",
-        name: "Hasta 50%",
+        name: "Media (hasta 50%)",
       },
       {
         id: "hasta70",
-        name: "Hasta 70%",
+        name: "Alta (hasta 70%)",
       }
     ],
   },
