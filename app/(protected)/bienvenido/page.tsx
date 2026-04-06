@@ -15,6 +15,7 @@ export default async function Bienvenido() {
   if (!session || !session.user) redirect("/");
 
   const encuestas: any = await getAllEncuestasInfo();
+  if (!encuestas || encuestas.length === 0) redirect("/finalizado");
   const { hasEnded, endDate, isActive } = encuestas[0];
 
   if (surveyHasEnded({ endDate, isActive, hasEnded })) {

@@ -3,7 +3,7 @@ import { Session, User, getServerSession } from "next-auth";
 import { getAllEncuestas, getEnunciado, getSlugs } from "@/lib/actions";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
-//import Content from "@/prisma/client";
+//import Content from "@prisma/client";
 
 import { IENUNCIADO } from "@/types/encuestas";
 import { surveyHasEnded } from "@/utils/date-formatter";
@@ -21,7 +21,11 @@ export default async function Encuestas({
   if (!session || !session.user) redirect("/");
 
   const { user } = session;
-  const [techSlug, enunciadoSlug] = await params.slug || [];
+
+  const data = (await params) || [];
+  const [techSlug, enunciadoSlug] = data.slug;
+
+
   let emptyEnunciadoSlug: string = "";
   let emptyEnunciadoId: number = 0;
 
