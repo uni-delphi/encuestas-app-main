@@ -3,6 +3,7 @@ import { Session, User, getServerSession } from "next-auth";
 import { getAllEncuestas, getEnunciado, getSlugs } from "@/lib/actions";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+//import Content from "@/prisma/client";
 
 import { IENUNCIADO } from "@/types/encuestas";
 import { surveyHasEnded } from "@/utils/date-formatter";
@@ -20,11 +21,13 @@ export default async function Encuestas({
   if (!session || !session.user) redirect("/");
 
   const { user } = session;
-  const [techSlug, enunciadoSlug] = params.slug;
+  const [techSlug, enunciadoSlug] = await params.slug || [];
   let emptyEnunciadoSlug: string = "";
   let emptyEnunciadoId: number = 0;
 
-  const encuestas: any = await getAllEncuestas(session.user.id);
+  const encuestas: any = await getAllEncuestas(user.id);
+
+  if(!encuestas || encuestas.length === 0) redirect("/estado");
   const { hasEnded, endDate, isActive } = encuestas[0];
 
   if (surveyHasEnded({ endDate, isActive, hasEnded })) {

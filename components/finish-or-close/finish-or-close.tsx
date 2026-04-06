@@ -7,6 +7,7 @@ import { surveyHasEnded } from "@/utils/date-formatter";
 export default async function FinishOrClose() {
   
   const encuestas: any = await getAllEncuestasInfo();
+  if(!encuestas || encuestas.length === 0) return null;
   const { hasEnded, endDate, isActive } = encuestas[0];
 
   return surveyHasEnded({ endDate, isActive, hasEnded }) ? (

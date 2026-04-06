@@ -7,13 +7,13 @@ import LogInForm from "@/components/login-form/login-form";
 import { Button } from "@/components/ui/button";
 import LayoutDefault from "@/components/image-layout/image-layout";
 
-export default async function Home({ searchParams }: any) {
+export default async function Home({ searchParams = { error: "" } }: any) {
   const session: Session | null = await getServerSession(authOptions);
   const redirectUrl = session?.user.role === "ADMIN" ? "/admin" : "/estado/1";
-
   if (session) redirect(redirectUrl);
-
-  if (searchParams.error === "AccessDenied") {
+  const response = await searchParams;
+  /* eslint-disable */
+  if (response?.error === "AccessDenied") {
     console.log("Access Denied");
   }
 
