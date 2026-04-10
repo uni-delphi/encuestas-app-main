@@ -1,3 +1,4 @@
+import { Survey } from "@/generated/prisma";
 import { prisma } from "../prisma";
 
 export async function getAllEncuestas(userId: string) {
@@ -188,4 +189,10 @@ export async function getSlugs() {
     });
     return acc;
   }, []);
+}
+
+export async function createEncuesta(data: Survey) {
+  return await prisma.survey.create({
+    data,
+  });
 }

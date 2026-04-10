@@ -10,7 +10,7 @@ import { getAllEncuestasInfo } from "@/lib/actions";
 import { surveyHasEnded } from "@/utils/date-formatter";
 import NavBar from "@/components/nav-bar/nav-bar";
 
-export default async function Bienvenido() {
+export default async function Page() {
   const session = await getServerSession(authOptions);
   if (!session || !session.user) redirect("/");
   const { name } = session.user;

@@ -12,7 +12,7 @@ import EncuestaForm from "@/components/encuesta-form/encuesta-form";
 import NavBar from "@/components/nav-bar/nav-bar";
 import RedirectButtons from "@/components/redirect-buttons/redirect-buttons";
 
-export default async function Encuestas({
+export default async function Page({
   params,
 }: {
   params: { slug: string[] };
@@ -50,15 +50,10 @@ export default async function Encuestas({
     (data: any) => data.slug === enunciadoSlug
   );
 
-  if (!enunciadoElegido) {
-    emptyEnunciadoSlug = techElegida.enunciados[0].slug;
-    emptyEnunciadoId = techElegida.enunciados[0].id;
-  }
-
   const enunciados = await getEnunciado({
-    dataSlug: enunciadoElegido?.slug ?? emptyEnunciadoSlug,
+    dataSlug: enunciadoElegido?.slug ?? techElegida.enunciados[0].slug,
     dataUserId: session?.user.id,
-    dataEnunciadoId: enunciadoElegido?.id ?? emptyEnunciadoId,
+    dataEnunciadoId: enunciadoElegido?.id ?? techElegida.enunciados[0].id,
   });
 
   return (

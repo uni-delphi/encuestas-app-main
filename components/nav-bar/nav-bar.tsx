@@ -21,7 +21,7 @@ export default function NavBar({
   slugs: any[];
 }) {
   return (
-    <header className="fixed grid h-20 w-full z-10 bg-transparent">
+    <header className="fixed grid h-20 w-full z-40 bg-transparent">
       {encuesta[0]?.tecnologias?.length > 0 && (
         <TemasSelect tecnologias={encuesta[0]?.tecnologias} slugs={slugs} />
       )}

@@ -9,6 +9,7 @@ import { TUser, TLoginUser } from "@/types/user";
 import * as Users from "@/lib/api/users";
 import * as Encuestas from "@/lib/api/encuestas";
 import * as Respuestas from "@/lib/api/respuestas";
+import { Survey } from "@/generated/prisma/wasm";
 
 export async function createUser(data: TUser) {
   let user = null;
@@ -33,7 +34,6 @@ export async function loginUser(data: TLoginUser) {
   let eventId = null;
   try {
     const result = await Users.logInUser(data);
-    console.log("login:", result);
     eventId = result?.id;
   } catch (error) {
     console.log("Error login:", error);
@@ -211,4 +211,16 @@ export async function getSlugs() {
     console.log(error);
     throw Error("Error getSlugs", error);
   }
+}
+
+export async function createEncuesta(data: Survey) {
+  try {
+    const response = await Encuestas.createEncuesta(data);
+    revalidatePath('/admin');
+    return response;
+  } catch (error: any) {
+    console.log(error);
+    throw Error("Error creando la encuesta", error);
+  } 
+  revalidatePath("/admin");
 }

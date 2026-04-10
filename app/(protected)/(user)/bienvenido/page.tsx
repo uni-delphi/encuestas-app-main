@@ -10,7 +10,7 @@ import { getAllEncuestasInfo } from "@/lib/actions";
 import LayoutDefault from "@/components/image-layout/image-layout";
 import { surveyHasEnded } from "@/utils/date-formatter";
 
-export default async function Bienvenido() {
+export default async function Page() {
   const session: Session | null = await getServerSession(authOptions);
   if (!session || !session.user) redirect("/");
 

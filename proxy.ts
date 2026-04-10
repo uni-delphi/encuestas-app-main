@@ -1,78 +1,62 @@
 import { withAuth, NextRequestWithAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
-
 import { RoleType } from "@/generated/prisma";
 import { hasRole } from "@/lib/permissions";
 
-
-// Rutas protegidas y el rol mínimo requerido
 const PROTECTED_ROUTES: { pattern: RegExp; requiredRole: RoleType }[] = [
-  // Solo ADMIN
-  { pattern: /^\/admin(\/.*)?$/,           requiredRole: RoleType.ADMIN },
-  { pattern: /^\/api\/admin(\/.*)?$/,      requiredRole: RoleType.ADMIN },
- 
-  // ADMIN o RESEARCHER
-  { pattern: /^\/dashboard\/surveys\/new/, requiredRole: RoleType.RESEARCHER },
-  { pattern: /^\/dashboard\/surveys\/\d+\/edit/, requiredRole: RoleType.RESEARCHER },
-  { pattern: /^\/api\/surveys$/,           requiredRole: RoleType.RESEARCHER }, // POST
-  { pattern: /^\/dashboard(\/.*)?$/,       requiredRole: RoleType.RESEARCHER },
- 
-  // Cualquier usuario autenticado
-  { pattern: /^\/survey(\/.*)?$/,          requiredRole: RoleType.USER },
-  { pattern: /^\/api\/responses(\/.*)?$/,  requiredRole: RoleType.USER },
+  // ADMIN only
+  { pattern: /^\/admin(\/.*)?$/,                          requiredRole: RoleType.ADMIN },
+
+  // RESEARCHER or above
+  { pattern: /^\/investigador(\/.*)?$/,                   requiredRole: RoleType.RESEARCHER },
+
+  // Any authenticated user
+  { pattern: /^\/bienvenido$/,                            requiredRole: RoleType.USER },
+  { pattern: /^\/estado(\/.*)?$/,                         requiredRole: RoleType.USER },
+  { pattern: /^\/finalizado$/,                            requiredRole: RoleType.USER },
 ];
 
 export default withAuth(
-  function middleware(req: NextRequestWithAuth, res) {
-    if (
-      req.nextUrl.pathname.startsWith("/admin") &&
-      req.nextauth.token?.role !== "ADMIN"
-    ) {
-      return NextResponse.rewrite(new URL("/denied", req.url));
+  function middleware(req: NextRequestWithAuth) {
+    const { pathname } = req.nextUrl;
+    const userRole = req.nextauth.token?.role as RoleType | undefined;
+
+    if (!userRole) {
+      const loginUrl = new URL("/acceso", req.url);
+      loginUrl.searchParams.set("callbackUrl", pathname);
+      return NextResponse.redirect(loginUrl);
     }
 
-    if (
-      (req.nextUrl.pathname.startsWith("/bienvenido") ||
-        req.nextUrl.pathname.startsWith("/finalizado") ||
-        req.nextUrl.pathname.startsWith("/estado")) &&
-      req.nextauth.token?.role !== "USER"
-    ) {
-      return NextResponse.rewrite(new URL("/admin", req.url));
-    }
-
-    /**
-     * 
-     * const { pathname } = req.nextUrl;
-    const token = req.nextauth?.token;
- 
-    if (!token) {
-      return NextResponse.redirect(new URL("/auth/login", req.url));
-    }
- 
-    const userRole = token.role as RoleType;
- 
-    for (const route of PROTECTED_ROUTES) {
-      if (route.pattern.test(pathname)) {
-        if (!hasRole(userRole, route.requiredRole)) {
-          // Redirigir con mensaje de error según rol
-          const redirectUrl = new URL("/unauthorized", req.url);
-          redirectUrl.searchParams.set("required", route.requiredRole);
-          return NextResponse.redirect(redirectUrl);
+    for (const { pattern, requiredRole } of PROTECTED_ROUTES) {
+      if (pattern.test(pathname)) {
+        if (!hasRole(userRole, requiredRole)) {
+          const loginUrl = new URL("/acceso", req.url);
+          loginUrl.searchParams.set("callbackUrl", pathname);
+          return NextResponse.redirect(loginUrl);
         }
         break;
       }
     }
- 
+
     return NextResponse.next();
-     */
   },
   {
     callbacks: {
+      // False here means NextAuth redirects to /acceso before middleware even runs
       authorized: ({ token }) => !!token,
+    },
+    pages: {
+      signIn: "/acceso",
     },
   },
 );
 
 export const config = {
-  matcher: ["/admin", "/estado/:path*", "/bienvenido", "/finalizado"],
+  matcher: [
+    "/admin/:path*",
+    "/investigador/:path*",
+    "/bienvenido",
+    "/estado/:path*",
+    "/finalizado",
+  ],
 };

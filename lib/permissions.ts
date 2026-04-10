@@ -4,52 +4,55 @@
 import { RoleType } from "@/generated/prisma";
 
 // Jerarquía: ADMIN > RESEARCHER > USER
-const ROLE_HIERARCHY: Record<RoleType, number> = {
-  ADMIN: 3,
+export const ROLE_HIERARCHY: Record<RoleType, number> = {
+  ADMIN:      3,
   RESEARCHER: 2,
-  USER: 1,
+  USER:       1,
 };
 
 /**
  * Verifica si un rol tiene al menos el nivel requerido.
- * Ejemplo: hasRole("RESEARCHER", "RESEARCHER") → true
- *          hasRole("USER", "RESEARCHER") → false
- *          hasRole("ADMIN", "RESEARCHER") → true
+ * hasRole("RESEARCHER", "RESEARCHER") → true
+ * hasRole("USER", "RESEARCHER")       → false
+ * hasRole("ADMIN", "RESEARCHER")      → true
  */
 export function hasRole(userRole: RoleType, requiredRole: RoleType): boolean {
   return ROLE_HIERARCHY[userRole] >= ROLE_HIERARCHY[requiredRole];
 }
 
-/**
- * Permisos específicos por entidad
- */
 export const Permissions = {
   survey: {
     /** ADMIN y RESEARCHER pueden crear encuestas */
-    canCreate: (role: RoleType) => hasRole(role, RoleType.RESEARCHER),
+    canCreate: (role: RoleType) =>
+      hasRole(role, RoleType.RESEARCHER),
 
-    /** ADMIN puede editar cualquier encuesta.
-     *  RESEARCHER solo puede editar las suyas (verificar createdById en la app). */
+    /** ADMIN edita cualquier encuesta. RESEARCHER solo las suyas. */
     canEdit: (role: RoleType, isOwner: boolean) =>
       role === RoleType.ADMIN || (hasRole(role, RoleType.RESEARCHER) && isOwner),
 
-    /** Solo ADMIN puede eliminar encuestas */
-    canDelete: (role: RoleType) => role === RoleType.ADMIN,
+    /** ADMIN elimina cualquier encuesta */
+    canDelete: (role: RoleType) =>
+      role === RoleType.ADMIN,
 
-    /** Todos pueden ver encuestas activas */
+    /** ADMIN cierra cualquier encuesta. RESEARCHER solo las suyas. */
+    canClose: (role: RoleType, isOwner: boolean) =>
+      role === RoleType.ADMIN || (hasRole(role, RoleType.RESEARCHER) && isOwner),
+
+    /** Todos los autenticados pueden ver encuestas activas */
     canView: (_role: RoleType) => true,
-  },
 
-  response: {
-    /** Cualquier usuario autenticado puede responder */
-    canCreate: (role: RoleType) => hasRole(role, RoleType.USER),
+    /** ADMIN ve todos los resultados. RESEARCHER solo los de sus encuestas. */
+    canViewResults: (role: RoleType, isOwner: boolean) =>
+      role === RoleType.ADMIN || (hasRole(role, RoleType.RESEARCHER) && isOwner),
 
-    /** ADMIN puede ver todas las respuestas; RESEARCHER solo las de sus encuestas */
-    canViewAll: (role: RoleType) => hasRole(role, RoleType.RESEARCHER),
+    /** Solo USER puede responder — evita contaminar datos */
+    canAnswer: (role: RoleType) =>
+      role === RoleType.USER,
   },
 
   user: {
     /** Solo ADMIN puede gestionar usuarios */
-    canManage: (role: RoleType) => role === RoleType.ADMIN,
+    canManage: (role: RoleType) =>
+      role === RoleType.ADMIN,
   },
 } as const;
