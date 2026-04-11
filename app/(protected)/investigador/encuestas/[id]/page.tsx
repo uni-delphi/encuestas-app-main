@@ -15,17 +15,23 @@ import LayoutDefault from "@/components/image-layout/image-layout";
 import BarChart from "@/components/chart-bar/chart-bar";
 import DescargarCsv from "@/components/descargar-csv/descargar-csv";
 import CloseSurvey from "@/components/close-survey/close-survey";
+import { getEncuestaById } from "@/lib/api/encuestas";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
-export default async function Page() {
+export default async function Page({ params }: { params: { id: string } }) {
   const session = await getServerSession(authOptions);
   if (!session || !session.user) redirect("/");
 
+  const encuestaId = await params;
+
   const [encuesta, respuestas, enunciados, users] = await Promise.all([
-    getEncuesta(),
+    getEncuestaById({ id: parseInt(encuestaId.id) }),
     getResponsesForCSV() as Promise<TCSVRESPONSE[]>,
     getAllEnunciados(),
     getAllUsers(),
   ]);
+  console.log("🚀 ~ Page ~ encuesta:", encuesta);
 
   const enunciadosLabels = enunciados.map((enunciado) => ({
     label: enunciado.title,
@@ -81,20 +87,28 @@ export default async function Page() {
   };
 
   return (
-    <section className="px-10 py-20">
-      <h2 className="font-bold text-center my-10 text-2xl">
-        <span className="block line-clamp-2">Estudio de</span>
-        <span className="block line-clamp-2">
-          Prospectiva tecnológica-ocupacional
-        </span>
-      </h2>
+    <section className="">
+      <div className="flex gap-10 justify-between items-center">
+        <h2 className="font-bold my-10 text-4xl">
+          <span className="block line-clamp-2">Estudio de</span>
+          <span className="block line-clamp-2">{encuesta?.title}</span>
+        </h2>
+        <Button asChild>
+          <Link
+            href={`/investigador/encuestas/${encuestaId.id}/editar`}
+            className="mb-4"
+          >
+            Editar encuesta
+          </Link>
+        </Button>
+      </div>
       <p>
         Hola {session.user.name} {session.user.lastName}!
       </p>
       <p>Estos son los resultados parciales en el avance de las respuestas</p>
       <BarChart chartData={chartData} chartOptions={chartOptions} />
       <div className="flex md:block items-center gap-2">
-        <CloseSurvey encuesta={encuesta[0] || []} />
+        <CloseSurvey encuesta={encuesta || []} />
         <DescargarCsv props={datas} />
       </div>
     </section>

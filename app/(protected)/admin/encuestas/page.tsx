@@ -1,15 +1,33 @@
 // app/(protected)/admin/encuestas/page.tsx
 
-function Page() {
+import { authOptions } from "@/auth.config";
+import AdminEncuestas from "@/components/admin-encuestas/admin-encuestas";
+import { Breadcrumbs } from "@/components/breadcrombs/breadcrumbs";
+import {
+  getResponsesForCSV,
+  getAllEnunciados,
+  getAllUsers,
+  getEncuesta,
+} from "@/lib/actions";
+
+import { getServerSession } from "next-auth/next";
+import { redirect } from "next/navigation";
+
+export default async function Page() {
+  const session = await getServerSession(authOptions);
+  if (!session || !session.user) redirect("/");
+  const encuestas = await getEncuesta();
+  console.log("🚀 ~ Page ~ encuestas:", encuestas)
+
   return (
     <section>
-      <h1 className='text-4xl font-bold mb-10'>Encuestas</h1>
-      <p>Todas las encuestas llevan a el estado de cada encuesta</p>
-      <div>
-        {/* Listado de encuestas con su estado, resultados, etc */}
+      <div className="flex gap-14 justify-between items-end">
+        <h1 className="text-4xl font-bold leading-[1]">Encuestas /</h1>
+        <Breadcrumbs items={[{ label: "Dashboard", href: "/admin" }]} />
+      </div>
+      <div className="my-10">
+        <AdminEncuestas encuestas={encuestas} />
       </div>
     </section>
-  )
+  );
 }
-
-export default Page

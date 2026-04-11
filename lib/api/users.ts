@@ -4,6 +4,9 @@ export async function getAllUsers() {
   return await prisma.user.findMany({
     select: {
       email: true,
+      name: true,
+      lastName: true,
+      role: true,
     },
     where: {
       role: "USER",

@@ -2,6 +2,7 @@
 
 import { authOptions } from "@/auth.config";
 import AdminLayoutComponent from "@/components/admin-layout/layout-component";
+import { Breadcrumbs } from "@/components/breadcrombs/breadcrumbs";
 import LayoutDefault from "@/components/image-layout/image-layout";
 import NavBar from "@/components/nav-bar/nav-bar";
 import { getServerSession, Session } from "next-auth";

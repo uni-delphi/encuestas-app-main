@@ -1,137 +1,297 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Controller, useForm } from "react-hook-form"
-import { toast } from "@/components/ui/use-toast"
-import * as z from "zod"
-
-import { Button } from "@/components/ui/button"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import {
   Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
+import { Calendar } from "@/components/ui/calendar";
 import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroupTextarea,
-} from "@/components/ui/input-group"
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
+import { CalendarIcon, X, Plus, Loader2 } from "lucide-react";
+import { User } from "@/generated/prisma";
 
-const formSchema = z.object({
-  title: z
-    .string()
-    .min(5, "Bug title must be at least 5 characters.")
-    .max(32, "Bug title must be at most 32 characters."),
-  description: z
-    .string()
-    .min(20, "Description must be at least 20 characters.")
-    .max(100, "Description must be at most 100 characters."),
-})
+// --- Schema ---
 
-export function CreateEncuestaForm() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+const surveySchema = z.object({
+  title: z.string().min(1, "El título es obligatorio"),
+  description: z.string().optional().default(""),
+  isActive: z.boolean().default(true),
+  endDate: z
+    .date({ required_error: "La fecha de finalización es obligatoria" })
+    .refine((d) => d > new Date(), "La fecha debe ser posterior a hoy"),
+  tecnologiaIds: z.array(z.number()).default([]),
+});
+
+export type SurveyFormData = z.infer<typeof surveySchema>;
+
+// --- Props ---
+
+interface Tecnologia {
+  id: number;
+  title: string;
+}
+
+interface SurveyFormProps {
+  availableTecnologias?: Tecnologia[];
+  onSubmit?: (data: SurveyFormData) => Promise<void>;
+  initialData?: Partial<SurveyFormData>;
+  isEditing?: boolean;
+}
+
+// --- Component ---
+
+export default function SurveyForm({
+  availableTecnologias = [],
+  onSubmit,
+  initialData,
+  isEditing = false,
+}: SurveyFormProps) {
+  
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm<SurveyFormData>({
+    resolver: zodResolver(surveySchema),
     defaultValues: {
-      title: "",
-      description: "",
+      title: initialData?.title ?? "",
+      description: initialData?.description ?? "",
+      isActive: initialData?.isActive ?? true,
+      endDate: initialData?.endDate,
+      tecnologiaIds: initialData?.tecnologiaIds ?? [],
     },
-  })
+  });
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
-      console.log("🚀 ~ onSubmit ~ data:", data)
-  }
+  const tecnologiaIds = watch("tecnologiaIds");
+
+  const selectedTecnologias = availableTecnologias.filter((t) =>
+    tecnologiaIds.includes(t.id),
+  );
+  const unselectedTecnologias = availableTecnologias.filter(
+    (t) => !tecnologiaIds.includes(t.id),
+  );
+
+  const toggleTecnologia = (id: number) => {
+    setValue(
+      "tecnologiaIds",
+      tecnologiaIds.includes(id)
+        ? tecnologiaIds.filter((t) => t !== id)
+        : [...tecnologiaIds, id],
+    );
+  };
+
+  const onFormSubmit = async (data: SurveyFormData) => {
+    console.log("🚀 ~ onFormSubmit ~ data:", data)
+    
+    setIsLoading(true);
+    try {
+      await onSubmit?.(data);
+      router.push("/encuestas");
+    } catch (error) {
+      console.error("Error al guardar la encuesta:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <Card className="w-full sm:max-w-md">
+    <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>Bug Report</CardTitle>
+        <CardTitle className="text-2xl">
+          {isEditing ? "Editar Encuesta" : "Crear Nueva Encuesta"}
+        </CardTitle>
         <CardDescription>
-          Help us improve by reporting bugs you encounter.
+          {isEditing
+            ? "Modifica los datos de la encuesta"
+            : "Completa el formulario para crear una nueva encuesta"}
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <form id="form-rhf-demo" onSubmit={form.handleSubmit(onSubmit)}>
-          <FieldGroup>
-            <Controller
-              name="title"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-rhf-demo-title">
-                    Bug Title
-                  </FieldLabel>
-                  <Input
-                    {...field}
-                    id="form-rhf-demo-title"
-                    aria-invalid={fieldState.invalid}
-                    placeholder="Login button not working on mobile"
-                    autoComplete="off"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
+
+      <form onSubmit={handleSubmit(onFormSubmit)}>
+        <CardContent className="space-y-6">
+          {/* Título */}
+          <div className="space-y-2">
+            <Label htmlFor="title">
+              Título <span className="text-destructive">*</span>
+            </Label>
+            <Input
+              id="title"
+              placeholder="Ingresa el título de la encuesta"
+              className={cn(errors.title && "border-destructive")}
+              {...register("title")}
             />
+            {errors.title && (
+              <p className="text-sm text-destructive">{errors.title.message}</p>
+            )}
+          </div>
+
+          {/* Descripción */}
+          <div className="space-y-2">
+            <Label htmlFor="description">Descripción</Label>
+            <Textarea
+              id="description"
+              placeholder="Describe brevemente el propósito de la encuesta (opcional)"
+              rows={4}
+              {...register("description")}
+            />
+          </div>
+
+          {/* Fecha de finalización */}
+          <div className="space-y-2">
+            <Label>
+              Fecha de finalización <span className="text-destructive">*</span>
+            </Label>
             <Controller
-              name="description"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-rhf-demo-description">
-                    Description
-                  </FieldLabel>
-                  <InputGroup>
-                    <InputGroupTextarea
-                      {...field}
-                      id="form-rhf-demo-description"
-                      placeholder="I'm having an issue with the login button on mobile."
-                      rows={6}
-                      className="min-h-24 resize-none"
-                      aria-invalid={fieldState.invalid}
+              control={control}
+              name="endDate"
+              render={({ field }) => (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !field.value && "text-muted-foreground",
+                        errors.endDate && "border-destructive",
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {field.value
+                        ? format(field.value, "PPP", { locale: es })
+                        : "Selecciona una fecha"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      disabled={(date) => date < new Date()}
+                      initialFocus
                     />
-                    <InputGroupAddon align="block-end">
-                      <InputGroupText className="tabular-nums">
-                        {field.value.length}/100 characters
-                      </InputGroupText>
-                    </InputGroupAddon>
-                  </InputGroup>
-                  <FieldDescription>
-                    Include steps to reproduce, expected behavior, and what
-                    actually happened.
-                  </FieldDescription>
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
+                  </PopoverContent>
+                </Popover>
               )}
             />
-          </FieldGroup>
-        </form>
-      </CardContent>
-      <CardFooter>
-        <Field orientation="horizontal">
-          <Button type="button" variant="outline" onClick={() => form.reset()}>
-            Reset
+            {errors.endDate && (
+              <p className="text-sm text-destructive">
+                {errors.endDate.message}
+              </p>
+            )}
+          </div>
+
+          {/* Estado activo */}
+          <div className="flex items-center justify-between rounded-lg border p-4">
+            <div className="space-y-0.5">
+              <Label htmlFor="isActive" className="text-base">
+                Encuesta activa
+              </Label>
+              <p className="text-sm text-muted-foreground">
+                Los usuarios podrán responder la encuesta mientras esté activa
+              </p>
+            </div>
+            <Controller
+              control={control}
+              name="isActive"
+              render={({ field }) => (
+                <Switch
+                  id="isActive"
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              )}
+            />
+          </div>
+
+          {/* Tecnologías */}
+          {availableTecnologias.length > 0 && (
+            <div className="space-y-4">
+              <Label>Tecnologías</Label>
+
+              {selectedTecnologias.length > 0 && (
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground">Seleccionadas</p>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedTecnologias.map((tech) => (
+                      <Badge
+                        key={tech.id}
+                        variant="default"
+                        className="cursor-pointer gap-1 pr-1"
+                        onClick={() => toggleTecnologia(tech.id)}
+                      >
+                        {tech.title}
+                        <X className="h-3 w-3" />
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {unselectedTecnologias.length > 0 && (
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground">Disponibles</p>
+                  <div className="flex flex-wrap gap-2">
+                    {unselectedTecnologias.map((tech) => (
+                      <Badge
+                        key={tech.id}
+                        variant="outline"
+                        className="cursor-pointer gap-1"
+                        onClick={() => toggleTecnologia(tech.id)}
+                      >
+                        <Plus className="h-3 w-3" />
+                        {tech.title}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </CardContent>
+
+        <CardFooter className="flex gap-4">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => router.back()}
+            disabled={isLoading}
+            className="flex-1"
+          >
+            Cancelar
           </Button>
-          <Button type="submit" form="form-rhf-demo">
-            Submit
+          <Button type="submit" disabled={isLoading} className="flex-1">
+            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {isEditing ? "Guardar cambios" : "Crear encuesta"}
           </Button>
-        </Field>
-      </CardFooter>
+        </CardFooter>
+      </form>
     </Card>
-  )
+  );
 }

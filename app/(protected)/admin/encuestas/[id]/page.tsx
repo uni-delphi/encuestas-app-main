@@ -17,6 +17,7 @@ import LayoutDefault from "@/components/image-layout/image-layout";
 import BarChart from "@/components/chart-bar/chart-bar";
 import DescargarCsv from "@/components/descargar-csv/descargar-csv";
 import CloseSurvey from "@/components/close-survey/close-survey";
+import { Breadcrumbs } from "@/components/breadcrombs/breadcrumbs";
 
 export default async function Page() {
   const session = await getServerSession(authOptions);
@@ -84,6 +85,7 @@ export default async function Page() {
 
   return (
     <>
+      <Breadcrumbs items={[{ label: "Dashboard", href: "/admin" }, { label: "Encuestas", href: "/admin/encuestas" }]} />
       <h2 className="font-bold text-center my-10 text-2xl">
         <span className="block line-clamp-2">Estudio de</span>
         <span className="block line-clamp-2">

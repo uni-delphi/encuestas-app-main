@@ -66,6 +66,16 @@ export async function getEncuesta() {
   }
 }
 
+export async function getEncuestaByIdAction(id: number) {
+  try {
+    const response = await Encuestas.getEncuestaById({ id });
+    return response;
+  } catch (error: any) {
+    console.log(error);
+    throw Error("Error getEncuesta", error);
+  }
+}
+
 export async function getAllEncuestasInfo() {
   try {
     return await Encuestas.getEncuestaInfo();
@@ -105,9 +115,17 @@ export async function getEnunciado({
   }
 }
 
-export async function getSampleRespuestasByEnunciado(enunciadosId: number, respondentId: string, responseType: any){
+export async function getSampleRespuestasByEnunciado(
+  enunciadosId: number,
+  respondentId: string,
+  responseType: any,
+) {
   try {
-    return await Respuestas.getSampleRespuestasByEnunciado(enunciadosId, respondentId , responseType);
+    return await Respuestas.getSampleRespuestasByEnunciado(
+      enunciadosId,
+      respondentId,
+      responseType,
+    );
   } catch (error: any) {
     console.log(error);
     throw Error("Error getTecnologia", error);
@@ -126,19 +144,25 @@ export async function getExampleResponses(enunciadosId: number) {
 export async function createResponse(data: any) {
   try {
     const response = await Respuestas.createResponse(data);
-    revalidatePath('/')
+    revalidatePath("/");
     return response;
   } catch (error) {
     console.log("Error creando el createResponse:", error);
     throw new Error("Error creando el createResponse");
-  }  
+  }
   revalidatePath("/impresoras-3d/enunciado-sobre-impresoras-3d-de-plasticoas");
 }
 
-export async function updateSingleChoiceResponse(data: any, responseId: number) {
+export async function updateSingleChoiceResponse(
+  data: any,
+  responseId: number,
+) {
   try {
-    const response = await Respuestas.updateSingleChoiceResponse(responseId, data);
-    revalidatePath('/')
+    const response = await Respuestas.updateSingleChoiceResponse(
+      responseId,
+      data,
+    );
+    revalidatePath("/");
     return response;
   } catch (error) {
     console.log("Error editando el updateSingleChoiceResponse:", error);
@@ -149,7 +173,7 @@ export async function updateSingleChoiceResponse(data: any, responseId: number) 
 export async function updateCheckboxResponse(data: any, responseId: number) {
   try {
     const response = await Respuestas.updateCheckboxResponse(responseId, data);
-    revalidatePath('/')
+    revalidatePath("/");
     return response;
   } catch (error) {
     console.log("Error editando el updateCheckboxResponse:", error);
@@ -195,8 +219,8 @@ export async function getAllUsers() {
 
 export async function updateEncuesta(surveyId: number, data: any) {
   try {
-    const response =  await Encuestas.updateEncuesta(surveyId, data);
-    revalidatePath('/');
+    const response = await Encuestas.updateEncuesta(surveyId, data);
+    revalidatePath("/");
     return response;
   } catch (error: any) {
     console.log(error);
@@ -213,14 +237,14 @@ export async function getSlugs() {
   }
 }
 
-export async function createEncuesta(data: Survey) {
+export async function createEncuestaAction(data: Survey) {
   try {
     const response = await Encuestas.createEncuesta(data);
-    revalidatePath('/admin');
+    revalidatePath("/admin");
     return response;
   } catch (error: any) {
     console.log(error);
     throw Error("Error creando la encuesta", error);
-  } 
+  }
   revalidatePath("/admin");
 }

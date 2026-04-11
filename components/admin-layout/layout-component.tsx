@@ -25,7 +25,7 @@ export default function AdminLayoutComponent({
         />
 
       </div>
-      <div className="p-10">        
+      <div className="p-20">        
         {children}
       </div>
     </div>
