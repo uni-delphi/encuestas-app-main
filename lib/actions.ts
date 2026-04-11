@@ -9,7 +9,7 @@ import { TUser, TLoginUser } from "@/types/user";
 import * as Users from "@/lib/api/users";
 import * as Encuestas from "@/lib/api/encuestas";
 import * as Respuestas from "@/lib/api/respuestas";
-import { Survey } from "@/generated/prisma/wasm";
+import { Survey } from "@/generated/prisma";
 
 export async function createUser(data: TUser) {
   let user = null;
