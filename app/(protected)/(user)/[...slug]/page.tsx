@@ -3,6 +3,7 @@ import { Session, User, getServerSession } from "next-auth";
 import { getAllEncuestas, getEnunciado, getSlugs } from "@/lib/actions";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+//import Content from "@prisma/client";
 
 import { IENUNCIADO } from "@/types/encuestas";
 import { surveyHasEnded } from "@/utils/date-formatter";
@@ -11,7 +12,7 @@ import EncuestaForm from "@/components/encuesta-form/encuesta-form";
 import NavBar from "@/components/nav-bar/nav-bar";
 import RedirectButtons from "@/components/redirect-buttons/redirect-buttons";
 
-export default async function Encuestas({
+export default async function Page({
   params,
 }: {
   params: { slug: string[] };
@@ -20,11 +21,17 @@ export default async function Encuestas({
   if (!session || !session.user) redirect("/");
 
   const { user } = session;
-  const [techSlug, enunciadoSlug] = params.slug;
+
+  const data = (await params) || [];
+  const [techSlug, enunciadoSlug] = data.slug;
+
+
   let emptyEnunciadoSlug: string = "";
   let emptyEnunciadoId: number = 0;
 
-  const encuestas: any = await getAllEncuestas(session.user.id);
+  const encuestas: any = await getAllEncuestas(user.id);
+
+  if(!encuestas || encuestas.length === 0) redirect("/estado");
   const { hasEnded, endDate, isActive } = encuestas[0];
 
   if (surveyHasEnded({ endDate, isActive, hasEnded })) {
@@ -43,15 +50,10 @@ export default async function Encuestas({
     (data: any) => data.slug === enunciadoSlug
   );
 
-  if (!enunciadoElegido) {
-    emptyEnunciadoSlug = techElegida.enunciados[0].slug;
-    emptyEnunciadoId = techElegida.enunciados[0].id;
-  }
-
   const enunciados = await getEnunciado({
-    dataSlug: enunciadoElegido?.slug ?? emptyEnunciadoSlug,
+    dataSlug: enunciadoElegido?.slug ?? techElegida.enunciados[0].slug,
     dataUserId: session?.user.id,
-    dataEnunciadoId: enunciadoElegido?.id ?? emptyEnunciadoId,
+    dataEnunciadoId: enunciadoElegido?.id ?? techElegida.enunciados[0].id,
   });
 
   return (

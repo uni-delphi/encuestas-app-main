@@ -1,7 +1,6 @@
 import React from "react";
 import Image from "next/image";
 import LogosUnc from "../logos-unc/logos-unc";
-import imageUnc from "/public/ecampus.jpg";
 
 export default function LayoutDefault(props: any) {
   const { children } = props;
@@ -9,7 +8,7 @@ export default function LayoutDefault(props: any) {
     <div className="grid grid-cols-1 md:grid-cols-2 xl:h-screen">
       <div className="w-full">
         <Image
-          src={imageUnc}
+          src={'/ecampus.jpg'}
           alt="image"
           width={1800}
           height={1013}

@@ -7,13 +7,13 @@ import LogInForm from "@/components/login-form/login-form";
 import { Button } from "@/components/ui/button";
 import LayoutDefault from "@/components/image-layout/image-layout";
 
-export default async function Home({ searchParams }: any) {
+export default async function Home({ searchParams = { error: "" } }: any) {
   const session: Session | null = await getServerSession(authOptions);
   const redirectUrl = session?.user.role === "ADMIN" ? "/admin" : "/estado/1";
-
   if (session) redirect(redirectUrl);
-
-  if (searchParams.error === "AccessDenied") {
+  const response = await searchParams;
+  /* eslint-disable */
+  if (response?.error === "AccessDenied") {
     console.log("Access Denied");
   }
 
@@ -21,7 +21,7 @@ export default async function Home({ searchParams }: any) {
     <main>
       <LayoutDefault>
         <h2 className="font-bold text-2xl mt-10 pb-4 w-[80%] mx-auto">
-          ¿Es tu primera vez en la plataforma? ¡Regístrate aquí!
+          ¿Es tu primera vez en la plataforma? ¡Regístrate aquí! 
         </h2>
         <div className="md:flex justify-center my-4 gap-4">
           <Button className="hidden bg-transparent text-black hover:bg-gray-200">

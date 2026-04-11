@@ -10,11 +10,12 @@ import { getAllEncuestasInfo } from "@/lib/actions";
 import LayoutDefault from "@/components/image-layout/image-layout";
 import { surveyHasEnded } from "@/utils/date-formatter";
 
-export default async function Bienvenido() {
+export default async function Page() {
   const session: Session | null = await getServerSession(authOptions);
   if (!session || !session.user) redirect("/");
 
   const encuestas: any = await getAllEncuestasInfo();
+  if (!encuestas || encuestas.length === 0) redirect("/finalizado");
   const { hasEnded, endDate, isActive } = encuestas[0];
 
   if (surveyHasEnded({ endDate, isActive, hasEnded })) {
