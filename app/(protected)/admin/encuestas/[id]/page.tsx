@@ -8,7 +8,7 @@ import {
   getResponsesForCSV,
   getAllEnunciados,
   getAllUsers,
-  getEncuesta,
+  getEncuestas,
 } from "@/lib/actions";
 import { TCSVRESPONSE } from "@/types/respuestas";
 
@@ -18,19 +18,21 @@ import BarChart from "@/components/chart-bar/chart-bar";
 import DescargarCsv from "@/components/descargar-csv/descargar-csv";
 import CloseSurvey from "@/components/close-survey/close-survey";
 import { Breadcrumbs } from "@/components/breadcrombs/breadcrumbs";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default async function Page() {
   const session = await getServerSession(authOptions);
   if (!session || !session.user) redirect("/");
 
-  const [encuesta, respuestas, enunciados, users] = await Promise.all([
-    getEncuesta(),
+  const [encuestas, respuestas, enunciados, users] = await Promise.all([
+    getEncuestas(),
     getResponsesForCSV() as Promise<TCSVRESPONSE[]>,
     getAllEnunciados(),
     getAllUsers(),
   ]);
 
-  const enunciadosLabels = enunciados.map((enunciado) => ({
+  const enunciadosLabels = enunciados.map((enunciado: any) => ({
     label: enunciado.title,
     porcents:
       (enunciado.response.length /
@@ -40,13 +42,13 @@ export default async function Page() {
 
   const chartData = {
     labels: enunciadosLabels.map(
-      (_, index: number) => `Enunciado ${index + 1}`,
+      (_: any, index: number) => `Enunciado ${index + 1}`,
     ),
     datasets: [
       {
         label: "Respuestas en %",
         data: enunciadosLabels.map(
-          (enunciado) => +enunciado.porcents.toFixed(2),
+          (enunciado: any) => +enunciado.porcents.toFixed(2),
         ),
       },
     ],
@@ -84,23 +86,41 @@ export default async function Page() {
   };
 
   return (
-    <>
-      <Breadcrumbs items={[{ label: "Dashboard", href: "/admin" }, { label: "Encuestas", href: "/admin/encuestas" }]} />
-      <h2 className="font-bold text-center my-10 text-2xl">
-        <span className="block line-clamp-2">Estudio de</span>
-        <span className="block line-clamp-2">
-          Prospectiva tecnológica-ocupacional
-        </span>
-      </h2>
+    <section>
+      <div className="flex gap-14 justify-between items-center">
+        <h2 className="font-bold text-center my-10 text-2xl">
+          <span className="block line-clamp-2">Estudio de</span>
+          <span className="block line-clamp-2">
+            Prospectiva tecnológica-ocupacional
+          </span>
+        </h2>
+
+        <div className="flex gap-8 items-center">
+          <Breadcrumbs
+            items={[
+              { label: "Panel", href: "/admin" },
+              { label: "Encuestas", href: "/admin/encuestas" },
+            ]}
+          />
+          <Button asChild>
+            <Link
+              href={`/admin/encuestas/${encuestas.encuestas[0]?.id}/editar`}
+              className=""
+            >
+              Editar encuesta
+            </Link>
+          </Button>
+        </div>
+      </div>
       <p>
         Hola {session.user.name} {session.user.lastName}!
       </p>
       <p>Estos son los resultados parciales en el avance de las respuestas</p>
       <BarChart chartData={chartData} chartOptions={chartOptions} />
       <div className="flex md:block items-center gap-2">
-        <CloseSurvey encuesta={encuesta[0] || []} />
+        <CloseSurvey encuesta={encuestas.encuestas[0] || []} />
         <DescargarCsv props={datas} />
       </div>
-    </>
+    </section>
   );
 }

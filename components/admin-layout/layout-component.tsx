@@ -10,7 +10,7 @@ export default function AdminLayoutComponent({
 
   return (
     <div className="">
-      <div className="relative h-52 overflow-hidden ">
+      <div className="relative h-52 overflow-hidden select-none">
         <div className="absolute top-4 left-4 z-20">
           <LogosUnc />
         </div>

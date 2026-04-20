@@ -13,10 +13,10 @@ export default async function Page() {
   const { user } = session;
 
   return (
-    <section className="px-10 py-20">
+    <section className="">
       <div className="flex gap-14 justify-between items-end">
         <h1 className="text-4xl font-bold leading-[1]">Crear nueva encuesta</h1>
-        <Breadcrumbs items={[{ label: "Panel", href: "/investigador" }]} />
+        <Breadcrumbs items={[{ label: "Panel", href: "/admin" }, { label: "Encuestas", href: "/admin/encuestas" }]} />
       </div>
       <div className="my-10">
         <SurveyForm availableTecnologias={[]} onSubmit={createEncuestaAction as any } />

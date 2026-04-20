@@ -30,8 +30,9 @@ export default async function Page({
   let emptyEnunciadoId: number = 0;
 
   const encuestas: any = await getAllEncuestas(user.id);
-
   if(!encuestas || encuestas.length === 0) redirect("/estado");
+
+
   const { hasEnded, endDate, isActive } = encuestas[0];
 
   if (surveyHasEnded({ endDate, isActive, hasEnded })) {

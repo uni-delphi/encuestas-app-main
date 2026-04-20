@@ -71,7 +71,7 @@ export default async function Page() {
                     {tecnologia.title}
                   </h2>
                   <div className="grid">
-                    {tecnologia.enunciados &&
+                    {tecnologia._count.enunciados > 0 &&
                       tecnologia.enunciados.map((enunciado: IENUNCIADO) => (
                         <Enunciado
                           key={enunciado.id}

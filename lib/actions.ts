@@ -56,14 +56,8 @@ export async function getAllEncuestas(userId: string) {
   }
 }
 
-export async function getEncuesta() {
-  try {
-    const response = await Encuestas.getEncuesta();
-    return response;
-  } catch (error: any) {
-    console.log(error);
-    throw Error("Error getEncuesta", error);
-  }
+export async function getEncuestas(page = 0, pageSize = 10) {
+    return await Encuestas.getEncuestasAction(page, pageSize);
 }
 
 export async function getEncuestaByIdAction(id: number) {
@@ -208,9 +202,9 @@ export async function getAllEnunciados() {
   }
 }
 
-export async function getAllUsers() {
+export async function getAllUsers(page = 0, pageSize = 10) {
   try {
-    return await Users.getAllUsers();
+    return await Users.getAllUsersActions(page, pageSize);
   } catch (error: any) {
     console.log(error);
     throw Error("Error getAllEnunciados", error);

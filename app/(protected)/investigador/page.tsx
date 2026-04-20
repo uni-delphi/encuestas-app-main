@@ -10,7 +10,7 @@ import {
   getResponsesForCSV,
   getAllEnunciados,
   getAllUsers,
-  getEncuesta,
+  getEncuestas,
 } from "@/lib/actions";
 
 import { cn } from "@/lib/utils";
@@ -21,7 +21,7 @@ export default async function Page() {
   const session = await getServerSession(authOptions);
   if (!session || !session.user) redirect("/");
   const { name } = session.user;
-  const encuestas = await getEncuesta();
+  const encuestas = await getEncuestas();
 
   return (
     <section className="px-10 py-20">

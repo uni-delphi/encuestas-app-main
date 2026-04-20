@@ -1,17 +1,25 @@
 import { prisma } from "../prisma";
 
-export async function getAllUsers() { 
-  return await prisma.user.findMany({
-    select: {
-      email: true,
-      name: true,
-      lastName: true,
-      role: true,
-    },
-    where: {
-      role: "USER",
-    }
-  });
+export async function getAllUsersActions(page = 0, pageSize = 10) {
+  const [usuarios, total] = await Promise.all([
+    prisma.user.findMany({
+      skip: page * pageSize,
+      take: pageSize,
+      select: {
+        email: true,
+        name: true,
+        lastName: true,
+        role: true,
+      },
+      where: {
+        NOT: {
+          role: "ADMIN",
+        },
+      },
+    }),
+    prisma.user.count(),
+  ]);
+  return { usuarios: usuarios, total, pageCount: Math.ceil(total / pageSize) };
 }
 
 export async function getUserByEmail(email: string) {
@@ -39,7 +47,7 @@ export async function logInUser(data: any) {
 }
 
 export async function updateUser(data: any, email: string) {
-  const { id } : any = await getUserByEmail(email as string);
+  const { id }: any = await getUserByEmail(email as string);
   return await prisma.user.update({
     where: {
       id,

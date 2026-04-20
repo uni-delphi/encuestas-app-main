@@ -6,7 +6,7 @@ import {
   getResponsesForCSV,
   getAllEnunciados,
   getAllUsers,
-  getEncuesta,
+  getEncuestas,
 } from "@/lib/actions";
 import { TCSVRESPONSE } from "@/types/respuestas";
 

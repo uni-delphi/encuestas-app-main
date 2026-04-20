@@ -29,7 +29,7 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { CalendarIcon, X, Plus, Loader2 } from "lucide-react";
-import { User } from "@/generated/prisma";
+import { User, Survey } from "@/generated/prisma";
 
 // --- Schema ---
 
@@ -54,7 +54,7 @@ interface Tecnologia {
 
 interface SurveyFormProps {
   availableTecnologias?: Tecnologia[];
-  onSubmit?: (data: SurveyFormData) => Promise<void>;
+  onSubmit?: (data: Partial<Survey>) => Promise<void>;
   initialData?: Partial<SurveyFormData>;
   isEditing?: boolean;
 }
@@ -107,7 +107,7 @@ export default function SurveyForm({
     );
   };
 
-  const onFormSubmit = async (data: SurveyFormData) => {
+  const onFormSubmit = async (data: Partial<Survey>) => {
     console.log("🚀 ~ onFormSubmit ~ data:", data)
     
     setIsLoading(true);
