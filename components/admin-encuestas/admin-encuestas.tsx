@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { Prisma } from "@/generated/prisma";
+import type { Prisma, Survey } from "@/generated/prisma";
 
 import {
   Card,
@@ -9,75 +9,96 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { authOptions } from "@/auth.config";
-import { getServerSession } from "next-auth";
+import { PaginationControls } from "@/components/pagination-controls/pagination-controls";
 
 type EncuestaConRelaciones = Prisma.SurveyGetPayload<{
   include: {
-    createdBy: true
+    createdBy: true;
     tecnologias: {
-      include: { enunciados: true }
-    }
-  }
-}>
+      include: { enunciados: true };
+    };
+  };
+}>;
 
 type Props = {
-  encuestas: EncuestaConRelaciones[]
-}
+  encuestas: Survey[];
+};
 
 function EncuestaCard({ encuesta }: any) {
   return (
     <Card className="bg-muted/50 hover:shadow-lg transition-shadow">
-      <CardHeader>
-        <CardTitle className="text-2xl text-pretty">{encuesta?.title}</CardTitle>
-        <div className="flex flex-col items-end gap-2">
-          <span className="text-sm text-muted-foreground">
-            Finaliza {encuesta?.endDate?.toLocaleDateString()}
-          </span>
+      <CardHeader className="w-full flex flex-row justify-between">
+        <CardTitle className="text-xl text-pretty w-2/3">
+          {encuesta?.title}
+          {"   "}
           <Badge
             variant={encuesta?.isActive ? "default" : "destructive"}
             className="rounded-full px-4"
           >
             {encuesta?.isActive ? "Activo" : "Inactivo"}
           </Badge>
+        </CardTitle>
+        <div className="w-1/3 text-right flex flex-col gap-1">
+          <span className="text-sm font-semibold text-muted-foreground">
+            Creada{" "}
+            <span className="font-bold text-black">
+              {encuesta?.createdAt?.toLocaleDateString()}
+            </span>
+          </span>
+          <span className="text-sm font-semibold text-muted-foreground">
+            Finaliza{" "}
+            <span className="font-bold text-black">
+              {encuesta?.endDate?.toLocaleDateString()}
+            </span>
+          </span>
         </div>
-        <CardDescription className="text-sm">
-          {encuesta?.description}
-        </CardDescription>
       </CardHeader>
       <CardContent>
-        <h3 className="text-sm font-medium mb-2">Tecnologías</h3>
-        <ul className="space-y-1">
+        <CardDescription className="text-sm mb-4 p-2 border-b-2 border-muted">
+          {encuesta?.description}
+        </CardDescription>
+        <h3 className="text-sm font-medium mb-1">Tecnologías</h3>
+        <ul className="space-y-1 pl-2">
           {encuesta?.tecnologias?.map((tecnologia: any, index: number) => (
             <li key={index} className="text-sm text-muted-foreground">
-              - {tecnologia.title}
-              {tecnologia.enunciados.length > 0 && (
+              {tecnologia.title}
+              {tecnologia._count.enunciados > 0 && (
                 <span className="ml-1">
-                  - {tecnologia.enunciados.length} enunciados
+                  - {tecnologia._count.enunciados} enunciados
                 </span>
               )}
             </li>
           ))}
+          {encuesta?.tecnologias.length === 0 && (
+            <li className="text-sm text-muted-foreground">
+              No hay tecnologías asociadas
+            </li>
+          )}
         </ul>
       </CardContent>
     </Card>
   );
 }
 
-export default async function AdminEncuestas({ encuestas = [] }: any) {
-  const session = await getServerSession(authOptions);
-  const dir = session?.user.role === "ADMIN" ? "/admin/encuestas" : "/investigador/encuestas";  
+export default async function AdminEncuestas({
+  encuestas = [],
+  urlLink = "/admin/encuestas",
+  page = 0,
+  pageCount = 10,
+}: {
+  encuestas: EncuestaConRelaciones[];
+  urlLink?: string;
+  page?: number;
+  pageCount?: number;
+}) {
   return (
     <div className="flex flex-col gap-4">
       {encuestas.map((encuesta: any, index: number) => (
-        <Link
-          key={index}
-          href={`${dir}/${encuesta.id}`}
-          className="block"
-        >
+        <Link key={index} href={`${urlLink}/${encuesta.id}`} className="block">
           <EncuestaCard encuesta={encuesta} />
         </Link>
       ))}
+      <PaginationControls page={page} pageCount={pageCount} />
     </div>
   );
 }

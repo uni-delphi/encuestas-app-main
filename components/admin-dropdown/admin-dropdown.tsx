@@ -67,7 +67,7 @@ export default function AdminDropDown({
           <>
             <DropdownMenuItem>
               <Link href={"/admin"} className="cursor-pointer w-[100%]">
-                Dashboard
+                Panel
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem>

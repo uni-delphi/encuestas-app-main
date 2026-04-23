@@ -34,27 +34,30 @@ export async function getAllEncuestas(userId: string) {
   });
 }
 
-export async function getEncuesta() {
-  return await prisma.survey.findMany({
-    include: {
-      tecnologias: {
-        include: {
-          enunciados: true,
+// actions.ts
+export async function getEncuestasAction(page = 0, pageSize = 10) {
+  const [encuestas, total] = await Promise.all([
+    prisma.survey.findMany({
+      skip: page * pageSize,
+      take: pageSize,
+      include: {
+        tecnologias: {
+          select: {
+            id: true,
+            title: true,
+            _count: { select: { enunciados: true } },
+          },
+          orderBy: { id: "asc" },
         },
-        orderBy: {
-          id: "asc", // or 'desc' for descending order
+        createdBy: {
+          select: { id: true, name: true, lastName: true, email: true },
         },
       },
-      createdBy: {
-        select: {
-          id: true,
-          name: true,
-          lastName: true,
-          email: true,
-        },
-      },
-    },
-  });
+    }),
+    prisma.survey.count(),
+  ]);
+
+  return { encuestas, total, pageCount: Math.ceil(total / pageSize) };
 }
 
 export async function getEncuestaInfo() {

@@ -6,7 +6,7 @@ import {
   getResponsesForCSV,
   getAllEnunciados,
   getAllUsers,
-  getEncuesta,
+  getEncuestas,
 } from "@/lib/actions";
 import { TCSVRESPONSE } from "@/types/respuestas";
 
@@ -31,13 +31,12 @@ export default async function Page({ params }: { params: { id: string } }) {
     getAllEnunciados(),
     getAllUsers(),
   ]);
-  console.log("🚀 ~ Page ~ encuesta:", encuesta);
 
   const enunciadosLabels = enunciados.map((enunciado) => ({
     label: enunciado.title,
     porcents:
       (enunciado.response.length /
-        (enunciado.questions.length * users.length)) *
+        (enunciado.questions.length * users.usuarios.length)) *
       100,
   }));
 

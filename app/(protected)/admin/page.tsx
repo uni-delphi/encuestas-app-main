@@ -7,7 +7,7 @@ import {
   getResponsesForCSV,
   getAllEnunciados,
   getAllUsers,
-  getEncuesta,
+  getEncuestas,
 } from "@/lib/actions";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -19,7 +19,7 @@ export default async function Page() {
   return (
     <section className="">
       <div>
-        <h1 className="text-4xl font-bold mb-10">Dashboard</h1>
+        <h1 className="text-4xl font-bold mb-10">Panel</h1>
         
       </div>
       <div className="flex gap-4">
