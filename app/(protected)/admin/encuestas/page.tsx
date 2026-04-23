@@ -1,5 +1,7 @@
 // app/(protected)/admin/encuestas/page.tsx
 
+import type { Prisma } from "@/generated/prisma";
+
 import { authOptions } from "@/auth.config";
 import AdminEncuestas from "@/components/admin-encuestas/admin-encuestas";
 import { Breadcrumbs } from "@/components/breadcrombs/breadcrumbs";
@@ -15,6 +17,15 @@ import { getServerSession } from "next-auth/next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+type EncuestaConRelaciones = Prisma.SurveyGetPayload<{
+  include: {
+    createdBy: true;
+    tecnologias: {
+      include: { enunciados: true };
+    };
+  };
+}>;
+
 export default async function Page({
   searchParams,
 }: {
@@ -22,18 +33,25 @@ export default async function Page({
 }) {
   const session = await getServerSession(authOptions);
   if (!session || !session.user) redirect("/");
-  //const encuestas = await getEncuestas();
-  //console.log("🚀 ~ Page ~ encuestas:", encuestas);
+
   const pageParams = await searchParams;
   const page = Math.max(0, Number(pageParams.page ?? 0));
-  const { encuestas, total, pageCount } = await getEncuestas(page);
+  const {
+    encuestas,
+    total,
+    pageCount,
+  }: { encuestas: any[]; total: number; pageCount: number } =
+    await getEncuestas(page);
+
+  const urlLink =
+    session?.user.role === "ADMIN"
+      ? "/admin/encuestas"
+      : "/investigador/encuestas";
 
   return (
     <section>
       <div className="flex gap-14 justify-between items-end">
-        <h1 className="text-4xl font-bold leading-[1]">
-          Encuestas ({encuestas.length})
-        </h1>
+        <h1 className="text-4xl font-bold leading-[1]">Encuestas ({total})</h1>
         <div className="flex gap-8 items-center">
           <Breadcrumbs items={[{ label: "Panel", href: "/admin" }]} />
           <Button asChild>
@@ -44,7 +62,7 @@ export default async function Page({
       <div className="my-10">
         <AdminEncuestas
           encuestas={encuestas}
-          session={session}
+          urlLink={urlLink}
           page={page}
           pageCount={pageCount}
         />

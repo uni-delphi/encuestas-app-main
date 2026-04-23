@@ -31,7 +31,6 @@ export default async function Page({ params }: { params: { id: string } }) {
     getAllEnunciados(),
     getAllUsers(),
   ]);
-  console.log("🚀 ~ Page ~ encuesta:", encuesta);
 
   const enunciadosLabels = enunciados.map((enunciado) => ({
     label: enunciado.title,

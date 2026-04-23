@@ -24,7 +24,7 @@ async function Page({
   return (
     <section>
       <div className="flex gap-14 items-end justify-between">
-        <h1 className="text-4xl font-bold leading-[1]">Usuarios ({usuarios.length})</h1>
+        <h1 className="text-4xl font-bold leading-[1]">Usuarios ({total})</h1>
         <Breadcrumbs items={[{ label: "Panel", href: "/admin" }]} />
       </div>
       <div className="my-10 flex flex-col gap-4 pl-[20vw]">

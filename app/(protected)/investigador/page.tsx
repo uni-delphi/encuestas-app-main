@@ -17,11 +17,28 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import AdminEncuestas from "@/components/admin-encuestas/admin-encuestas";
 
-export default async function Page() {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: { page?: string };
+}) {
   const session = await getServerSession(authOptions);
   if (!session || !session.user) redirect("/");
+  
+  const pageParams = await searchParams;
+  const page = Math.max(0, Number(pageParams.page ?? 0));
+
   const { name } = session.user;
-  const encuestas = await getEncuestas();
+  const {
+    encuestas,
+    total,
+    pageCount,
+  }: { encuestas: any[]; total: number; pageCount: number } =
+    await getEncuestas(page);
+  const urlLink =
+    session?.user.role === "ADMIN"
+      ? "/admin/encuestas"
+      : "/investigador/encuestas";
 
   return (
     <section className="px-10 py-20">
@@ -32,7 +49,7 @@ export default async function Page() {
         </Button>
       </div>
       <div className="flex flex-col gap-5">
-        <AdminEncuestas encuestas={encuestas} />
+        <AdminEncuestas encuestas={encuestas} urlLink={urlLink} page={page} pageCount={10} />
       </div>
     </section>
   );

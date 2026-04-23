@@ -60,7 +60,7 @@ export async function getEncuestas(page = 0, pageSize = 10) {
     return await Encuestas.getEncuestasAction(page, pageSize);
 }
 
-export async function getEncuestaByIdAction(id: number) {
+export async function getEncuestaById(id: number) {
   try {
     const response = await Encuestas.getEncuestaById({ id });
     return response;

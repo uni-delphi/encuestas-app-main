@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import {
   Form,
   FormControl,
@@ -11,12 +11,13 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Switch } from "@/components/ui/switch"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
+import { Tecnologias } from "@/generated/prisma";
 
 // Funcion para generar slug automaticamente desde el titulo
 function generateSlug(text: string): string {
@@ -27,36 +28,53 @@ function generateSlug(text: string): string {
     .replace(/[^a-z0-9\s-]/g, "") // Solo letras, numeros, espacios y guiones
     .trim()
     .replace(/\s+/g, "-") // Espacios a guiones
-    .replace(/-+/g, "-") // Multiples guiones a uno solo
+    .replace(/-+/g, "-"); // Multiples guiones a uno solo
+}
+
+function toDatetimeLocal(date: Date): string {
+  const offset = date.getTimezoneOffset() * 60000;
+  return new Date(date.getTime() - offset).toISOString().slice(0, 16);
 }
 
 const surveySchema = z.object({
-  title: z.string().min(1, "El titulo es requerido").max(100, "Maximo 100 caracteres"),
-  description: z.string().max(500, "Maximo 500 caracteres").optional().or(z.literal("")),
+  title: z
+    .string()
+    .min(1, "El titulo es requerido")
+    .max(100, "Maximo 100 caracteres"),
+  description: z
+    .string()
+    .max(500, "Maximo 500 caracteres")
+    .optional()
+    .or(z.literal("")),
   endDate: z.string().min(1, "La fecha de finalizacion es requerida"),
   isActive: z.boolean().default(true),
-})
+});
 
-export type SurveyFormValues = z.infer<typeof surveySchema>
+export type SurveyFormValues = z.infer<typeof surveySchema>;
 
 export interface Survey {
-  id: number
-  title: string
-  description?: string
-  slug: string
-  endDate: string
-  isActive: boolean
-  hasEnded: boolean
-  responseCount: number
-  createdAt: Date
-  updatedAt: Date
+  id: number;
+  title: string;
+  description?: string;
+  slug: string;
+  endDate: string;
+  isActive: boolean;
+  hasEnded: boolean;
+  responseCount: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 interface SurveyFormProps {
-  onSubmit: (data: SurveyFormValues & { slug: string }) => void
+  onSubmit: (data: SurveyFormValues) => void;
+  defaultValues:
+    | (Survey & {
+        tecnologias: Tecnologias[];
+      })
+    | null;
 }
 
-export function SurveyForm({ onSubmit }: SurveyFormProps) {
+export function SurveyForm({ onSubmit, defaultValues }: SurveyFormProps) {
   const form = useForm<SurveyFormValues>({
     resolver: zodResolver(surveySchema),
     defaultValues: {
@@ -65,16 +83,16 @@ export function SurveyForm({ onSubmit }: SurveyFormProps) {
       endDate: "",
       isActive: true,
     },
-  })
+  });
 
   const handleSubmit = (data: SurveyFormValues) => {
-    const slug = generateSlug(data.title)
-    onSubmit({ ...data, slug })
-    form.reset()
-  }
+    const slug = generateSlug(data.title);
+    onSubmit(data);
+    form.reset();
+  };
 
-  const watchTitle = form.watch("title")
-  const previewSlug = generateSlug(watchTitle || "")
+  const watchTitle = form.watch("title");
+  const previewSlug = generateSlug(watchTitle || "");
 
   return (
     <Card>
@@ -83,7 +101,10 @@ export function SurveyForm({ onSubmit }: SurveyFormProps) {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col gap-4">
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="flex flex-col gap-4"
+          >
             <FormField
               control={form.control}
               name="title"
@@ -91,7 +112,11 @@ export function SurveyForm({ onSubmit }: SurveyFormProps) {
                 <FormItem>
                   <FormLabel>Titulo</FormLabel>
                   <FormControl>
-                    <Input placeholder="Ej: Encuesta de satisfaccion" {...field} />
+                    <Input
+                      placeholder="Ej: Encuesta de satisfaccion"
+                      {...field}
+                      value={defaultValues?.title || ""}
+                    />
                   </FormControl>
                   {previewSlug && (
                     <FormDescription className="font-mono text-xs">
@@ -114,6 +139,7 @@ export function SurveyForm({ onSubmit }: SurveyFormProps) {
                       placeholder="Describe el proposito de la encuesta..."
                       rows={3}
                       {...field}
+                      value={defaultValues?.description || ""}
                     />
                   </FormControl>
                   <FormMessage />
@@ -128,7 +154,11 @@ export function SurveyForm({ onSubmit }: SurveyFormProps) {
                 <FormItem>
                   <FormLabel>Fecha de finalizacion</FormLabel>
                   <FormControl>
-                    <Input type="datetime-local" {...field} />
+                    <Input
+                      type="datetime-local"
+                      {...field}
+                      value={defaultValues?.endDate ? toDatetimeLocal(new Date(defaultValues?.endDate ?? field.value)) : ""}
+                    />
                   </FormControl>
                   <FormDescription>
                     La encuesta se cerrara automaticamente en esta fecha
@@ -151,7 +181,7 @@ export function SurveyForm({ onSubmit }: SurveyFormProps) {
                   </div>
                   <FormControl>
                     <Switch
-                      checked={field.value}
+                      checked={defaultValues?.isActive ?? field.value}
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
@@ -166,5 +196,5 @@ export function SurveyForm({ onSubmit }: SurveyFormProps) {
         </Form>
       </CardContent>
     </Card>
-  )
+  );
 }

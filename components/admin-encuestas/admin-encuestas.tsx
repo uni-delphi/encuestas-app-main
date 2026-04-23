@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { Prisma } from "@/generated/prisma";
+import type { Prisma, Survey } from "@/generated/prisma";
 
 import {
   Card,
@@ -21,7 +21,7 @@ type EncuestaConRelaciones = Prisma.SurveyGetPayload<{
 }>;
 
 type Props = {
-  encuestas: EncuestaConRelaciones[];
+  encuestas: Survey[];
 };
 
 function EncuestaCard({ encuesta }: any) {
@@ -82,18 +82,19 @@ function EncuestaCard({ encuesta }: any) {
 
 export default async function AdminEncuestas({
   encuestas = [],
-  session,
-  page,
-  pageCount,
-}: any) {
-  const dir =
-    session?.user.role === "ADMIN"
-      ? "/admin/encuestas"
-      : "/investigador/encuestas";
+  urlLink = "/admin/encuestas",
+  page = 0,
+  pageCount = 10,
+}: {
+  encuestas: EncuestaConRelaciones[];
+  urlLink?: string;
+  page?: number;
+  pageCount?: number;
+}) {
   return (
     <div className="flex flex-col gap-4">
       {encuestas.map((encuesta: any, index: number) => (
-        <Link key={index} href={`${dir}/${encuesta.id}`} className="block">
+        <Link key={index} href={`${urlLink}/${encuesta.id}`} className="block">
           <EncuestaCard encuesta={encuesta} />
         </Link>
       ))}

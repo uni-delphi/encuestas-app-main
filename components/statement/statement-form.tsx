@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import {
   Form,
   FormControl,
@@ -11,18 +11,20 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
+import { Enunciados, Tecnologias } from "@/generated/prisma";
+import { useEffect } from "react";
 
 // Funcion para generar slug automaticamente desde el titulo
 function generateSlug(text: string): string {
@@ -33,57 +35,80 @@ function generateSlug(text: string): string {
     .replace(/[^a-z0-9\s-]/g, "") // Solo letras, numeros, espacios y guiones
     .trim()
     .replace(/\s+/g, "-") // Espacios a guiones
-    .replace(/-+/g, "-") // Multiples guiones a uno solo
+    .replace(/-+/g, "-"); // Multiples guiones a uno solo
 }
 
 const statementSchema = z.object({
-  title: z.string().min(1, "El titulo es requerido").max(200, "Maximo 200 caracteres"),
-  description: z.string().min(1, "La descripcion es requerida").max(1000, "Maximo 1000 caracteres"),
+  title: z
+    .string()
+    .min(1, "El titulo es requerido")
+    .max(200, "Maximo 200 caracteres"),
+  description: z
+    .string()
+    .min(1, "La descripcion es requerida")
+    .max(1000, "Maximo 1000 caracteres"),
   tecnologiaId: z.string().min(1, "Debes seleccionar una tecnologia"),
-})
+});
 
-export type StatementFormValues = z.infer<typeof statementSchema>
+export type StatementFormValues = z.infer<typeof statementSchema>;
 
 export interface Statement {
-  id: number
-  title: string
-  description: string
-  slug: string
-  tecnologiaId: number
-  tecnologiaTitle: string
-  createdAt: Date
-  updatedAt: Date
+  id: number;
+  title: string;
+  description: string;
+  slug: string;
+  tecnologiaId: number;
+  tecnologiaTitle: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface Tecnologia {
-  id: number
-  title: string
+  id: number;
+  title: string;
 }
 
 interface StatementFormProps {
-  onSubmit: (data: StatementFormValues & { slug: string }) => void
-  tecnologias: Tecnologia[]
+  onSubmit: (data: StatementFormValues & { slug: string }) => void;
+  tecnologias: Tecnologia[];
+  defaultValues?: Partial<Enunciados>;
 }
 
-export function StatementForm({ onSubmit, tecnologias }: StatementFormProps) {
+export function StatementForm({
+  onSubmit,
+  tecnologias,
+  defaultValues,
+}: StatementFormProps) {
   const form = useForm<StatementFormValues>({
-    resolver: zodResolver(statementSchema),
+    resolver: zodResolver(statementSchema), // 👈 faltaba
     defaultValues: {
-      title: "",
-      description: "",
-      tecnologiaId: "",
+      title: defaultValues?.title ?? "",
+      description: defaultValues?.description ?? "",
+      tecnologiaId: defaultValues?.tecnologiaId
+        ? String(defaultValues.tecnologiaId) // 👈 number → string
+        : "",
     },
-  })
+  });
+
+  useEffect(() => {
+    form.reset({
+      title: defaultValues?.title ?? "",
+      description: defaultValues?.description ?? "",
+      tecnologiaId: defaultValues?.tecnologiaId
+        ? String(defaultValues.tecnologiaId) // 👈 number → string
+        : "",
+    });
+  }, [defaultValues]);
 
   const handleSubmit = (data: StatementFormValues) => {
-    const slug = generateSlug(data.title)
-    onSubmit({ ...data, slug })
-    form.reset()
-  }
+    const slug = generateSlug(data.title);
+    onSubmit({ ...data, slug });
+    form.reset();
+  };
 
-  const watchTitle = form.watch("title")
-  const previewSlug = generateSlug(watchTitle || "")
-
+  const watchTitle = form.watch("title");
+  const previewSlug = generateSlug(watchTitle || "");
+  const isEditing = !!defaultValues?.id;
   return (
     <Card>
       <CardHeader>
@@ -91,7 +116,10 @@ export function StatementForm({ onSubmit, tecnologias }: StatementFormProps) {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col gap-4">
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="flex flex-col gap-4"
+          >
             <FormField
               control={form.control}
               name="title"
@@ -99,7 +127,10 @@ export function StatementForm({ onSubmit, tecnologias }: StatementFormProps) {
                 <FormItem>
                   <FormLabel>Titulo</FormLabel>
                   <FormControl>
-                    <Input placeholder="Ej: Fundamentos de React Hooks" {...field} />
+                    <Input
+                      placeholder="Ej: Fundamentos de React Hooks"
+                      {...field}
+                    />
                   </FormControl>
                   {previewSlug && (
                     <FormDescription className="font-mono text-xs">
@@ -163,12 +194,16 @@ export function StatementForm({ onSubmit, tecnologias }: StatementFormProps) {
               )}
             />
 
-            <Button type="submit" className="w-full" disabled={tecnologias.length === 0}>
-              Crear Enunciado
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={tecnologias.length === 0}
+            >
+              {isEditing ? "Guardar cambios" : "Crear Enunciado"} {/* 👈 */}
             </Button>
           </form>
         </Form>
       </CardContent>
     </Card>
-  )
+  );
 }
