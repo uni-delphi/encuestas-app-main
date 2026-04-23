@@ -1,7 +1,10 @@
-import { db } from "../prisma";
+import { Survey } from "@/generated/prisma";
+import { prisma } from "../prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/auth.config";
 
 export async function getAllEncuestas(userId: string) {
-  return await db.survey.findMany({
+  return await prisma.survey.findMany({
     include: {
       tecnologias: {
         include: {
@@ -31,31 +34,34 @@ export async function getAllEncuestas(userId: string) {
   });
 }
 
-export async function getEncuesta() {
-  return await db.survey.findMany({
-    include: {
-      tecnologias: {
-        include: {
-          enunciados: true,
+// actions.ts
+export async function getEncuestasAction(page = 0, pageSize = 10) {
+  const [encuestas, total] = await Promise.all([
+    prisma.survey.findMany({
+      skip: page * pageSize,
+      take: pageSize,
+      include: {
+        tecnologias: {
+          select: {
+            id: true,
+            title: true,
+            _count: { select: { enunciados: true } },
+          },
+          orderBy: { id: "asc" },
         },
-        orderBy: {
-          id: "asc", // or 'desc' for descending order
+        createdBy: {
+          select: { id: true, name: true, lastName: true, email: true },
         },
       },
-      createdBy: {
-        select: {
-          id: true,
-          name: true,
-          lastName: true,
-          email: true,
-        },
-      },
-    },
-  });
+    }),
+    prisma.survey.count(),
+  ]);
+
+  return { encuestas, total, pageCount: Math.ceil(total / pageSize) };
 }
 
 export async function getEncuestaInfo() {
-  return await db.survey.findMany({
+  return await prisma.survey.findMany({
     include: {
       tecnologias: {
         include: {
@@ -82,7 +88,7 @@ export async function getEncuestaInfo() {
 }
 
 export async function getTecnologia(slug: string) {
-  return await db.tecnologias.findFirst({
+  return await prisma.tecnologias.findFirst({
     where: {
       slug,
     },
@@ -101,7 +107,7 @@ export async function getEnunciado({
   dataUserId: string;
   dataEnunciadoId: any;
 }) {
-  return await db.enunciados.findFirst({
+  return await prisma.enunciados.findFirst({
     where: {
       slug: dataSlug,
     },
@@ -131,7 +137,7 @@ export async function getEnunciado({
 }
 
 export async function getAllEnunciados() {
-  return await db.enunciados.findMany({
+  return await prisma.enunciados.findMany({
     include: {
       response: true,
       questions: true,
@@ -144,9 +150,9 @@ export async function getAllEnunciados() {
 
 export async function getExampleResponses(
   //questionId: number,
-  enunciadosId: number
+  enunciadosId: number,
 ) {
-  return await db.response.findFirst({
+  return await prisma.response.findFirst({
     where: {
       enunciadosId,
       //questionId,
@@ -158,7 +164,7 @@ export async function getExampleResponses(
 }
 
 export async function updateEncuesta(surveyId: number, data: any) {
-  return await db.survey.update({
+  return await prisma.survey.update({
     where: {
       id: surveyId,
     },
@@ -168,7 +174,7 @@ export async function updateEncuesta(surveyId: number, data: any) {
 
 export async function getSlugs() {
   let index = 0;
-  const response = await db.tecnologias.findMany({
+  const response = await prisma.tecnologias.findMany({
     select: {
       slug: true,
       enunciados: true,
@@ -177,15 +183,52 @@ export async function getSlugs() {
       id: "asc",
     },
   });
-  
+
   return response.reduce((acc: any, item: any) => {
     item.enunciados.forEach((enunciado: any) => {
-      acc.push({ 
-        index: index++, 
+      acc.push({
+        index: index++,
         tecnologiaSlug: item.slug,
-        enunciadoSlug: enunciado.slug 
+        enunciadoSlug: enunciado.slug,
       });
     });
     return acc;
   }, []);
+}
+
+export async function createEncuesta(data: Partial<Survey>) {
+  const session = await getServerSession(authOptions);
+
+  return await prisma.survey.create({
+    data: {
+      title: data.title!,
+      description: data.description,
+      isActive: data.isActive,
+      endDate: data.endDate!,
+      createdById: session?.user.id!,
+    },
+  });
+}
+
+export async function getEncuestaById(params: { id: number }) {
+  return await prisma.survey.findUnique({
+    where: {
+      id: params.id,
+    },
+    include: {
+      tecnologias: {
+        include: {
+          enunciados: true,
+        },
+      },
+      createdBy: {
+        select: {
+          id: true,
+          name: true,
+          lastName: true,
+          email: true,
+        },
+      },
+    },
+  });
 }

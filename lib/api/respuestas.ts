@@ -1,11 +1,11 @@
-import { db } from "../prisma";
+import { prisma } from "../prisma";
 
 export async function getSampleRespuestasByEnunciado(
   enunciadosId: number,
   respondentId: string,
   responseType: any
 ) {
-  return await db.response.findMany({
+  return await prisma.response.findMany({
     where: {
       enunciadosId,
       responseType,
@@ -25,7 +25,7 @@ export async function getSampleRespuestasByEnunciado(
 }
 
 export async function getResponsesForCSV() {
-  const formattedData = await db.response.findMany({
+  const formattedData = await prisma.response.findMany({
     include: {
       respondent: true,
       singleChoice: {
@@ -88,7 +88,7 @@ export async function getResponsesForCSV() {
 }
 
 export async function getAllMyResponses(userId: string){
-  return await db.response.findMany({
+  return await prisma.response.findMany({
     where: {
       respondentId: userId,
     },
@@ -148,7 +148,7 @@ export async function createResponse(newResponseData: any) {
     };
   }
 
-  return await db.response.create({
+  return await prisma.response.create({
     data,
     // Include relations
     include: {
@@ -162,7 +162,7 @@ export async function updateSingleChoiceResponse(
   responseId: number,
   data: any
 ) {
-  return await db.singleChoiceResponse.update({
+  return await prisma.singleChoiceResponse.update({
     where: {
       id: responseId,
     },
@@ -171,7 +171,7 @@ export async function updateSingleChoiceResponse(
 }
 
 export async function updateCheckboxResponse(responseId: number, data: any) {
-  return await db.checkboxResponse.update({
+  return await prisma.checkboxResponse.update({
     where: {
       id: responseId,
     },

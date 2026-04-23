@@ -9,6 +9,7 @@ import { TUser, TLoginUser } from "@/types/user";
 import * as Users from "@/lib/api/users";
 import * as Encuestas from "@/lib/api/encuestas";
 import * as Respuestas from "@/lib/api/respuestas";
+import { Survey } from "@/generated/prisma";
 
 export async function createUser(data: TUser) {
   let user = null;
@@ -33,7 +34,6 @@ export async function loginUser(data: TLoginUser) {
   let eventId = null;
   try {
     const result = await Users.logInUser(data);
-    console.log("login:", result);
     eventId = result?.id;
   } catch (error) {
     console.log("Error login:", error);
@@ -56,9 +56,13 @@ export async function getAllEncuestas(userId: string) {
   }
 }
 
-export async function getEncuesta() {
+export async function getEncuestas(page = 0, pageSize = 10) {
+    return await Encuestas.getEncuestasAction(page, pageSize);
+}
+
+export async function getEncuestaById(id: number) {
   try {
-    const response = await Encuestas.getEncuesta();
+    const response = await Encuestas.getEncuestaById({ id });
     return response;
   } catch (error: any) {
     console.log(error);
@@ -105,9 +109,17 @@ export async function getEnunciado({
   }
 }
 
-export async function getSampleRespuestasByEnunciado(enunciadosId: number, respondentId: string, responseType: any){
+export async function getSampleRespuestasByEnunciado(
+  enunciadosId: number,
+  respondentId: string,
+  responseType: any,
+) {
   try {
-    return await Respuestas.getSampleRespuestasByEnunciado(enunciadosId, respondentId , responseType);
+    return await Respuestas.getSampleRespuestasByEnunciado(
+      enunciadosId,
+      respondentId,
+      responseType,
+    );
   } catch (error: any) {
     console.log(error);
     throw Error("Error getTecnologia", error);
@@ -126,19 +138,25 @@ export async function getExampleResponses(enunciadosId: number) {
 export async function createResponse(data: any) {
   try {
     const response = await Respuestas.createResponse(data);
-    revalidatePath('/')
+    revalidatePath("/");
     return response;
   } catch (error) {
     console.log("Error creando el createResponse:", error);
     throw new Error("Error creando el createResponse");
-  }  
+  }
   revalidatePath("/impresoras-3d/enunciado-sobre-impresoras-3d-de-plasticoas");
 }
 
-export async function updateSingleChoiceResponse(data: any, responseId: number) {
+export async function updateSingleChoiceResponse(
+  data: any,
+  responseId: number,
+) {
   try {
-    const response = await Respuestas.updateSingleChoiceResponse(responseId, data);
-    revalidatePath('/')
+    const response = await Respuestas.updateSingleChoiceResponse(
+      responseId,
+      data,
+    );
+    revalidatePath("/");
     return response;
   } catch (error) {
     console.log("Error editando el updateSingleChoiceResponse:", error);
@@ -149,7 +167,7 @@ export async function updateSingleChoiceResponse(data: any, responseId: number) 
 export async function updateCheckboxResponse(data: any, responseId: number) {
   try {
     const response = await Respuestas.updateCheckboxResponse(responseId, data);
-    revalidatePath('/')
+    revalidatePath("/");
     return response;
   } catch (error) {
     console.log("Error editando el updateCheckboxResponse:", error);
@@ -184,9 +202,9 @@ export async function getAllEnunciados() {
   }
 }
 
-export async function getAllUsers() {
+export async function getAllUsers(page = 0, pageSize = 10) {
   try {
-    return await Users.getAllUsers();
+    return await Users.getAllUsersActions(page, pageSize);
   } catch (error: any) {
     console.log(error);
     throw Error("Error getAllEnunciados", error);
@@ -195,8 +213,8 @@ export async function getAllUsers() {
 
 export async function updateEncuesta(surveyId: number, data: any) {
   try {
-    const response =  await Encuestas.updateEncuesta(surveyId, data);
-    revalidatePath('/');
+    const response = await Encuestas.updateEncuesta(surveyId, data);
+    revalidatePath("/");
     return response;
   } catch (error: any) {
     console.log(error);
@@ -211,4 +229,16 @@ export async function getSlugs() {
     console.log(error);
     throw Error("Error getSlugs", error);
   }
+}
+
+export async function createEncuestaAction(data: Survey) {
+  try {
+    const response = await Encuestas.createEncuesta(data);
+    revalidatePath("/admin");
+    return response;
+  } catch (error: any) {
+    console.log(error);
+    throw Error("Error creando la encuesta", error);
+  }
+  revalidatePath("/admin");
 }
