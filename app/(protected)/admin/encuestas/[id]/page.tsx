@@ -36,7 +36,7 @@ export default async function Page({ params }: { params: { id: string } }) {
     getAllUsers(),
   ]);
 
-  /*const enunciadosLabels = enunciados.map((enunciado: any) => ({
+  const enunciadosLabels = enunciados.map((enunciado: any) => ({
     label: enunciado.title,
     porcents:
       (enunciado.response.length /
@@ -88,7 +88,7 @@ export default async function Page({ params }: { params: { id: string } }) {
     ],
     data: respuestas ?? [],
   };
-*/
+
   return (
     <section>
       <div className="flex flex-col gap-14 justify-center ">
@@ -116,10 +116,11 @@ export default async function Page({ params }: { params: { id: string } }) {
         </h2>
       </div>
       <p>{encuesta?.description}</p>
-      {/*<BarChart chartData={chartData} chartOptions={chartOptions} />*/}
+      <BarChart chartData={chartData} chartOptions={chartOptions} />
       <div className="flex md:block items-center gap-2">
-        {/*<CloseSurvey encuesta={encuesta || []} />*/}
-        {/*<DescargarCsv props={datas} />*/}
+        
+        {/*<CloseSurvey encuesta={encuesta || []} />
+        <DescargarCsv props={datas} />*/}
       </div>
       {encuesta && (
         <div>
