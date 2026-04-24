@@ -14,7 +14,7 @@ model Survey {
   id            Int           @id @default(autoincrement())
   title         String
   description   String?
-  createdBy     User          @relation(fields: [createdById], references: [id])
+  createdBy     User          @relation("CreatedSurveys", fields: [createdById], references: [id])
   createdById   String
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
@@ -23,6 +23,7 @@ model Survey {
   isActive      Boolean       @default(true)
   hasEnded      Boolean       @default(false)
   endDate       DateTime
+  assignedUsers User[] @relation("AssignedSurveys")
 }
 
 model Tecnologias {
@@ -169,7 +170,8 @@ model User {
   role               RoleType             @default(USER)
   accounts           Account[]
   sessions           Session[]
-  createdSurveys     Survey[] // Relación inversa para las encuestas creadas por el administrador
+  createdSurveys     Survey[]             @relation("CreatedSurveys")// Relación inversa para las encuestas creadas por el administrador
+  assignedSurveys    Survey[]             @relation("AssignedSurveys")
   responses          Response[] // Add this line to establish the relation with responses
   passwordReserToken PasswordReserToken[]
   //singleChoiceResponses SingleChoiceResponse[] // Add this line to establish the relation with single choice responses
