@@ -1,4 +1,3 @@
-import React from "react";
 
 import Link from "next/link";
 
@@ -10,12 +9,11 @@ import { getServerSession } from "next-auth/next";
 import { Session } from "next-auth";
 import { authOptions } from "@/auth.config";
 import { redirect } from "next/navigation";
+import { redirectStrategy } from "@/lib/constants";
 
 export default async function LogIn() {
   const session: Session | null = await getServerSession(authOptions);
-  const redirectUrl = session?.user.role === "ADMIN" ? "/admin" : "/estado/1";
-
-  if (session) redirect(redirectUrl);
+  if (session) redirect(redirectStrategy[session.user.role]);
 
   return (
     <main>
@@ -29,7 +27,7 @@ export default async function LogIn() {
           </Button>
           <Link
             href={"/registro"}
-            className="bg-transparent text-black hover:text-blue-600 hover:bg-gray-200 font-bold py-2 px-4 rounded"
+            className="bg-transparent text-blue-600 border hover:bg-gray-200 text-sm font-semibold py-2 px-4 rounded"
           >
             Registrarme
           </Link>

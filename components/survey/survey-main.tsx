@@ -97,13 +97,13 @@ export default function SurveyMain({
                       Tecnologías
                       {encuesta && (
                         <span className="ml-1.5 rounded-full bg-muted px-1.5 py-0.5 text-xs text-muted-foreground">
-                          {encuesta?.tecnologias.length}
+                          {encuesta?.tecnologias?.length}
                         </span>
                       )}
                     </TabsTrigger>
                     <TabsTrigger
                       value="enunciados"
-                      disabled={encuesta?.tecnologias.length === 0}
+                      disabled={encuesta?.tecnologias?.length === 0}
                     >
                       Enunciados
                       {encuesta && (

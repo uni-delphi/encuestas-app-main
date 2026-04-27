@@ -1,15 +1,15 @@
-// app/(admin)/layout.tsx
+// app/(researcher)/layout.tsx
 
+import { redirect } from "next/navigation";
+import { ROLE_HIERARCHY } from "@/lib/permissions";
 import { authOptions } from "@/auth.config";
-import AdminLayoutComponent from "@/components/admin-layout/layout-component";
-import { Breadcrumbs } from "@/components/breadcrombs/breadcrumbs";
+import { getServerSession, Session } from "next-auth";
 import LayoutDefault from "@/components/image-layout/image-layout";
+import AdminLayoutComponent from "@/components/admin-layout/layout-component";
 import NavBar from "@/components/nav-bar/nav-bar";
 import { redirectStrategy } from "@/lib/constants";
-import { getServerSession, Session } from "next-auth";
-import { redirect } from "next/navigation";
 
-export default async function AdminLayout({
+export default async function ResearcherLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -17,19 +17,19 @@ export default async function AdminLayout({
   const session = await getServerSession(authOptions);
 
   if (!session?.user) redirect("/login");
-  if (session.user.role !== "ADMIN") redirect(redirectStrategy[session.user.role] || "/admin");
+  if (ROLE_HIERARCHY[session.user.role] < ROLE_HIERARCHY["USER"]) redirect(redirectStrategy[session.user.role] || "/encuestas");
 
   return (
     <main className="max-w-[1440px] mx-auto">
-      <NavBar
+      {/*<NavBar
         encuesta={[]}
         user={session.user}
         title={""}
         session={session as Session}
         slugs={[]}
-      />
+      />*/}
       <div className="min-h-screen">
-        <AdminLayoutComponent>{children}</AdminLayoutComponent>
+        {/*<AdminLayoutComponent>*/}{children}{/*</AdminLayoutComponent>*/}
       </div>
     </main>
   );

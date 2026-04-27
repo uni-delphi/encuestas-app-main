@@ -59,7 +59,7 @@ export default function Enunciado({
       </p>
       <div className="flex-auto w-full py-2 md:py-0 md:w-1/3 text-right">
         <Link
-          href={`/${tecnologia.slug}/${enunciado.slug}`}
+          href={`/encuestas/${tecnologia.slug}/${enunciado.slug}`}
           className="bg-blue-500 hover:bg-gray-200 hover:text-blue-600 text-white font-bold py-2 px-4 rounded"
         >
           {level.buttonText}

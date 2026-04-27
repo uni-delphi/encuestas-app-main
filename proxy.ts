@@ -5,15 +5,13 @@ import { hasRole } from "@/lib/permissions";
 
 const PROTECTED_ROUTES: { pattern: RegExp; requiredRole: RoleType }[] = [
   // ADMIN only
-  { pattern: /^\/admin(\/.*)?$/,                          requiredRole: RoleType.ADMIN },
+  { pattern: /^\/admin(\/.*)?$/, requiredRole: RoleType.ADMIN },
 
   // RESEARCHER or above
-  { pattern: /^\/investigador(\/.*)?$/,                   requiredRole: RoleType.RESEARCHER },
+  { pattern: /^\/investigador(\/.*)?$/, requiredRole: RoleType.RESEARCHER },
 
   // Any authenticated user
-  { pattern: /^\/bienvenido$/,                            requiredRole: RoleType.USER },
-  { pattern: /^\/estado(\/.*)?$/,                         requiredRole: RoleType.USER },
-  { pattern: /^\/finalizado$/,                            requiredRole: RoleType.USER },
+  { pattern: /^\/encuestas(\/.*)?$/, requiredRole: RoleType.USER },
 ];
 
 export default withAuth(
@@ -55,8 +53,6 @@ export const config = {
   matcher: [
     "/admin/:path*",
     "/investigador/:path*",
-    "/bienvenido",
-    "/estado/:path*",
-    "/finalizado",
+    "/encuestas/:path*",
   ],
 };
