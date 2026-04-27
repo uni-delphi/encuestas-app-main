@@ -27,6 +27,7 @@ import { TUser } from "@/types/user";
 import { Loader2 } from "lucide-react";
 import { signIn } from "next-auth/react";
 import GoogleLoginButton from "../google-login-button/google-login-button";
+import { redirectStrategy } from "@/lib/constants";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Email inválido" }),
@@ -50,11 +51,12 @@ export default function LogInForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    const resp = await signIn("credentials", {
+    const resp: any = await signIn("credentials", {
       email: values.email,
       password: values.password,
       redirect: false,
     });
+    console.log("🚀 ~ onSubmit ~ resp:", resp)
 
     if (resp?.ok === false) {
       setIsLoading(false);
@@ -64,7 +66,8 @@ export default function LogInForm() {
       });
     }
 
-    router.push(`/estado/1`);
+    //router.push(redirectStrategy[resp?.user?.role as any] || "/encuestas")
+    
   }
 
   return (

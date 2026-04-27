@@ -3,7 +3,11 @@ import { prisma } from "../prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/auth.config";
 
-export async function getAllEncuestas(userId: string) {
+export async function getAllEncuestas() {
+  const session = await getServerSession(authOptions);
+  if (!session?.user) throw new Error("No autenticado");
+
+  const { id: userId, role } = session.user;
   return await prisma.survey.findMany({
     include: {
       tecnologias: {
@@ -55,6 +59,59 @@ export async function getEncuestasAction(page = 0, pageSize = 10) {
       },
     }),
     prisma.survey.count(),
+  ]);
+
+  return { encuestas, total, pageCount: Math.ceil(total / pageSize) };
+}
+
+export async function getMyEncuestas(page = 0, pageSize = 10) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user) throw new Error("No autenticado");
+
+  const { id: userId, role } = session.user;
+  const [encuestas, total] = await Promise.all([
+    prisma.survey.findMany({
+      where: {
+        createdById: userId,
+      },
+      skip: page * pageSize,
+      take: pageSize,
+    }),
+    prisma.survey.count({
+      where: {
+        createdById: userId,
+      },
+    }),
+  ]);
+
+  return { encuestas, total, pageCount: Math.ceil(total / pageSize) };
+}
+
+export async function getMyEncuestasByAssignedAction(page = 0, pageSize = 10) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user) throw new Error("No autenticado");
+  const { id: userId, role } = session.user;
+  const [encuestas, total] = await Promise.all([
+    prisma.survey.findMany({
+      where: {
+        assignedUsers: {
+          some: {
+            id: userId,
+          },
+        },
+      },
+      skip: page * pageSize,
+      take: pageSize,
+    }),
+    prisma.survey.count({
+      where: {
+        assignedUsers: {
+          some: {
+            id: userId,
+          },
+        },
+      },
+    }),
   ]);
 
   return { encuestas, total, pageCount: Math.ceil(total / pageSize) };
@@ -203,6 +260,7 @@ export async function createEncuesta(data: Partial<Survey>) {
     data: {
       title: data.title!,
       description: data.description,
+      slug: data.slug!,
       isActive: data.isActive,
       endDate: data.endDate!,
       createdById: session?.user.id!,

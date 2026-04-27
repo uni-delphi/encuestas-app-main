@@ -1,4 +1,3 @@
-import React from "react";
 
 import Link from "next/link";
 
@@ -10,12 +9,11 @@ import { getServerSession } from "next-auth/next";
 import { Session } from "next-auth";
 import { authOptions } from "@/auth.config";
 import { redirect } from "next/navigation";
+import { redirectStrategy } from "@/lib/constants";
 
 export default async function LogIn() {
   const session: Session | null = await getServerSession(authOptions);
-  const redirectUrl = session?.user.role === "ADMIN" ? "/admin" : "/estado/1";
-
-  if (session) redirect(redirectUrl);
+  if (session) redirect(redirectStrategy[session.user.role]);
 
   return (
     <main>

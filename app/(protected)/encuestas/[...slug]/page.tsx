@@ -24,28 +24,29 @@ export default async function Page({
 
   const data = (await params) || [];
   const [techSlug, enunciadoSlug] = data.slug;
+  console.log("🚀 ~ Page ~ techSlug, enunciadoSlug:", techSlug, enunciadoSlug)
 
 
   let emptyEnunciadoSlug: string = "";
   let emptyEnunciadoId: number = 0;
 
-  const encuestas: any = await getAllEncuestas(user.id);
-  if(!encuestas || encuestas.length === 0) redirect("/estado");
+  const encuestas: any = await getAllEncuestas();
+  if(!encuestas || encuestas.length === 0) redirect("/encuestas/estado");
 
 
   const { hasEnded, endDate, isActive } = encuestas[0];
 
   if (surveyHasEnded({ endDate, isActive, hasEnded })) {
-    redirect("/finalizado");
+    redirect("/encuestas/finalizado");
   }
 
   const slugs = await getSlugs();
 
-  const techElegida = encuestas[0]?.tecnologias.find(
+  const techElegida = encuestas[1]?.tecnologias.find(
     (data: any) => data.slug === techSlug
-  );
+  );//revisar para q sea segun el slug
 
-  if (!techElegida) redirect("/estado");
+  if (!techElegida) redirect("/encuestas");
 
   const enunciadoElegido = techElegida.enunciados.find(
     (data: any) => data.slug === enunciadoSlug

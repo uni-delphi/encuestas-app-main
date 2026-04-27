@@ -10,6 +10,7 @@ import * as Users from "@/lib/api/users";
 import * as Encuestas from "@/lib/api/encuestas";
 import * as Respuestas from "@/lib/api/respuestas";
 import { Survey } from "@/generated/prisma";
+import { redirectStrategy } from "@/lib/constants";
 
 export async function createUser(data: TUser) {
   let user = null;
@@ -32,23 +33,28 @@ export async function createUser(data: TUser) {
 
 export async function loginUser(data: TLoginUser) {
   let eventId = null;
+  let result = null;
   try {
-    const result = await Users.logInUser(data);
+    result = await Users.logInUser(data);
     eventId = result?.id;
   } catch (error) {
     console.log("Error login:", error);
     throw new Error("Error login");
-  }
-  if (eventId) {
-    redirect(`/estado/1`);
+  } finally {
+    console.log("🚀 ~ loginUser ~ result:", result)
+    if (result) {
+
+      redirect(redirectStrategy[result?.role]);
+     
+    }
   }
 
   revalidatePath("/dashboard");
 }
 
-export async function getAllEncuestas(userId: string) {
+export async function getAllEncuestas() {
   try {
-    const response = await Encuestas.getAllEncuestas(userId);
+    const response = await Encuestas.getAllEncuestas();
     return response;
   } catch (error: any) {
     console.log(error);
@@ -57,7 +63,7 @@ export async function getAllEncuestas(userId: string) {
 }
 
 export async function getEncuestas(page = 0, pageSize = 10) {
-    return await Encuestas.getEncuestasAction(page, pageSize);
+  return await Encuestas.getEncuestasAction(page, pageSize);
 }
 
 export async function getEncuestaById(id: number) {
@@ -67,6 +73,26 @@ export async function getEncuestaById(id: number) {
   } catch (error: any) {
     console.log(error);
     throw Error("Error getEncuesta", error);
+  }
+}
+
+export async function getMyEncuestas(page = 0, pageSize = 10) {
+  try {
+    const response = await Encuestas.getMyEncuestas(page, pageSize);
+    return response;
+  } catch (error: any) {
+    console.log(error);
+    throw Error("Error getMyEncuestas", error);
+  }
+}
+
+export async function getMyEncuestasByAssigned(page = 0, pageSize = 10) {
+  try {
+    const response = await Encuestas.getMyEncuestasByAssignedAction(page, pageSize);
+    return response;
+  } catch (error: any) {
+    console.log(error);
+    throw Error("Error getMyEncuestasByAssigned", error);
   }
 }
 
@@ -184,9 +210,9 @@ export async function getResponsesForCSV() {
   }
 }
 
-export async function getAllMyResponses(userId: string) {
+export async function getAllMyResponses() {
   try {
-    return await Respuestas.getAllMyResponses(userId);
+    return await Respuestas.getAllMyResponses();
   } catch (error: any) {
     console.log(error);
     throw Error("Error getAllMyResponses", error);
@@ -208,6 +234,15 @@ export async function getAllUsers(page = 0, pageSize = 10) {
   } catch (error: any) {
     console.log(error);
     throw Error("Error getAllEnunciados", error);
+  }
+}
+
+export async function getAllUsersAssignedToMySurveys(page = 0, pageSize = 10) {
+  try {
+    return await Users.getAllUsersAssignedToMySurveysAction(page, pageSize);
+  } catch (error: any) {
+    console.log(error);
+    throw Error("Error getAllUsersAssignedToMySurveys", error);
   }
 }
 

@@ -1,10 +1,7 @@
-import Link from "next/link";
-import { redirect } from "next/navigation";
+// app/(protected)/investigador/page.tsx
+import { getServerSession } from "next-auth";
 import { authOptions } from "@/auth.config";
-import { getServerSession, Session } from "next-auth";
-
-import LayoutDefault from "@/components/image-layout/image-layout";
-import NavBar from "@/components/nav-bar/nav-bar";
+import { redirect } from "next/navigation";
 
 import {
   getResponsesForCSV,
@@ -12,44 +9,49 @@ import {
   getAllUsers,
   getEncuestas,
 } from "@/lib/actions";
-
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import AdminEncuestas from "@/components/admin-encuestas/admin-encuestas";
+import Link from "next/link";
+import { redirectStrategy } from "@/lib/constants";
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams: { page?: string };
-}) {
+export default async function Page() {
   const session = await getServerSession(authOptions);
-  if (!session || !session.user) redirect("/");
-  
-  const pageParams = await searchParams;
-  const page = Math.max(0, Number(pageParams.page ?? 0));
-
-  const { name } = session.user;
-  const {
-    encuestas,
-    total,
-    pageCount,
-  }: { encuestas: any[]; total: number; pageCount: number } =
-    await getEncuestas(page);
-  const urlLink =
-    session?.user.role === "ADMIN"
-      ? "/admin/encuestas"
-      : "/investigador/encuestas";
+  if (!session || !session.user) redirect("/acceso");
+  const { name, role } = session.user;
+  if (role !== "RESEARCHER")
+    redirect(redirectStrategy[role]);
 
   return (
-    <section className="px-10 py-20">
-      <div className="flex items-center justify-between gap-4 mb-10">
-        <h1 className="font-bold text-4xl">Todas mis encuestas</h1>
-        <Button asChild>
-          <Link href="/investigador/crear-encuesta">Crear encuesta</Link>
-        </Button>
+    <section className="">
+      <div>
+        <h1 className="text-4xl font-bold mb-10">Panel</h1>
       </div>
-      <div className="flex flex-col gap-5">
-        <AdminEncuestas encuestas={encuestas} urlLink={urlLink} page={page} pageCount={10} />
+      <div className="flex gap-4">
+        <div className="w-1/2">
+          <Link href="/investigador/encuestas">
+            <div className="border rounded-lg py-8 px-6 flex flex-col gap-4 shadow">
+              <h3 className="text-2xl font-bold">Encuestas</h3>
+              <p>
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ipsam
+                numquam repudiandae ducimus esse, tenetur sunt animi pariatur
+                aperiam. Omnis nemo dicta aut. Soluta commodi obcaecati, ratione
+                adipisci sapiente maiores recusandae.
+              </p>
+            </div>
+          </Link>
+        </div>
+        <div className="w-1/2">
+          <Link href="/investigador/usuarios">
+            <div className="border rounded-lg py-8 px-6 flex flex-col gap-4 shadow">
+              <h3 className="text-2xl font-bold">Usuarios</h3>
+              <p>
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ipsam
+                numquam repudiandae ducimus esse, tenetur sunt animi pariatur
+                aperiam. Omnis nemo dicta aut. Soluta commodi obcaecati, ratione
+                adipisci sapiente maiores recusandae.
+              </p>
+            </div>
+          </Link>
+        </div>
       </div>
     </section>
   );

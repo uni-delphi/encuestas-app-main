@@ -1,9 +1,11 @@
+import { getServerSession } from "next-auth";
 import { prisma } from "../prisma";
+import { authOptions } from "@/auth.config";
 
 export async function getSampleRespuestasByEnunciado(
   enunciadosId: number,
   respondentId: string,
-  responseType: any
+  responseType: any,
 ) {
   return await prisma.response.findMany({
     where: {
@@ -43,7 +45,7 @@ export async function getResponsesForCSV() {
           tecnologia: {
             select: {
               title: true,
-            }
+            },
           },
         },
       },
@@ -65,9 +67,9 @@ export async function getResponsesForCSV() {
           ? JSON.stringify(
               res.checkbox?.choices
                 .map((item) =>
-                  item.replace(/"/g, "").replace(/]/g, "").replace(/\[/g, "")
+                  item.replace(/"/g, "").replace(/]/g, "").replace(/\[/g, ""),
                 )
-                .join("|")
+                .join("|"),
             )
           : res.singleChoice?.choice,
       respuestas:
@@ -87,7 +89,11 @@ export async function getResponsesForCSV() {
   });
 }
 
-export async function getAllMyResponses(userId: string){
+export async function getAllMyResponses() {
+  const session = await getServerSession(authOptions);
+  if (!session?.user) throw new Error("No autenticado");
+
+  const { id: userId, role } = session.user;
   return await prisma.response.findMany({
     where: {
       respondentId: userId,
@@ -160,7 +166,7 @@ export async function createResponse(newResponseData: any) {
 
 export async function updateSingleChoiceResponse(
   responseId: number,
-  data: any
+  data: any,
 ) {
   return await prisma.singleChoiceResponse.update({
     where: {
