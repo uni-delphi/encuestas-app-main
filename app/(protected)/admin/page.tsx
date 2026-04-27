@@ -11,10 +11,15 @@ import {
 } from "@/lib/actions";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { redirectStrategy } from "@/lib/constants";
 
 export default async function Page() {
   const session = await getServerSession(authOptions);
-  if (!session || !session.user) redirect("/");
+    if (!session || !session.user) redirect("/acceso");
+    const { name, role } = session.user;
+    if (role !== "ADMIN") {
+      redirect(redirectStrategy[role]);
+    }
 
   return (
     <section className="">

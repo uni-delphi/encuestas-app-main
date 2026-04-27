@@ -11,6 +11,7 @@ import NavBar from "@/components/nav-bar/nav-bar";
 import LayoutDefault from "@/components/image-layout/image-layout";
 import Enunciado from "@/components/enunciado/enunciado";
 import { IENUNCIADO, ISURVEY } from "@/types/encuestas";
+import { Survey, Tecnologias, Enunciados } from "@/generated/prisma";
 
 import { calculateRemainingDays, surveyHasEnded } from "@/utils/date-formatter";
 import { calculateResponsesPercents } from "@/utils/text-helper";
@@ -20,15 +21,18 @@ export default async function Page() {
   if (!session || !session.user) redirect("/");
   const { name, lastName } = session.user;
 
-  const encuestas: ISURVEY[] = await getAllEncuestas(session.user.id);
+  const [encuestas, responses, enunciados] = await Promise.all([
+    getAllEncuestas(),
+    getAllMyResponses(),
+    getAllEnunciados(),
+  ]);
+   // get encuesta by slug, if not found redirect to estado 
   const { title, tecnologias, endDate, hasEnded, isActive, ...props } =
-    encuestas[0] ?? [];
+    encuestas[1] ?? [];
 
-  const responses: any[] = await getAllMyResponses(session.user.id);
-  const enunciados: any[] = await getAllEnunciados();
   
   if (surveyHasEnded({ endDate, isActive, hasEnded })) {
-    redirect("/finalizado");
+    redirect("/encuestas/finalizado");
   }
 
   return (
@@ -47,7 +51,7 @@ export default async function Page() {
               Hola {name} {lastName}!
             </span>
             <span className="block line-clamp-2">
-              Tu contribución a {title} es del {calculateResponsesPercents(responses.length, enunciados)}%
+              Tu contribución a {title} es del {calculateResponsesPercents(responses.length, enunciados as any)}%
             </span>
           </h2>
           <div className="mt-4">
@@ -65,14 +69,14 @@ export default async function Page() {
           </div>
           <div className="max-w-3xl">
             {tecnologias &&
-              tecnologias.map((tecnologia: any) => (
+              tecnologias?.map((tecnologia: any) => (
                 <div key={tecnologia.id} className="my-4">
                   <h2 className="text-2xl text-left font-bold mb-4">
                     {tecnologia.title}
                   </h2>
                   <div className="grid">
-                    {tecnologia._count.enunciados > 0 &&
-                      tecnologia.enunciados.map((enunciado: IENUNCIADO) => (
+                    {enunciados.length > 0 &&
+                      enunciados.map((enunciado: any) => (
                         <Enunciado
                           key={enunciado.id}
                           tecnologia={tecnologia}

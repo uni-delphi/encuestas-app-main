@@ -7,12 +7,11 @@ import { authOptions } from "@/auth.config";
 import { Session } from "next-auth";
 import { redirect } from "next/navigation";
 import LayoutDefault from "@/components/image-layout/image-layout";
+import { redirectStrategy } from "@/lib/constants";
 
 export default async function SignIn() {
   const session: Session | null = await getServerSession(authOptions);
-  const redirectUrl = session?.user.role === "ADMIN" ? "/admin" : "/estado/1";
-
-  if (session) redirect(redirectUrl);
+  if (session) redirect(redirectStrategy[session.user.role]);
   return (
     <main>
       <LayoutDefault>

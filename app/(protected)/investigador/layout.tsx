@@ -7,6 +7,7 @@ import { getServerSession, Session } from "next-auth";
 import LayoutDefault from "@/components/image-layout/image-layout";
 import AdminLayoutComponent from "@/components/admin-layout/layout-component";
 import NavBar from "@/components/nav-bar/nav-bar";
+import { redirectStrategy } from "@/lib/constants";
 
 export default async function ResearcherLayout({
   children,
@@ -14,11 +15,9 @@ export default async function ResearcherLayout({
   children: React.ReactNode;
 }) {
   const session = await getServerSession(authOptions);
-
+  
   if (!session?.user) redirect("/login");
-  if (ROLE_HIERARCHY[session.user.role] < ROLE_HIERARCHY["RESEARCHER"]) {
-    redirect("/unauthorized");
-  }
+  if (ROLE_HIERARCHY[session.user.role] < ROLE_HIERARCHY["RESEARCHER"]) redirect(redirectStrategy[session.user.role] || "/investigador");
 
   return (
     <main className="max-w-[1440px] mx-auto">

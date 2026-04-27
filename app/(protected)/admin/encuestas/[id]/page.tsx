@@ -142,7 +142,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
       <div className=" mt-10">
         <h3 className="text-xl text-pretty w-2/3">
-          Tecnologias ({encuesta?.tecnologias.length})
+          Tecnologias ({encuesta?.tecnologias?.length})
         </h3>
         <div>
           {encuesta?.tecnologias.map((tecnologia: any, index: number) => (

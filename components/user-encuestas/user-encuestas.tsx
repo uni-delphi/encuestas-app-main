@@ -80,9 +80,9 @@ function EncuestaCard({ encuesta }: any) {
   );
 }
 
-export default async function AdminEncuestas({
+export default async function UserEncuestas({
   encuestas = [],
-  urlLink = "/admin/encuestas",
+  urlLink = "/encuestas/estado",
   page = 0,
   pageCount = 10,
 }: {
