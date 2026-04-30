@@ -56,7 +56,6 @@ export default function LogInForm() {
       password: values.password,
       redirect: false,
     });
-    console.log("🚀 ~ onSubmit ~ resp:", resp)
 
     if (resp?.ok === false) {
       setIsLoading(false);

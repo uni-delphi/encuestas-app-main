@@ -269,7 +269,6 @@ export async function createEncuesta(data: Partial<Survey>) {
 }
 
 export async function createTecnologiaAction(data: Partial<Tecnologias>) {
-  console.log("🚀 ~ createTecnologiaAction ~ data:", data);
 
   return await prisma.tecnologias.create({
     data: {
@@ -282,7 +281,6 @@ export async function createTecnologiaAction(data: Partial<Tecnologias>) {
 }
 
 export async function updateTecnologiaAction(data: Partial<Tecnologias>) {
-  console.log("🚀 ~ updateTecnologiaAction ~ data:", data);
 
   return await prisma.tecnologias.update({
     where: {
@@ -329,7 +327,6 @@ export async function getEncuestaById(params: { id: number }) {
 }
 
 export async function createEnunciadoAction(data: Partial<Enunciados>) {
-  console.log("🚀 ~ createEnunciadoAction ~ data:", data);
 
   return await prisma.enunciados.create({
     data: {

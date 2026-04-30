@@ -24,7 +24,6 @@ export function StatementList({
   onDelete,
   onEdit,
 }: StatementListProps) {
-  console.log("🚀 ~ StatementList ~ enunciados:", enunciados);
 
   if (enunciados.length === 0) {
     return (

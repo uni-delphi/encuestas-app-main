@@ -40,7 +40,6 @@ export default function Enunciado({
   tecnologia: any;
   enunciado: IENUNCIADO;
 }) {
-  //console.log("🚀 ~ Enunciado ~ enunciado:", enunciado.response)
   const index = enunciado.response?.length ?? 0;
   const level = levelOfCompletion(index);
 //agregar en la prop de enunciado el numero de respuestas para cada pregunta, en base a la cantidad de preguntas que tiene el enunciado.

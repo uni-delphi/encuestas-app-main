@@ -52,9 +52,7 @@ export function useSurveyManager(
 
   // ── Tecnologías ───────────────────────────────────────────────────
   const handleAddTecnologia = async (data: TecnologiaFormValues & any) => {
-    console.log("🚀 ~ handleAddTecnologia ~ data:", data)
     try {
-      console.log("🚀 ~ handleAddTecnologia ~ editingTech:", editingTech)
       if (editingTech) {
 
         const resp = await updateTecnologia({

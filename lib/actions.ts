@@ -41,7 +41,6 @@ export async function loginUser(data: TLoginUser) {
     console.log("Error login:", error);
     throw new Error("Error login");
   } finally {
-    console.log("🚀 ~ loginUser ~ result:", result);
     if (result) {
       redirect(redirectStrategy[result?.role]);
     }
