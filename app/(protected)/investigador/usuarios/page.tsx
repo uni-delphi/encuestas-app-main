@@ -4,22 +4,22 @@ import { authOptions } from "@/auth.config";
 import { Breadcrumbs } from "@/components/breadcrombs/breadcrumbs";
 import { PaginationControls } from "@/components/pagination-controls/pagination-controls";
 import { UserCard } from "@/components/user-card/user-card";
-import { getAllUsers, getAllUsersAssignedToMySurveys } from "@/lib/actions";
+import { RoleType, User } from "@/generated/prisma";
+import { changeUserRole, getAllUsers, getAllUsersAssignedToMySurveys } from "@/lib/actions";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 
-async function Page({
-  searchParams,
-}: {
-  searchParams: { page?: string };
-}) {
+async function Page({ searchParams }: { searchParams: { page?: string } }) {
   const session = await getServerSession(authOptions);
   if (!session || !session.user) redirect("/");
 
   const pageParams = await searchParams;
   const page = Math.max(0, Number(pageParams.page ?? 0));
-  const { usuarios, total, pageCount } = await getAllUsersAssignedToMySurveys(page, 10);
-  
+  const { usuarios, total, pageCount } = await getAllUsersAssignedToMySurveys(
+    page,
+    10,
+  );
+
   return (
     <section>
       <div className="flex gap-14 items-end justify-between">
@@ -28,7 +28,10 @@ async function Page({
       </div>
       <div className="my-10 flex flex-col gap-4 pl-[20vw]">
         {usuarios.map((user: any, i: number) => (
-          <UserCard key={i} user={user} />
+          <UserCard
+            key={i}
+            user={user}
+          />
         ))}
         <PaginationControls page={page} pageCount={pageCount} />
       </div>

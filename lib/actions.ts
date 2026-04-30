@@ -6,6 +6,8 @@ import bcrypt from "bcrypt";
 
 import { TUser, TLoginUser } from "@/types/user";
 
+import { RoleType } from "@/generated/prisma";
+
 import * as Users from "@/lib/api/users";
 import * as Encuestas from "@/lib/api/encuestas";
 import * as Respuestas from "@/lib/api/respuestas";
@@ -58,9 +60,20 @@ export async function searchUsers(query: string) {
   }
 }
 
+export async function changeUserRole(userEmail: string, role: RoleType) {
+  try {
+    const response =  await Users.changeUserRoleAction(userEmail, role);
+    revalidatePath("/admin")
+    return response;
+  } catch (error) {
+    console.log("Error en changeUserRole:", error);
+    throw new Error("Error en changeUserRole");
+  }
+}
+
 export async function assignUserToSurvey(surveyId: number, userId: string) {
   try {
-    return Users.assignUserToSurvey(surveyId, userId)
+    return Users.assignUserToSurvey(surveyId, userId);
   } catch (error) {
     console.log("Error en assignUserToSurvey:", error);
     throw new Error("Error en assignUserToSurvey");
@@ -149,8 +162,6 @@ export async function createTecnologia(data: Tecnologias) {
   } catch (error: any) {
     console.log(error);
     throw Error("Error creando la tecnologia", error);
-  } finally {
-    revalidatePath("/admin");
   }
 }
 
@@ -164,8 +175,6 @@ export async function updateTecnologia(data: Partial<Tecnologias>) {
   } catch (error) {
     console.log("Error editando la tecnologia:", error);
     throw new Error("Error editando la tecnologia");
-  } finally {
-    revalidatePath("/admin");
   }
 }
 

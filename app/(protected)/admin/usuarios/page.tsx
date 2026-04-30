@@ -4,22 +4,19 @@ import { authOptions } from "@/auth.config";
 import { Breadcrumbs } from "@/components/breadcrombs/breadcrumbs";
 import { PaginationControls } from "@/components/pagination-controls/pagination-controls";
 import { UserCard } from "@/components/user-card/user-card";
-import { getAllUsers } from "@/lib/actions";
+import { RoleType, User } from "@/generated/prisma";
+import { changeUserRole, getAllUsers } from "@/lib/actions";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 
-async function Page({
-  searchParams,
-}: {
-  searchParams: { page?: string };
-}) {
+async function Page({ searchParams }: { searchParams: { page?: string } }) {
   const session = await getServerSession(authOptions);
   if (!session || !session.user) redirect("/");
 
   const pageParams = await searchParams;
   const page = Math.max(0, Number(pageParams.page ?? 0));
   const { usuarios, total, pageCount } = await getAllUsers(page, 10);
-  
+
   return (
     <section>
       <div className="flex gap-14 items-end justify-between">

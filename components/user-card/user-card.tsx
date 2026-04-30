@@ -1,34 +1,49 @@
+"use client";
 
-"use client"
-
-import { Card, CardContent } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { RoleType, User as PrismaUser } from "@/generated/prisma";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { MoreHorizontal, Mail, Calendar, Shield, Pencil, Trash2, UserCog } from "lucide-react"
+} from "@/components/ui/dropdown-menu";
+import {
+  MoreHorizontal,
+  Mail,
+  Calendar,
+  Shield,
+  Pencil,
+  Trash2,
+  UserCog,
+  Check,
+  FlaskConical,
+  User,
+} from "lucide-react";
+import { useTransition } from "react";
+import { changeUserRole } from "@/lib/actions";
+import { useSession } from "next-auth/react";
 
-interface User {
-  id: string
-  name?: string | null
-  email: string
-  image?: string | null
-  role?: string
-  createdAt?: Date | string
-  isActive?: boolean
-}
+/*interface User {
+  id: string;
+  name?: string | null;
+  email: string;
+  image?: string | null;
+  role?: RoleType;
+  createdAt?: Date | string;
+  isActive?: boolean;
+}*/
 
 interface UserCardProps {
-  user: User
-  onEdit?: (user: User) => void
-  onDelete?: (user: User) => void
-  onManageRole?: (user: User) => void
+  user: PrismaUser;
+  onEdit?: (user: PrismaUser) => void;
+  onDelete?: (user: PrismaUser) => void;
+  onManageRole?: (user: PrismaUser) => void;
 }
 
 function getInitials(name?: string | null, email?: string): string {
@@ -38,38 +53,57 @@ function getInitials(name?: string | null, email?: string): string {
       .map((n) => n[0])
       .join("")
       .toUpperCase()
-      .slice(0, 2)
+      .slice(0, 2);
   }
-  return email?.charAt(0).toUpperCase() || "U"
+  return email?.charAt(0).toUpperCase() || "U";
 }
 
 function formatDate(date?: Date | string): string {
-  if (!date) return "N/A"
-  const d = new Date(date)
+  if (!date) return "N/A";
+  const d = new Date(date);
   return d.toLocaleDateString("es-ES", {
     day: "numeric",
     month: "short",
     year: "numeric",
-  })
+  });
 }
 
-function getRoleBadgeVariant(role?: string): "default" | "secondary" | "destructive" | "outline" {
+function getRoleBadgeVariant(
+  role?: string,
+): "default" | "secondary" | "destructive" | "outline" {
   switch (role?.toLowerCase()) {
     case "admin":
-      return "default"
+      return "default";
     case "moderator":
-      return "secondary"
+      return "secondary";
     default:
-      return "outline"
+      return "outline";
   }
 }
 
-export function UserCard({ user, onEdit, onDelete, onManageRole }: UserCardProps) {
+export function UserCard({
+  user,
+  onEdit,
+  onDelete,
+  onManageRole,
+}: UserCardProps) {
+  const { data: session, status } = useSession();
+  const [isPending, startTransition] = useTransition();
+  const canEditUser = session?.user.role! === "ADMIN"? true : user.role !== "ADMIN";
+
+  const handleChangeRole = (role: RoleType) => {
+    startTransition(async () => {
+      
+      console.log("🚀 ~ handleChangeRole ~ user.id, role:", user, role)
+      await changeUserRole(user.email, role);
+    });
+  };
+
   return (
-    <Card className="transition-shadow hover:shadow-md">
+    <Card className="transition-shadow">
       <CardContent className="flex items-center gap-4 p-4">
         <Avatar className="h-12 w-12">
-          <AvatarImage src={user.image || undefined} alt={user.name || user.email} />
+          <AvatarImage src={undefined} alt={user.name || user.email} />
           <AvatarFallback className="bg-primary/10 text-primary font-medium">
             {getInitials(user.name, user.email)}
           </AvatarFallback>
@@ -81,19 +115,26 @@ export function UserCard({ user, onEdit, onDelete, onManageRole }: UserCardProps
               {user.name || "Sin nombre"}
             </h3>
             {user.role && (
-              <Badge variant={getRoleBadgeVariant(user.role)} className="shrink-0">
+              <Badge
+                variant={getRoleBadgeVariant(user.role)}
+                className="shrink-0"
+              >
                 <Shield className="mr-1 h-3 w-3" />
-                {user.role}
+                {user.role !== "ADMIN"
+                  ? user.role === "RESEARCHER"
+                    ? "Investigador"
+                    : "Encuestado"
+                  : "Administrador"}
               </Badge>
             )}
-            {user.isActive !== undefined && (
+            {/*user.isActive !== undefined && (
               <Badge
                 variant={user.isActive ? "default" : "destructive"}
                 className={`shrink-0 ${user.isActive ? "bg-green-500 hover:bg-green-600" : ""}`}
               >
                 {user.isActive ? "Activo" : "Inactivo"}
               </Badge>
-            )}
+            )*/}
           </div>
 
           <div className="flex items-center gap-4 mt-1 text-sm text-muted-foreground">
@@ -101,16 +142,19 @@ export function UserCard({ user, onEdit, onDelete, onManageRole }: UserCardProps
               <Mail className="h-3.5 w-3.5 shrink-0" />
               <span className="truncate">{user.email}</span>
             </span>
-            {user.createdAt && (
+            {/*user.createdAt && (
               <span className="flex items-center gap-1 shrink-0">
                 <Calendar className="h-3.5 w-3.5" />
                 {formatDate(user.createdAt)}
               </span>
-            )}
+            )*/}
           </div>
         </div>
 
-        {(onEdit || onDelete || onManageRole) && (
+        {(onEdit ||
+          onDelete ||
+          onManageRole ||
+          canEditUser) && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="shrink-0">
@@ -125,12 +169,42 @@ export function UserCard({ user, onEdit, onDelete, onManageRole }: UserCardProps
                   Editar
                 </DropdownMenuItem>
               )}
-              {onManageRole && (
-                <DropdownMenuItem onClick={() => onManageRole(user)}>
-                  <UserCog className="mr-2 h-4 w-4" />
-                  Gestionar rol
-                </DropdownMenuItem>
-              )}
+
+              <DropdownMenuSeparator />
+              <DropdownMenuLabel className="text-xs text-muted-foreground font-normal">
+                Cambiar rol
+              </DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={() => handleChangeRole("USER")}
+                disabled={isPending || user.role === "USER"}
+                className={
+                  user.role === "USER"
+                    ? "text-muted-foreground"
+                    : "cursor-pointer"
+                }
+              >
+                <User className="mr-2 h-4 w-4" />
+                Encuestado
+                {user.role === "USER" && (
+                  <Check className="ml-auto h-3.5 w-3.5" />
+                )}
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleChangeRole("RESEARCHER")}
+                disabled={isPending || user.role === "RESEARCHER"}
+                className={
+                  user.role === "RESEARCHER"
+                    ? "text-muted-foreground"
+                    : "cursor-pointer"
+                }
+              >
+                <FlaskConical className="mr-2 h-4 w-4" />
+                Investigador
+                {user.role === "RESEARCHER" && (
+                  <Check className="ml-auto h-3.5 w-3.5" />
+                )}
+              </DropdownMenuItem>
+
               {onDelete && (
                 <>
                   <DropdownMenuSeparator />
@@ -148,5 +222,5 @@ export function UserCard({ user, onEdit, onDelete, onManageRole }: UserCardProps
         )}
       </CardContent>
     </Card>
-  )
+  );
 }

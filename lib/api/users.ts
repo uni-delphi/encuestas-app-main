@@ -135,3 +135,10 @@ export async function removeUserFromSurvey(surveyId: number, userId: string) {
     data: { assignedUsers: { disconnect: { id: userId } } },
   });
 }
+
+export async function changeUserRoleAction(email: string, role: RoleType) {
+  return prisma.user.update({
+    where: { email },
+    data: { role },
+  });
+}
