@@ -17,7 +17,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { Tecnologias } from "@/generated/prisma";
+
+import { Survey as PrismaSurvey, Tecnologias } from "@/generated/prisma";
+import { useEffect } from "react";
+
+export type Survey = PrismaSurvey;
 
 // Funcion para generar slug automaticamente desde el titulo
 function generateSlug(text: string): string {
@@ -52,7 +56,7 @@ const surveySchema = z.object({
 
 export type SurveyFormValues = z.infer<typeof surveySchema>;
 
-export interface Survey {
+/*export interface Survey {
   id: number;
   title: string;
   description?: string;
@@ -63,10 +67,10 @@ export interface Survey {
   responseCount: number;
   createdAt: Date;
   updatedAt: Date;
-}
+}*/
 
 interface SurveyFormProps {
-  onSubmit: (data: SurveyFormValues) => void;
+  onSubmit: (data: SurveyFormValues) => void | Promise<void>;
   defaultValues:
     | (Survey & {
         tecnologias: Tecnologias[];
@@ -84,6 +88,19 @@ export function SurveyForm({ onSubmit, defaultValues }: SurveyFormProps) {
       isActive: true,
     },
   });
+
+  useEffect(() => {
+    if (defaultValues) {
+      form.reset({
+        title: defaultValues.title ?? "",
+        description: defaultValues.description ?? "",
+        endDate: defaultValues.endDate
+          ? toDatetimeLocal(new Date(defaultValues.endDate))
+          : "",
+        isActive: defaultValues.isActive ?? true,
+      });
+    }
+  }, [defaultValues]);
 
   const handleSubmit = (data: SurveyFormValues) => {
     const slug = generateSlug(data.title);
@@ -115,7 +132,6 @@ export function SurveyForm({ onSubmit, defaultValues }: SurveyFormProps) {
                     <Input
                       placeholder="Ej: Encuesta de satisfaccion"
                       {...field}
-                      value={defaultValues?.title || ""}
                     />
                   </FormControl>
                   {previewSlug && (
@@ -139,7 +155,6 @@ export function SurveyForm({ onSubmit, defaultValues }: SurveyFormProps) {
                       placeholder="Describe el proposito de la encuesta..."
                       rows={3}
                       {...field}
-                      value={defaultValues?.description || ""}
                     />
                   </FormControl>
                   <FormMessage />
@@ -156,8 +171,7 @@ export function SurveyForm({ onSubmit, defaultValues }: SurveyFormProps) {
                   <FormControl>
                     <Input
                       type="datetime-local"
-                      {...field}
-                      value={defaultValues?.endDate ? toDatetimeLocal(new Date(defaultValues?.endDate ?? field.value)) : ""}
+                      {...field}                      
                     />
                   </FormControl>
                   <FormDescription>

@@ -17,7 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // Funcion para generar slug automaticamente desde el titulo
 function generateSlug(text: string): string {
@@ -30,7 +30,18 @@ function generateSlug(text: string): string {
     .replace(/\s+/g, "-") // Espacios a guiones
     .replace(/-+/g, "-"); // Multiples guiones a uno solo
 }
-
+/*
+(alias) type Tecnologias = {
+    id: number;
+    title: string;
+    description: string;
+    slug: string | null;
+    surveyId: number;
+    createdAt: Date;
+    updatedAt: Date;
+}
+import Tecnologias
+*/
 const tecnologiaSchema = z.object({
   title: z
     .string()
@@ -41,8 +52,7 @@ const tecnologiaSchema = z.object({
     .max(500, "Maximo 500 caracteres")
     .optional()
     .or(z.literal("")),
-  endDate: z.string().min(1, "La fecha de finalizacion es requerida"),
-  isActive: z.boolean().default(true),
+  surveyId: z.number().int(),
 });
 
 export type TecnologiaFormValues = z.infer<typeof tecnologiaSchema>;
@@ -52,20 +62,22 @@ export interface TecnologiaWithSlug extends TecnologiaFormValues {
 }
 
 interface TechnologyFormProps {
-  onSubmit: (data: TecnologiaWithSlug) => void;
+  onSubmit: (data: TecnologiaWithSlug) => void | Promise<void>;
   defaultValues?: Partial<TecnologiaWithSlug>; // 👈
 }
-
 
 export function TechnologyForm({
   onSubmit,
   defaultValues,
 }: TechnologyFormProps) {
-  
-
+  const [encuestaId, setEncuestaId] = useState<number | undefined>();
   // Reset cuando cambian los defaultValues (usuario edita otra tech):
   useEffect(() => {
-    if (defaultValues) form.reset(defaultValues);
+    if (defaultValues) {
+      const { slug, ...rest } = defaultValues;
+      setEncuestaId(rest.surveyId);
+      form.reset(rest);
+    }
   }, [defaultValues]);
 
   const form = useForm<TecnologiaFormValues>({
@@ -73,14 +85,13 @@ export function TechnologyForm({
     defaultValues: {
       title: "",
       description: "",
-      endDate: "",
-      isActive: true,
+      surveyId: defaultValues?.surveyId ?? 0,
     },
   });
 
   const handleSubmit = (data: TecnologiaFormValues) => {
     const slug = generateSlug(data.title);
-    onSubmit({ ...data, slug });
+    onSubmit({ ...data, slug, surveyId: encuestaId ?? data.surveyId });
     form.reset();
   };
 
@@ -130,41 +141,6 @@ export function TechnologyForm({
                     />
                   </FormControl>
                   <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="endDate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Fecha de finalizacion</FormLabel>
-                  <FormControl>
-                    <Input type="datetime-local" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="isActive"
-              render={({ field }) => (
-                <FormItem className="flex items-center justify-between rounded-lg border p-4">
-                  <div className="space-y-0.5">
-                    <FormLabel className="text-base">Activo</FormLabel>
-                    <FormDescription>
-                      Determina si la tecnologia esta disponible
-                    </FormDescription>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
                 </FormItem>
               )}
             />
