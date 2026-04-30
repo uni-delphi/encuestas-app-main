@@ -108,8 +108,7 @@ export default function SurveyForm({
   };
 
   const onFormSubmit = async (data: Partial<Survey>) => {
-    console.log("🚀 ~ onFormSubmit ~ data:", data)
-    
+   
     setIsLoading(true);
     try {
       await onSubmit?.(data);

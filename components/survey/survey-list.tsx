@@ -12,7 +12,7 @@ interface SurveyListProps {
 }
 
 export function SurveyList({ surveys, onDelete }: SurveyListProps) {
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string | Date) => {
     return new Date(dateString).toLocaleDateString("es-ES", {
       day: "2-digit",
       month: "short",
@@ -22,7 +22,7 @@ export function SurveyList({ surveys, onDelete }: SurveyListProps) {
     })
   }
 
-  const isExpired = (endDate: string) => {
+  const isExpired = (endDate: string | Date) => {
     return new Date(endDate) < new Date()
   }
 

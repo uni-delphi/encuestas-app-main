@@ -1,20 +1,22 @@
 // hooks/use-survey-manager.ts
 import { useState } from "react";
-import { Tecnologias, Enunciados } from "@/generated/prisma";
-import { type TecnologiaWithSlug } from "@/components/technology/technology-form";
-import { type StatementFormValues, type Statement } from "@/components/statement/statement-form";
-import { type SurveyFormValues, type Survey } from "@/components/survey/survey-form";
+import { Survey, Tecnologias, Enunciados, Question } from "@/generated/prisma";
+import {
+  type SurveyFormValues,
+} from "@/components/survey/survey-form";
 import { type QuestionFormValues } from "@/lib/schemas/question";
-import { Question } from "@/generated/prisma";
+import { createEnunciado, createTecnologia, updateEnunciado, updateTecnologia } from "@/lib/actions";
+import { TecnologiaFormValues } from "@/components/technology/technology-form";
+import { StatementFormValues } from "@/components/statement/statement-form";
 
 type TecnologiaWithEnunciados = Tecnologias & { enunciados: Enunciados[] };
 
 export function useSurveyManager(
-  encuesta: (Survey & { tecnologias: TecnologiaWithEnunciados[] }) | null
+  encuesta: (Survey & { tecnologias: (Tecnologias & { enunciados: Enunciados[] })[] }) | null
 ) {
   const [survey, setSurvey] = useState<Survey | null>(null);
   const [tecnologias, setTecnologias] = useState<Tecnologias[]>([]);
-  const [statements, setStatements] = useState<Statement[]>([]);
+  const [statements, setStatements] = useState<Enunciados[]>([]);
   const [questions, setQuestions] = useState<Question[]>([]);
 
   // ── UI state ──────────────────────────────────────────────────────
@@ -22,16 +24,18 @@ export function useSurveyManager(
   const [showStatementForm, setShowStatementForm] = useState(false);
   const [showQuestionForm, setShowQuestionForm] = useState(false);
   const [editingTech, setEditingTech] = useState<Tecnologias | null>(null);
-  const [editingStatement, setEditingStatement] = useState<Enunciados | null>(null);
+  const [editingStatement, setEditingStatement] = useState<Enunciados | null>(
+    null,
+  );
 
   // ── Derived data ──────────────────────────────────────────────────
   const statementsForList: (Enunciados & { tecnologiaTitle: string })[] =
     encuesta?.tecnologias.flatMap((t) =>
-      t.enunciados.map((e) => ({ ...e, tecnologiaTitle: t.title }))
+      t.enunciados.map((e) => ({ ...e, tecnologiaTitle: t.title })),
     ) ?? [];
 
   // ── Survey ────────────────────────────────────────────────────────
-  const handleSurveySubmit = (data: SurveyFormValues) => {
+  const handleSurveySubmit = (data: SurveyFormValues & any) => {
     const now = new Date();
     setSurvey({
       id: survey?.id ?? Date.now(),
@@ -47,20 +51,35 @@ export function useSurveyManager(
   };
 
   // ── Tecnologías ───────────────────────────────────────────────────
-  const handleAddTecnologia = (data: TecnologiaWithSlug) => {
-    if (editingTech) {
-      setTecnologias((prev) =>
-        prev.map((t) => (t.id === editingTech.id ? { ...t, ...data } : t))
-      );
-      setEditingTech(null);
-    } else {
-      setShowTechForm(false);
+  const handleAddTecnologia = async (data: TecnologiaFormValues & any) => {
+    try {
+      if (editingTech) {
+
+        const resp = await updateTecnologia({
+          ...data,
+          id: editingTech.id,
+        } as Tecnologias);
+
+        setTecnologias((prev) =>
+          prev.map((t) => (t.id === editingTech.id ? { ...t, ...data } : t)),
+        );
+        setEditingTech(null);
+      } else {
+        const resp = await createTecnologia({ ...data } as Tecnologias);
+
+        setTecnologias((prev) => [...prev, resp]);
+        setShowTechForm(false);
+      }
+    } catch (error) {
+      console.error("Error adding tecnologia:", error);
     }
   };
 
   const handleDeleteTecnologia = (id: number) => {
     setTecnologias((prev) => prev.filter((t) => t.id !== id));
-    const orphanIds = statements.filter((s) => s.tecnologiaId === id).map((s) => s.id);
+    const orphanIds = statements
+      .filter((s) => s.tecnologiaId === id)
+      .map((s) => s.id);
     setStatements((prev) => prev.filter((s) => s.tecnologiaId !== id));
     setQuestions((prev) => prev.filter((q) => !orphanIds.includes(q.id)));
   };
@@ -71,13 +90,21 @@ export function useSurveyManager(
   };
 
   // ── Enunciados ────────────────────────────────────────────────────
-  const handleAddStatement = (data: StatementFormValues & { slug: string }) => {
-    if (editingStatement) {
-      // await updateStatement({ id: editingStatement.id, ...data })
-      setEditingStatement(null);
-    } else {
-      // await createStatement(data)
-      setShowStatementForm(false);
+  const handleAddStatement = async (data: StatementFormValues & any) => {
+    try {
+      if (editingStatement) {
+        const resp = await updateEnunciado({
+          ...data,
+          id: editingStatement.id,
+        } as Enunciados);
+        setEditingStatement(null);
+      } else {
+        const resp = await createEnunciado({ ...data, tecnologiaId: Number(data.tecnologiaId) } as Enunciados);
+        setStatements((prev) => [...prev, resp]);
+        setShowStatementForm(false);
+      }
+    } catch (error) {
+      console.error("Error adding statement:", error);
     }
   };
 
@@ -108,11 +135,16 @@ export function useSurveyManager(
     questions,
     statementsForList,
     // UI state
-    showTechForm, setShowTechForm,
-    showStatementForm, setShowStatementForm,
-    showQuestionForm, setShowQuestionForm,
-    editingTech, setEditingTech,
-    editingStatement, setEditingStatement,
+    showTechForm,
+    setShowTechForm,
+    showStatementForm,
+    setShowStatementForm,
+    showQuestionForm,
+    setShowQuestionForm,
+    editingTech,
+    setEditingTech,
+    editingStatement,
+    setEditingStatement,
     // handlers
     handleSurveySubmit,
     handleAddTecnologia,

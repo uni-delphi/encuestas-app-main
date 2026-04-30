@@ -6,7 +6,6 @@ import { getEncuestaById } from "@/lib/actions";
 export default async function Page({ params }: { params: { id: string } }) {
   const data = await params;
   const surveyData: any = await getEncuestaById(Number(data.id));
-  console.log("🚀 ~ Page ~ surveyData:", surveyData);
 
   return (
     <section>

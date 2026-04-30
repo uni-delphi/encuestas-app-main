@@ -24,7 +24,6 @@ export default async function Page({
 
   const data = (await params) || [];
   const [techSlug, enunciadoSlug] = data.slug;
-  console.log("🚀 ~ Page ~ techSlug, enunciadoSlug:", techSlug, enunciadoSlug)
 
 
   let emptyEnunciadoSlug: string = "";

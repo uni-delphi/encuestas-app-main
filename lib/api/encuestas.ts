@@ -1,4 +1,4 @@
-import { Survey } from "@/generated/prisma";
+import { Enunciados, Survey, Tecnologias } from "@/generated/prisma";
 import { prisma } from "../prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/auth.config";
@@ -268,6 +268,32 @@ export async function createEncuesta(data: Partial<Survey>) {
   });
 }
 
+export async function createTecnologiaAction(data: Partial<Tecnologias>) {
+
+  return await prisma.tecnologias.create({
+    data: {
+      title: data.title!,
+      description: data.description!,
+      slug: data.slug!,
+      surveyId: data.surveyId!,
+    },
+  });
+}
+
+export async function updateTecnologiaAction(data: Partial<Tecnologias>) {
+
+  return await prisma.tecnologias.update({
+    where: {
+      id: data.id!,
+    },
+    data: {
+      title: data.title,
+      description: data.description,
+      slug: data.slug,
+    },
+  });
+}
+
 export async function getEncuestaById(params: { id: number }) {
   return await prisma.survey.findUnique({
     where: {
@@ -287,6 +313,40 @@ export async function getEncuestaById(params: { id: number }) {
           email: true,
         },
       },
+      assignedUsers: {
+        select: {
+          id: true,
+          name: true,
+          lastName: true,
+          email: true,
+        },
+        orderBy: [{ name: "asc" }, { lastName: "asc" }],
+      },
+    },
+  });
+}
+
+export async function createEnunciadoAction(data: Partial<Enunciados>) {
+
+  return await prisma.enunciados.create({
+    data: {
+      title: data.title!,
+      description: data.description!,
+      slug: data.slug!,
+      tecnologiaId: data.tecnologiaId!,
+    },
+  });
+}
+
+export async function updateEnunciadoAction(data: Partial<Enunciados>) {
+  return await prisma.enunciados.update({
+    where: {
+      id: data.id!,
+    },
+    data: {
+      title: data.title,
+      description: data.description,
+      slug: data.slug,
     },
   });
 }

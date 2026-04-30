@@ -31,6 +31,9 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Plus, X } from "lucide-react";
 import { Question } from "@/generated/prisma";
+import { create } from "domain";
+import { createTecnologia } from "@/lib/actions";
+import { SurveyUserManager } from "../survey-user-manager/survey-user-manager";
 
 type TecnologiaWithEnunciados = Tecnologias & {
   enunciados: Enunciados[];
@@ -39,10 +42,9 @@ type TecnologiaWithEnunciados = Tecnologias & {
 export default function SurveyMain({
   encuesta,
 }: {
-  encuesta: (Survey & { tecnologias: TecnologiaWithEnunciados[] }) | null;
+  encuesta: (Survey & { tecnologias: TecnologiaWithEnunciados[]; assignedUsers: any }) | null;
 }) {
-  console.log("🚀 ~ SurveyMain ~ encuesta:", encuesta);
-
+  
   const {
     survey,
     questions,
@@ -78,10 +80,14 @@ export default function SurveyMain({
         {/* ── Encuesta: siempre visible ── */}
         <section className="space-y-2">
           <div className="flex gap-4">
-            <div className="w-1/3">
+            <div className="w-1/3 flex flex-col gap-6">
               <SurveyForm
                 onSubmit={handleSurveySubmit}
                 defaultValues={encuesta}
+              />
+              <SurveyUserManager
+                surveyId={encuesta?.id!}
+                assignedUsers={encuesta?.assignedUsers! ?? []}
               />
             </div>
             <div className="w-2/3">
@@ -149,7 +155,9 @@ export default function SurveyMain({
                                     ...editingTech,
                                     slug: editingTech.slug ?? undefined,
                                   }
-                                : undefined
+                                : {
+                                    surveyId: encuesta?.id,
+                                  }
                             }
                           />
                         </div>

@@ -1,5 +1,5 @@
 "use server";
-
+import { cache } from "react";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import bcrypt from "bcrypt";
@@ -9,7 +9,7 @@ import { TUser, TLoginUser } from "@/types/user";
 import * as Users from "@/lib/api/users";
 import * as Encuestas from "@/lib/api/encuestas";
 import * as Respuestas from "@/lib/api/respuestas";
-import { Survey } from "@/generated/prisma";
+import { Enunciados, Survey, Tecnologias } from "@/generated/prisma";
 import { redirectStrategy } from "@/lib/constants";
 
 export async function createUser(data: TUser) {
@@ -41,15 +41,39 @@ export async function loginUser(data: TLoginUser) {
     console.log("Error login:", error);
     throw new Error("Error login");
   } finally {
-    console.log("🚀 ~ loginUser ~ result:", result)
     if (result) {
-
       redirect(redirectStrategy[result?.role]);
-     
     }
   }
 
   revalidatePath("/dashboard");
+}
+
+export async function searchUsers(query: string) {
+  try {
+    return Users.searchUsersAction(query);
+  } catch (error) {
+    console.log("Error en search user:", error);
+    throw new Error("Error en search user");
+  }
+}
+
+export async function assignUserToSurvey(surveyId: number, userId: string) {
+  try {
+    return Users.assignUserToSurvey(surveyId, userId)
+  } catch (error) {
+    console.log("Error en assignUserToSurvey:", error);
+    throw new Error("Error en assignUserToSurvey");
+  }
+}
+
+export async function removeUserFromSurvey(surveyId: number, userId: string) {
+  try {
+    return Users.removeUserFromSurvey(surveyId, userId);
+  } catch (error) {
+    console.log("Error en removeUserFromSurvey:", error);
+    throw new Error("Error en removeUserFromSurvey");
+  }
 }
 
 export async function getAllEncuestas() {
@@ -66,7 +90,7 @@ export async function getEncuestas(page = 0, pageSize = 10) {
   return await Encuestas.getEncuestasAction(page, pageSize);
 }
 
-export async function getEncuestaById(id: number) {
+export const getEncuestaById = cache(async (id: number) => {
   try {
     const response = await Encuestas.getEncuestaById({ id });
     return response;
@@ -74,7 +98,7 @@ export async function getEncuestaById(id: number) {
     console.log(error);
     throw Error("Error getEncuesta", error);
   }
-}
+});
 
 export async function getMyEncuestas(page = 0, pageSize = 10) {
   try {
@@ -88,7 +112,10 @@ export async function getMyEncuestas(page = 0, pageSize = 10) {
 
 export async function getMyEncuestasByAssigned(page = 0, pageSize = 10) {
   try {
-    const response = await Encuestas.getMyEncuestasByAssignedAction(page, pageSize);
+    const response = await Encuestas.getMyEncuestasByAssignedAction(
+      page,
+      pageSize,
+    );
     return response;
   } catch (error: any) {
     console.log(error);
@@ -111,6 +138,60 @@ export async function getTecnologia(title: string) {
   } catch (error: any) {
     console.log(error);
     throw Error("Error getTecnologia", error);
+  }
+}
+
+export async function createTecnologia(data: Tecnologias) {
+  try {
+    const response = await Encuestas.createTecnologiaAction(data);
+    revalidatePath("/admin");
+    return response;
+  } catch (error: any) {
+    console.log(error);
+    throw Error("Error creando la tecnologia", error);
+  } finally {
+    revalidatePath("/admin");
+  }
+}
+
+export async function updateTecnologia(data: Partial<Tecnologias>) {
+  try {
+    const response = await Encuestas.updateTecnologiaAction(
+      data as Tecnologias,
+    );
+    revalidatePath("/admin");
+    return response;
+  } catch (error) {
+    console.log("Error editando la tecnologia:", error);
+    throw new Error("Error editando la tecnologia");
+  } finally {
+    revalidatePath("/admin");
+  }
+}
+
+export async function createEnunciado(data: Partial<Enunciados>) {
+  try {
+    const response = await Encuestas.createEnunciadoAction(data);
+    revalidatePath("/admin");
+    return response;
+  } catch (error: any) {
+    console.log(error);
+    throw Error("Error creando el enunciado", error);
+  } finally {
+    revalidatePath("/admin");
+  }
+}
+
+export async function updateEnunciado(data: Partial<Enunciados>) {
+  try {
+    const response = await Encuestas.updateEnunciadoAction(data as Enunciados);
+    revalidatePath("/admin");
+    return response;
+  } catch (error) {
+    console.log("Error editando el enunciado:", error);
+    throw new Error("Error editando el enunciado");
+  } finally {
+    revalidatePath("/admin");
   }
 }
 

@@ -106,3 +106,32 @@ export async function updateUser(data: any, email: string) {
     data,
   });
 }
+
+// Search users (exclude current user if needed)
+export async function searchUsersAction(query: string): Promise<any[]> {
+  return prisma.user.findMany({
+    where: {
+      OR: [
+        { name: { contains: query, mode: "insensitive" } },
+        { lastName: { contains: query, mode: "insensitive" } },
+        { email: { contains: query, mode: "insensitive" } },
+      ],
+    },
+    select: { id: true, name: true, lastName: true, email: true },
+    take: 10,
+  });
+}
+
+export async function assignUserToSurvey(surveyId: number, userId: string) {
+  return prisma.survey.update({
+    where: { id: surveyId },
+    data: { assignedUsers: { connect: { id: userId } } },
+  });
+}
+
+export async function removeUserFromSurvey(surveyId: number, userId: string) {
+  return prisma.survey.update({
+    where: { id: surveyId },
+    data: { assignedUsers: { disconnect: { id: userId } } },
+  });
+}
