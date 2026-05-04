@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { Prisma, Survey } from "@/generated/prisma";
+import type { Prisma, Survey, Tecnologias } from "@/generated/prisma";
 
 import {
   Card,
@@ -62,7 +62,7 @@ function EncuestaCard({ encuesta }: any) {
           {encuesta?.tecnologias?.map((tecnologia: any, index: number) => (
             <li key={index} className="text-sm text-muted-foreground">
               {tecnologia.title}
-              {tecnologia._count.enunciados > 0 && (
+              {tecnologia.enunciados > 0 && (
                 <span className="ml-1">
                   - {tecnologia._count.enunciados} enunciados
                 </span>

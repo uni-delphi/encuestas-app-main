@@ -105,11 +105,11 @@ export async function getEncuestas(page = 0, pageSize = 10) {
 
 export const getEncuestaById = cache(async (id: number) => {
   try {
-    const response = await Encuestas.getEncuestaById({ id });
+    const response = await Encuestas.getEncuestaByIdAction({ id });
     return response;
   } catch (error: any) {
     console.log(error);
-    throw Error("Error getEncuesta", error);
+    throw Error("Error getEncuesta by id", error);
   }
 });
 
@@ -136,6 +136,14 @@ export async function getMyEncuestasByAssigned(page = 0, pageSize = 10) {
   }
 }
 
+export async function getEncuestaBySlug(slug: string) {
+  try {
+    return await Encuestas.getEncuestaBySlugAction(slug);
+  } catch (error: any) {
+    console.log(error);
+    throw Error("Error getEncuestaBySlug", error);
+  }
+}
 export async function getAllEncuestasInfo() {
   try {
     return await Encuestas.getEncuestaInfo();
@@ -211,7 +219,7 @@ export async function getEnunciado({
 }: {
   dataSlug: string;
   dataUserId: string;
-  dataEnunciadoId: string;
+  dataEnunciadoId: number;
 }) {
   try {
     return await Encuestas.getEnunciado({

@@ -47,7 +47,7 @@ model Enunciados {
   questionsEnunciados  QuestionEnunciado[] // Relación many-to-many con Question
   tecnologia           Tecnologias            @relation(fields: [tecnologiaId], references: [id])
   tecnologiaId         Int
-  questions            Question[]
+  //questions            Question[]
   response             Response[]
   createdAt            DateTime               @default(now())
   updatedAt            DateTime               @updatedAt
@@ -73,7 +73,7 @@ model Question {
   type                  QuestionType
   inputType             InputQuestionType?
   additionalInfo        String?
-  enunciados            Enunciados[] // Relación many-to-many con Enunciados
+  //enunciados            Enunciados[] // Relación many-to-many con Enunciados
   createdAt             DateTime               @default(now())
   updatedAt             DateTime               @updatedAt
   responses             Response[]

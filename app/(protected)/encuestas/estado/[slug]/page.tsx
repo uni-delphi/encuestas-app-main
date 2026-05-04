@@ -5,6 +5,7 @@ import {
   getAllEncuestas,
   getAllEnunciados,
   getAllMyResponses,
+  getEncuestaBySlug,
 } from "@/lib/actions";
 
 import NavBar from "@/components/nav-bar/nav-bar";
@@ -23,14 +24,14 @@ export default async function Page({ pageParam }: { pageParam: { slug?: string |
 
   const surveySlug: any = await pageParam;
 
-  const [encuestas, responses, enunciados] = await Promise.all([
-    getAllEncuestas(),
+  const [encuesta, responses, enunciados] = await Promise.all([
+    getEncuestaBySlug(surveySlug.slug),
     getAllMyResponses(surveySlug.slug),//refactor
     getAllEnunciados(),
   ]);
   // get encuesta by slug, if not found redirect to estado
-  const { title, tecnologias, endDate, hasEnded, isActive, ...props } =
-    encuestas[1] ?? [];
+  const { title, tecnologias, endDate, hasEnded, isActive, ...props }: any =
+    encuesta;//ref
 
   if (surveyHasEnded({ endDate, isActive, hasEnded })) {
     redirect("/encuestas/finalizado");
@@ -53,7 +54,7 @@ export default async function Page({ pageParam }: { pageParam: { slug?: string |
             </span>
             <span className="block line-clamp-2">
               Tu contribución a {title} es del{" "}
-              {calculateResponsesPercents(responses.length, enunciados as any)}%
+              {calculateResponsesPercents(enunciados as any)}%
             </span>
           </h2>
           <div className="mt-4">
