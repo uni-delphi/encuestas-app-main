@@ -67,7 +67,7 @@ export default function TemasSelect({
                           <SelectLabel className="text-small">
                             {tecnologia.title}
                           </SelectLabel>
-                          {tecnologia._count.enunciados > 0 &&
+                          {tecnologia.enunciados &&
                             tecnologia.enunciados.map((enunciado: any) => (
                               <SelectItem
                                 className="text-small"

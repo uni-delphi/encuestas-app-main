@@ -1,5 +1,6 @@
 "use client";
 
+import { useSession } from "next-auth/react"
 import { useState, useEffect, useCallback, useTransition } from "react";
 import {
   X,
@@ -17,6 +18,7 @@ import {
   searchUsers,
 } from "@/lib/actions";
 import { Survey, User } from "@/generated/prisma";
+
 
 type UserBasic = {
   id: string;
@@ -59,6 +61,12 @@ export function SurveyUserManager({
   surveyId,
   assignedUsers: initial,
 }: SurveyUserManagerProps) {
+
+  const { data: session, status } = useSession()
+
+  if (session?.user?.role === "RESEARCHER") {
+    return null
+  }
   const [assigned, setAssigned] = useState<UserBasic[]>(initial);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<UserBasic[]>([]);
@@ -66,6 +74,7 @@ export function SurveyUserManager({
   const [isPending, startTransition] = useTransition();
   const [page, setPage] = useState(0);
   const [assignedPage, setAssignedPage] = useState(0);
+
 
   // Resetear página cuando cambia la lista (ej: al quitar un usuario)
   useEffect(() => {

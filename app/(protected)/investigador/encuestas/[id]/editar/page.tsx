@@ -9,13 +9,15 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   return (
     <section>
-      <Breadcrumbs
-        items={[
-          { label: "Panel", href: "/investigador" },
-          { label: "Encuestas", href: "/investigador/encuestas" },
-          { label: data.id, href: `/investigador/encuestas/${data.id}` },
-        ]}
-      />
+      <span className="ml-auto">
+        <Breadcrumbs
+          items={[
+            { label: "Panel", href: "/investigador" },
+            { label: "Encuestas", href: "/investigador/encuestas" },
+            { label: data.id, href: `/investigador/encuestas/${data.id}` },
+          ]}
+        />
+      </span>
       <SurveyMain encuesta={surveyData} />
     </section>
   );
