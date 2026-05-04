@@ -89,7 +89,7 @@ export async function getResponsesForCSV() {
   });
 }
 
-export async function getAllMyResponses() {
+export async function getAllMyResponses(surveyId: any) {
   const session = await getServerSession(authOptions);
   if (!session?.user) throw new Error("No autenticado");
 
@@ -97,6 +97,7 @@ export async function getAllMyResponses() {
   return await prisma.response.findMany({
     where: {
       respondentId: userId,
+      surveyId
     },
     include: {
       singleChoice: {

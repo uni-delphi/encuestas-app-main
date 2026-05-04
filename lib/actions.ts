@@ -300,9 +300,9 @@ export async function getResponsesForCSV() {
   }
 }
 
-export async function getAllMyResponses() {
+export async function getAllMyResponses(surveySlug: string | undefined) {
   try {
-    return await Respuestas.getAllMyResponses();
+    return await Respuestas.getAllMyResponses(surveySlug!);
   } catch (error: any) {
     console.log(error);
     throw Error("Error getAllMyResponses", error);
