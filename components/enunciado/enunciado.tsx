@@ -1,7 +1,7 @@
-
 import { IENUNCIADO } from "@/types/encuestas";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { Enunciados, Tecnologias } from "@/generated/prisma";
 
 interface IComponentProps {
   color: string;
@@ -37,12 +37,12 @@ export default function Enunciado({
   tecnologia,
   enunciado,
 }: {
-  tecnologia: any;
-  enunciado: IENUNCIADO;
+  tecnologia: Tecnologias;
+  enunciado: Enunciados & { response: any };//ref
 }) {
   const index = enunciado.response?.length ?? 0;
   const level = levelOfCompletion(index);
-//agregar en la prop de enunciado el numero de respuestas para cada pregunta, en base a la cantidad de preguntas que tiene el enunciado.
+  //agregar en la prop de enunciado el numero de respuestas para cada pregunta, en base a la cantidad de preguntas que tiene el enunciado.
   return (
     <div
       className={cn(

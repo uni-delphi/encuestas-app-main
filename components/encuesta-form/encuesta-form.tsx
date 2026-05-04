@@ -3,13 +3,14 @@ import { User } from "next-auth";
 import Link from "next/link";
 
 import { getSampleRespuestasByEnunciado } from "@/lib/actions";
-import { IDATATYPE, IENUNCIADO, IQUESTION } from "@/types/encuestas";
+//import { IDATATYPE, IENUNCIADO, IQUESTION } from "@/types/encuestas";
 
 import { Button } from "@/components/ui/button";
 import QuestionCheckboxField from "@/components/question-checkbox-field/question-checkbox-field";
 import QuestionRadioField from "@/components/question-radio-field/question-radio-field";
+import { Enunciados, Question, QuestionEnunciado } from "@/generated/prisma";
 
-const data: IDATATYPE = {
+const data: any = {
   NIVEL: {
     order: "a",
     answers: [
@@ -212,7 +213,7 @@ export default async function EncuestaForm({
   enunciado,
   user,
 }: {
-  enunciado: IENUNCIADO;
+  enunciado: Enunciados;
   user: User;
 }) {
   const singleChoice = await getSampleRespuestasByEnunciado(
@@ -226,12 +227,12 @@ export default async function EncuestaForm({
     "CHECKBOX"
   );
 
-  const { questions, ...props } = enunciado;
+  const { questions, ...props }: any = enunciado;
 
   return (
     <>
       {questions &&
-        questions.map((question: IQUESTION) =>
+        questions.map((question: any) =>
           question.type === "SINGLE_CHOICE" ? (
             <QuestionRadioField
               key={question.id}

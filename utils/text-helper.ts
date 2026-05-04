@@ -14,15 +14,18 @@ export const makeTitle = (slug: string) => {
 };
 
 export const calculateResponsesPercents = (
-  responses: number,
-  enunciados: { response: IRESPONSES[]; questions: IQUESTION[] }[]
+  enunciados: { response: any[]; _count: { questionsEnunciados: number } }[]
 ): number => {
-  let questionsLength = 0;
-  enunciados.forEach(
-    (enunciado: { response: IRESPONSES[]; questions: IQUESTION[] }) =>
-      (questionsLength = enunciado.questions.length)
+  const totalQuestions = enunciados.reduce(
+    (acc, enunciado) => acc + enunciado._count.questionsEnunciados,
+    0
   );
-  return +((responses * 100) / (enunciados.length * questionsLength)).toFixed(
-    2
+  const totalResponses = enunciados.reduce(
+    (acc, enunciado) => acc + enunciado.response.length,
+    0
   );
+
+  if (totalQuestions === 0) return 0;
+
+  return +((totalResponses * 100) / totalQuestions).toFixed(2);
 };

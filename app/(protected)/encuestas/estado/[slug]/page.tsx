@@ -5,6 +5,7 @@ import {
   getAllEncuestas,
   getAllEnunciados,
   getAllMyResponses,
+  getEncuestaBySlug,
 } from "@/lib/actions";
 
 import NavBar from "@/components/nav-bar/nav-bar";
@@ -16,21 +17,22 @@ import { Survey, Tecnologias, Enunciados } from "@/generated/prisma";
 import { calculateRemainingDays, surveyHasEnded } from "@/utils/date-formatter";
 import { calculateResponsesPercents } from "@/utils/text-helper";
 
-export default async function Page() {
+export default async function Page({ pageParam }: { pageParam: { slug?: string | undefined } }) {
   const session: Session | null = await getServerSession(authOptions);
   if (!session || !session.user) redirect("/");
   const { name, lastName } = session.user;
 
-  const [encuestas, responses, enunciados] = await Promise.all([
-    getAllEncuestas(),
-    getAllMyResponses(),
+  const surveySlug: any = await pageParam;
+
+  const [encuesta, responses, enunciados] = await Promise.all([
+    getEncuestaBySlug(surveySlug.slug),
+    getAllMyResponses(surveySlug.slug),//refactor
     getAllEnunciados(),
   ]);
-   // get encuesta by slug, if not found redirect to estado 
-  const { title, tecnologias, endDate, hasEnded, isActive, ...props } =
-    encuestas[1] ?? [];
+  // get encuesta by slug, if not found redirect to estado
+  const { title, tecnologias, endDate, hasEnded, isActive, ...props }: any =
+    encuesta;//ref
 
-  
   if (surveyHasEnded({ endDate, isActive, hasEnded })) {
     redirect("/encuestas/finalizado");
   }
@@ -51,7 +53,8 @@ export default async function Page() {
               Hola {name} {lastName}!
             </span>
             <span className="block line-clamp-2">
-              Tu contribución a {title} es del {calculateResponsesPercents(responses.length, enunciados as any)}%
+              Tu contribución a {title} es del{" "}
+              {calculateResponsesPercents(enunciados as any)}%
             </span>
           </h2>
           <div className="mt-4">

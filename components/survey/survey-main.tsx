@@ -98,7 +98,7 @@ export default function SurveyMain({
                 </h2>
 
                 <Tabs defaultValue="tecnologias" className="w-full">
-                  <TabsList className="grid w-full grid-cols-3">
+                  <TabsList className="grid w-full grid-cols-2">
                     <TabsTrigger value="tecnologias">
                       Tecnologías
                       {encuesta && (
@@ -118,7 +118,7 @@ export default function SurveyMain({
                         </span>
                       )}
                     </TabsTrigger>
-                    <TabsTrigger
+                    {/*<TabsTrigger
                       value="preguntas"
                       disabled={StatementList.length === 0}
                     >
@@ -128,7 +128,7 @@ export default function SurveyMain({
                           {questions.length}
                         </span>
                       )}
-                    </TabsTrigger>
+                    </TabsTrigger>*/}
                   </TabsList>
 
                   {/* Tab: Tecnologías */}
@@ -239,7 +239,7 @@ export default function SurveyMain({
                   </TabsContent>
 
                   {/* Tab: Preguntas */}
-                  <TabsContent value="preguntas">
+                  {/*<TabsContent value="preguntas">
                     <div className="flex flex-col gap-6 pt-4">
                       {!showQuestionForm ? (
                         <Button
@@ -271,7 +271,7 @@ export default function SurveyMain({
                         onDelete={handleDeleteQuestion}
                       />
                     </div>
-                  </TabsContent>
+                  </TabsContent>*/}
                 </Tabs>
               </div>
             </div>
