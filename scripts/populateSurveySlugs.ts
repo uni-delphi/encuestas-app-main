@@ -1,7 +1,7 @@
 // scripts/populate-survey-slugs.ts
 import { prisma } from "@/lib/prisma";
 
-function generateSlug(title: string, id: number): string {
+function generateSlug(title: string): string {
   const base = title
     .toLowerCase()
     .normalize("NFD")                        // descompone acentos
@@ -11,7 +11,7 @@ function generateSlug(title: string, id: number): string {
     .replace(/\s+/g, "-")                    // espacios → guiones
     .replace(/-+/g, "-");                    // guiones múltiples → uno
 
-  return `${base}-${id}`;                    // sufijo con id para garantizar unicidad
+  return `${base}`;                    // sufijo con id para garantizar unicidad
 }
 
 async function main() {
@@ -31,7 +31,7 @@ async function main() {
       continue;
     }
 
-    const slug = generateSlug(survey.title, survey.id);
+    const slug = generateSlug(survey.title);
 
     await prisma.survey.update({
       where: { id: survey.id },

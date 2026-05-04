@@ -24,7 +24,7 @@ import CloseSurvey from "@/components/close-survey/close-survey";
 import { Breadcrumbs } from "@/components/breadcrombs/breadcrumbs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-export default async function Page({ params }: { params: { id: string } }) {
+export default async function Page({ params }: { params: { id: number } }) {
   const session = await getServerSession(authOptions);
   if (!session || !session.user) redirect("/");
 

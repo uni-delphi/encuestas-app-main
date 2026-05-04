@@ -144,6 +144,16 @@ export async function getEncuestaBySlug(slug: string) {
     throw Error("Error getEncuestaBySlug", error);
   }
 }
+
+export async function getFullEncuestaBySlug(slug: string) {
+  try {
+    return await Encuestas.getFullEncuestaBySlugAction(slug);
+  } catch (error: any) {
+    console.log(error);
+    throw Error("Error getEncuestaBySlug", error);
+  }
+}
+
 export async function getAllEncuestasInfo() {
   try {
     return await Encuestas.getEncuestaInfo();

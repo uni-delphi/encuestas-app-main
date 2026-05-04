@@ -21,8 +21,8 @@ type Props = {
 
 export function Breadcrumbs({ items = [] }: Props) {
   return (
-    <Breadcrumb>
-      <BreadcrumbList>
+    <Breadcrumb className="text-right">
+      <BreadcrumbList className="flex justify-end">
         {items?.map((item, i) => (
           <span key={i} className="flex gap-2 items-center">
             <BreadcrumbItem key={i}>

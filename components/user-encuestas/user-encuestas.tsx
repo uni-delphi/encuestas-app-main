@@ -91,10 +91,11 @@ export default async function UserEncuestas({
   page?: number;
   pageCount?: number;
 }) {
+  
   return (
     <div className="flex flex-col gap-4">
-      {encuestas.map((encuesta: any, index: number) => (
-        <Link key={index} href={`${urlLink}/${encuesta.id}`} className="block">
+      {encuestas.map((encuesta: Partial<Survey>, index: number) => (
+        <Link key={index} href={`${urlLink}/${encuesta.slug}`} className="block">
           <EncuestaCard encuesta={encuesta} />
         </Link>
       ))}

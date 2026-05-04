@@ -173,6 +173,32 @@ export async function getEncuestaBySlugAction(slug: string) {
   });
 }
 
+export async function getFullEncuestaBySlugAction(slug: string) {
+  return await prisma.survey.findUnique({
+    where:{
+      slug
+    },
+    include: {
+      tecnologias: {
+        include: {
+          enunciados: true,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
+      createdBy: {
+        select: {
+          id: true,
+          name: true,
+          lastName: true,
+          email: true,
+        },
+      },
+    },
+  });
+}
+
 export async function getEncuestaInfo() {
   return await prisma.survey.findMany({
     include: {

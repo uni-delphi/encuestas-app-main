@@ -47,7 +47,7 @@ export default function Enunciado({
     <div
       className={cn(
         level.color,
-        "shadow-md rounded-lg px-4 py-2 flex flex-col md:flex-row cols-12 items-center mb-2",
+        "shadow-md rounded-lg p-4 flex flex-col md:flex-row cols-12 items-center mb-2",
       )}
     >
       <p className="text-gray-800 font-semibold text-left py-2 md:py-0 flex-auto w-full md:w-1/3">
