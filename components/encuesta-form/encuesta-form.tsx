@@ -228,6 +228,7 @@ export default async function EncuestaForm({
   );
 
   const { questions, ...props }: any = enunciado;
+  console.log("🚀 ~ EncuestaForm ~ questions:", questions)
 
   return (
     <>

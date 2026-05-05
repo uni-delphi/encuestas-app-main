@@ -4,12 +4,15 @@ import Link from "next/link";
 import { getAllEncuestasInfo } from "@/lib/actions";
 import { surveyHasEnded } from "@/utils/date-formatter";
 
-export default async function FinishOrClose() {
-  
-  const encuestas: any = await getAllEncuestasInfo();
-  if(!encuestas || encuestas.length === 0) return null;
-  const { hasEnded, endDate, isActive } = encuestas[0];
-
+export default async function FinishOrClose({
+  hasEnded,
+  endDate,
+  isActive,
+}: {
+  hasEnded: boolean;
+  endDate: Date;
+  isActive: boolean;
+}) {
   return surveyHasEnded({ endDate, isActive, hasEnded }) ? (
     <>
       <div className="w-full md:max-w-[80%] md:mx-auto mt-14">
@@ -48,7 +51,7 @@ export default async function FinishOrClose() {
       </div>
       <div className="flex justify-center gap-5">
         <Link
-          href="/estado"
+          href="/encuestas/"
           className="hover:text-blue-600 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-blue-600 text-white md:mx-10 hover:bg-gray-200 my-4"
         >
           Ver mis respuestas

@@ -148,7 +148,7 @@ export async function getEncuestaBySlugAction(slug: string) {
     where:{
       slug
     },
-    include: {
+    /*include: {
       tecnologias: {
         include: {
           enunciados: {
@@ -169,7 +169,7 @@ export async function getEncuestaBySlugAction(slug: string) {
           email: true,
         },
       },
-    },
+    },*/
   });
 }
 
@@ -322,9 +322,12 @@ export async function updateEncuesta(surveyId: number, data: any) {
   });
 }
 
-export async function getSlugs() {
+export async function getSlugs(surveyId: number) {
   let index = 0;
   const response = await prisma.tecnologias.findMany({
+    where: {
+      surveyId
+    },
     select: {
       slug: true,
       enunciados: true,

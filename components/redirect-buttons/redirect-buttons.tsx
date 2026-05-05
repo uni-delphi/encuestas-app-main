@@ -30,12 +30,11 @@ export default function RedirectButtons({
   techActual: string;
   enunActual: string;
 }) {
-  console.log("🚀 ~ RedirectButtons ~ encuesta:", encuesta)
   const router = useRouter();
 
   const handleClic = () => {
     const nextSlug = nextSlugFinder(enunActual, encuesta);
-    router.push(`/encuestas/${nextSlug}`);
+    router.push(`${nextSlug}`);
   };
 
   return (

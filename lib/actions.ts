@@ -365,9 +365,9 @@ export async function updateEncuesta(surveyId: number, data: any) {
   }
 }
 
-export async function getSlugs() {
+export async function getSlugs(surveyId: number) {
   try {
-    return await Encuestas.getSlugs();
+    return await Encuestas.getSlugs(surveyId);
   } catch (error: any) {
     console.log(error);
     throw Error("Error getSlugs", error);
