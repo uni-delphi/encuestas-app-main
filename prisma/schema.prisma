@@ -91,13 +91,10 @@ enum QuestionType {
 enum InputQuestionType {
   NIVEL
   IMPORTANCIA
-  DIFUSION
-  ACELERAN
-  FRENAN
-  IMPACTO
-  DIFUSION_2024
-  DIFUSION_2027
-  DIFUSION_2030
+  HORIZONTE
+  CAPACIDADES
+  BARRERAS
+  AREAS
 }
 
 // Modelo para representar una respuesta a una pregunta

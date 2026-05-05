@@ -28,7 +28,7 @@ export default function TemasSelect({
 }) {
   const router = useRouter();
   const params = useParams<{ slug: any }>();
-  const [techSlug, enunciadoSlug] = params.slug;
+  const [encSlug, techSlug, enunciadoSlug] = params.slug;
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),

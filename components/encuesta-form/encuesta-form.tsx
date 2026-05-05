@@ -9,8 +9,10 @@ import { Button } from "@/components/ui/button";
 import QuestionCheckboxField from "@/components/question-checkbox-field/question-checkbox-field";
 import QuestionRadioField from "@/components/question-radio-field/question-radio-field";
 import { Enunciados, Question, QuestionEnunciado } from "@/generated/prisma";
+import { data } from "@/lib/constants";
 
-const data: any = {
+{
+  /*const data: any = {
   NIVEL: {
     order: "a",
     answers: [
@@ -208,7 +210,8 @@ const data: any = {
     ],
   },
 };
-
+*/
+}
 export default async function EncuestaForm({
   enunciado,
   user,
@@ -219,16 +222,16 @@ export default async function EncuestaForm({
   const singleChoice = await getSampleRespuestasByEnunciado(
     enunciado.id,
     user.id,
-    "SINGLE_CHOICE"
+    "SINGLE_CHOICE",
   );
   const checkbox = await getSampleRespuestasByEnunciado(
     enunciado.id,
     user.id,
-    "CHECKBOX"
+    "CHECKBOX",
   );
 
   const { questions, ...props }: any = enunciado;
-  console.log("🚀 ~ EncuestaForm ~ questions:", questions)
+  console.log("🚀 ~ EncuestaForm ~ questions:", questions);
 
   return (
     <>
@@ -252,9 +255,8 @@ export default async function EncuestaForm({
               user={user}
               checkboxResponse={checkbox}
             />
-          )
+          ),
         )}
-      
     </>
   );
 }

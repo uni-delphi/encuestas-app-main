@@ -34,14 +34,15 @@ export default async function Page({
   if (role !== "USER") redirect(redirectStrategy[role]);
 
   const slugsArr = await params;
+  const [encSlug, techSlug, enunciadoSlug] = slugsArr?.slug;
+  console.log("🚀 ~ Page ~ slugsArr:", slugsArr)
   
   //const encuestas = await getAllEncuestas();
-  const encuesta = await getFullEncuestaBySlug("encuesta-nueva-de-prueba"); // o buscar por slug si tenés múltiples
+  const encuesta = await getFullEncuestaBySlug(encSlug); // o buscar por slug si tenés múltiples
   console.log("🚀 ~ Page ~ encuesta:", encuesta)
 
   if (!encuesta) redirect("/encuestas");
   
-  const [techSlug, enunciadoSlug] = slugsArr?.slug;
   const techElegida = encuesta?.tecnologias.find(
     (data: any) => data.slug === techSlug
   );

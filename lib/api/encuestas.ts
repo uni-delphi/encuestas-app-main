@@ -2,6 +2,7 @@ import { Enunciados, Survey, Tecnologias } from "@/generated/prisma";
 import { prisma } from "../prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/auth.config";
+import { generateSlug } from "@/utils/text-helper";
 
 export async function getAllEncuestas() {
   const session = await getServerSession(authOptions);
@@ -350,13 +351,14 @@ export async function getSlugs(surveyId: number) {
 }
 
 export async function createEncuesta(data: Partial<Survey>) {
+  console.log("🚀 ~ createEncuesta ~ data:", data)
   const session = await getServerSession(authOptions);
 
   return await prisma.survey.create({
     data: {
       title: data.title!,
       description: data.description,
-      slug: data.slug!,
+      slug: generateSlug(data.title!),
       isActive: data.isActive,
       endDate: data.endDate!,
       createdById: session?.user.id!,
@@ -457,7 +459,6 @@ async function getQuestionIds(): Promise<number[]> {
 
 export async function createEnunciadoAction(data: Partial<Enunciados>) {
   const questionIds = await getQuestionIds();
-
   return prisma.$transaction(async (tx) => {
     const enunciado = await tx.enunciados.create({
       data: {
