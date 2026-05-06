@@ -1,37 +1,29 @@
 // app/(protected)/admin/encuestas/[id]/page.tsx
 
-import { Session, getServerSession } from "next-auth";
+import { getServerSession } from "next-auth";
 import { authOptions } from "@/auth.config";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import {
-  getResponsesForCSV,
-  getAllEnunciados,
-  getAllUsers,
-  getEncuestas,
-  getEncuestaById,
+  getFullEncuestaById,
 } from "@/lib/actions";
-import { TCSVRESPONSE } from "@/types/respuestas";
+
 
 import { Button } from "@/components/ui/button";
 
-import NavBar from "@/components/nav-bar/nav-bar";
-import LayoutDefault from "@/components/image-layout/image-layout";
 import BarChart from "@/components/chart-bar/chart-bar";
 import DescargarCsv from "@/components/descargar-csv/descargar-csv";
 import CloseSurvey from "@/components/close-survey/close-survey";
 import { Breadcrumbs } from "@/components/breadcrombs/breadcrumbs";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 import {
   AlertCircle,
   ArrowLeft,
   Calendar,
   CheckCircle2,
-  ChevronRight,
   Clock,
   Edit,
-  XCircle,
 } from "lucide-react";
 
 export default async function Page({ params }: { params: { id: number } }) {
@@ -39,20 +31,54 @@ export default async function Page({ params }: { params: { id: number } }) {
   if (!session || !session.user) redirect("/");
 
   const encuestaId = await params;
-  const [encuesta, respuestas, enunciados, users] = await Promise.all([
-    getEncuestaById(Number(encuestaId.id)),
-    getResponsesForCSV() as Promise<TCSVRESPONSE[]>,
-    getAllEnunciados(),
-    getAllUsers(),
-  ]);
+  const encuesta = await getFullEncuestaById(Number(encuestaId.id));  
+  if(!encuesta) return null;
+  
+  const assignedUsers = encuesta?.assignedUsers ?? [];
+  const enunciados =
+    encuesta?.tecnologias.flatMap((t: any) => t.enunciados) ?? [];
 
   const enunciadosLabels = enunciados.map((enunciado: any) => ({
     label: enunciado.title,
     porcents:
       (enunciado.response.length /
-        (enunciado.questions.length * users.usuarios.length)) *
+        (enunciado.questions.length * assignedUsers.length)) *
       100,
   }));
+
+  const respuestas = encuesta?.tecnologias.flatMap((t: any) =>
+  t.enunciados.flatMap((e: any) =>
+    e.response.map((res: any) => ({
+      technology: t.title,
+      enunciado: e.title,
+      question: res.question?.text,
+      createdAt: res.createdAt,
+      checkboxChoises:
+        res.responseType === "CHECKBOX"
+          ? JSON.stringify(
+              res.checkbox?.choices
+                .map((item: string) =>
+                  item.replace(/"/g, "").replace(/]/g, "").replace(/\[/g, ""),
+                )
+                .join("|"),
+            )
+          : res.singleChoice?.choice,
+      respuestas:
+        res.responseType === "CHECKBOX"
+          ? res.checkbox?.answer
+          : res.singleChoice?.answer,
+      respondentName: `${res.respondent?.name} ${res.respondent?.lastName}`,
+      respondentEmail: res.respondent?.email,
+      respondentCountry: res.respondent?.country,
+      respondentState: res.respondent?.state,
+      respondentEducation: res.respondent?.education,
+      respondentSector: res.respondent?.sector,
+      respondentInstitution: res.respondent?.institution,
+      respondentExpertees: res.respondent?.expertees,
+      respondentYears: res.respondent?.years,
+    })),
+  ),
+) ?? [];
 
   const chartData = {
     labels: enunciadosLabels.map(
@@ -125,7 +151,7 @@ export default async function Page({ params }: { params: { id: number } }) {
                   Editar encuesta
                 </Link>
               </Button>
-              
+
               <CloseSurvey encuesta={encuesta || []} />
             </div>
           </div>
@@ -160,7 +186,7 @@ export default async function Page({ params }: { params: { id: number } }) {
           </div>
           <p className="text-sm text-muted-foreground mt-4">
             Total de respuestas:{" "}
-            <span className="text-foreground font-medium">{`totalResponses`}</span>
+            <span className="text-foreground font-medium">{respuestas.length}</span>
           </p>
         </div>
 
@@ -272,85 +298,9 @@ export default async function Page({ params }: { params: { id: number } }) {
             ))}
           </div>
         </div>
+        <DescargarCsv props={datas} />
       </div>
 
-      {/*<div className="flex flex-col gap-14 justify-center ">
-        <div className="flex gap-4 items-right ml-auto items-center">
-          <Breadcrumbs
-            items={[
-              { label: "Panel", href: "/admin" },
-              { label: "Encuestas", href: "/admin/encuestas" },
-            ]}
-          />
-          <Button asChild>
-            <Link
-              href={`/admin/encuestas/${encuesta?.id}/editar`}
-              className="ml-4"
-            >
-              Editar encuesta
-            </Link>
-          </Button>
-          <CloseSurvey encuesta={encuesta || []} />
-        </div>
-        <h2 className="font-bold my-10 text-2xl">
-          <span className="block line-clamp-2 text-balance">
-            {encuesta?.title}
-          </span>
-        </h2>
-      </div>
-      <p>{encuesta?.description}</p>
-      <BarChart chartData={chartData} chartOptions={chartOptions} />
-      <div className="flex md:block items-center gap-2">
-        
-        {/*<CloseSurvey encuesta={encuesta || []} />
-        <DescargarCsv props={datas} />}
-      </div>
-      {encuesta && (
-        <div>
-          <h3>Detalles de la encuesta</h3>
-          <p>
-            Fecha de creación:{" "}
-            <strong>{encuesta.createdAt.toLocaleDateString()}</strong>
-          </p>
-          <p>
-            Fecha de finalización:{" "}
-            <strong>{encuesta.endDate?.toLocaleDateString()}</strong>
-          </p>
-          <p>
-            Estado:{" "}
-            <strong>{encuesta.hasEnded ? "Finalizada" : "En curso"}</strong>
-          </p>
-        </div>
-      )}
-
-      <div className=" mt-10">
-        <h3 className="text-xl text-pretty w-2/3">
-          Tecnologias ({encuesta?.tecnologias?.length})
-        </h3>
-        <div>
-          {encuesta?.tecnologias.map((tecnologia: any, index: number) => (
-            <div key={tecnologia.id} className="p-6 flex flex-col gap-2 border-b">
-              <h4 className="text-lg font-semibold">{index + 1} - {tecnologia.title}</h4>
-              <p className="text-muted-foreground pl-2">
-                {tecnologia.description}
-              </p>
-              <ul className="space-y-1 pl-4">
-                <li>
-                  <h5 className="text-sm font-semibold">Enunciados</h5>
-                </li>
-                {tecnologia.enunciados.map((enunciado: any, idx: number) => (
-                  <li
-                    key={enunciado.id}
-                    className="text-sm text-muted-foreground pl-2"
-                  >
-                    {enunciado.title}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </div>*/}
     </section>
   );
 }
