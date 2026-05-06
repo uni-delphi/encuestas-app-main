@@ -71,7 +71,7 @@ export default function SurveyMain({
   } = useSurveyManager(encuesta);
 
   return (
-    <main className="min-h-screen bg-background">
+    <section className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 space-y-8">
         <h1 className="text-3xl font-bold text-foreground">
           Gestor de Contenido
@@ -278,6 +278,6 @@ export default function SurveyMain({
           </div>
         </section>
       </div>
-    </main>
+    </section>
   );
 }

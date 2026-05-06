@@ -5,7 +5,7 @@ import {
   type SurveyFormValues,
 } from "@/components/survey/survey-form";
 import { type QuestionFormValues } from "@/lib/schemas/question";
-import { createEnunciado, createTecnologia, updateEnunciado, updateTecnologia } from "@/lib/actions";
+import { createEnunciado, createTecnologia, updateEncuesta, updateEnunciado, updateTecnologia } from "@/lib/actions";
 import { TecnologiaFormValues } from "@/components/technology/technology-form";
 import { StatementFormValues } from "@/components/statement/statement-form";
 
@@ -35,19 +35,11 @@ export function useSurveyManager(
     ) ?? [];
 
   // ── Survey ────────────────────────────────────────────────────────
-  const handleSurveySubmit = (data: SurveyFormValues & any) => {
-    const now = new Date();
-    setSurvey({
-      id: survey?.id ?? Date.now(),
-      title: data.title,
-      description: data.description || undefined,
-      endDate: data.endDate,
-      isActive: data.isActive,
-      hasEnded: false,
-      responseCount: survey?.responseCount ?? 0,
-      createdAt: survey?.createdAt ?? now,
-      updatedAt: now,
-    } as Survey);
+  const handleSurveySubmit = (sureyData: SurveyFormValues & any) => {
+    const {id} = sureyData;
+    
+    updateEncuesta(id, sureyData.data);
+
   };
 
   // ── Tecnologías ───────────────────────────────────────────────────

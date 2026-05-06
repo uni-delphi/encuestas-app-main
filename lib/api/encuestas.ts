@@ -2,6 +2,7 @@ import { Enunciados, Survey, Tecnologias } from "@/generated/prisma";
 import { prisma } from "../prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/auth.config";
+import { generateSlug } from "@/utils/text-helper";
 
 export async function getAllEncuestas() {
   const session = await getServerSession(authOptions);
@@ -78,7 +79,6 @@ export async function getMyEncuestas(page = 0, pageSize = 10) {
     prisma.survey.findMany({
       where: {
         createdById: userId,
-        
       },
       orderBy: { createdAt: "desc" },
       include: {
@@ -121,10 +121,10 @@ export async function getMyEncuestasByAssignedAction(page = 0, pageSize = 10) {
         },
       },
       include: {
-        tecnologias: true
+        tecnologias: true,
       },
       orderBy: {
-        createdAt: "desc"
+        createdAt: "desc",
       },
       skip: page * pageSize,
       take: pageSize,
@@ -145,10 +145,10 @@ export async function getMyEncuestasByAssignedAction(page = 0, pageSize = 10) {
 
 export async function getEncuestaBySlugAction(slug: string) {
   return await prisma.survey.findUnique({
-    where:{
-      slug
+    where: {
+      slug,
     },
-    include: {
+    /*include: {
       tecnologias: {
         include: {
           enunciados: {
@@ -169,14 +169,14 @@ export async function getEncuestaBySlugAction(slug: string) {
           email: true,
         },
       },
-    },
+    },*/
   });
 }
 
 export async function getFullEncuestaBySlugAction(slug: string) {
   return await prisma.survey.findUnique({
-    where:{
-      slug
+    where: {
+      slug,
     },
     include: {
       tecnologias: {
@@ -313,18 +313,44 @@ export async function getExampleResponses(
   });
 }
 
-export async function updateEncuesta(surveyId: number, data: any) {
+export async function updateEncuestaAction(
+  surveyId: number,
+  data: Partial<Survey>,
+) {
+  const session = await getServerSession(authOptions);
+  console.log("🚀 ~ updateEncuestaAction ~ data:", {
+    title: data.title!,
+    description: data.description,
+    slug: generateSlug(data.title!),
+    isActive: data.isActive,
+    endDate: data.endDate!,
+    createdById: session?.user.id!,
+    aboutLink: data.aboutLink,
+  });
+  // return
+
   return await prisma.survey.update({
     where: {
       id: surveyId,
     },
-    data,
+    data: {
+      title: data.title!,
+      description: data.description,
+      slug: generateSlug(data.title!),
+      isActive: data.isActive,
+      endDate: new Date(data.endDate!),
+      createdById: session?.user.id!,
+      aboutLink: data.aboutLink,
+    },
   });
 }
 
-export async function getSlugs() {
+export async function getSlugs(surveyId: number) {
   let index = 0;
   const response = await prisma.tecnologias.findMany({
+    where: {
+      surveyId,
+    },
     select: {
       slug: true,
       enunciados: true,
@@ -346,17 +372,19 @@ export async function getSlugs() {
   }, []);
 }
 
-export async function createEncuesta(data: Partial<Survey>) {
+export async function createEncuestaAction(surveyInfo: any) {
   const session = await getServerSession(authOptions);
-
+  const { data } = surveyInfo;
+  
   return await prisma.survey.create({
     data: {
       title: data.title!,
       description: data.description,
-      slug: data.slug!,
+      slug: generateSlug(data.title!),
       isActive: data.isActive,
-      endDate: data.endDate!,
+      endDate: new Date(data.endDate!),
       createdById: session?.user.id!,
+      aboutLink: data.aboutLink,
     },
   });
 }
@@ -454,7 +482,6 @@ async function getQuestionIds(): Promise<number[]> {
 
 export async function createEnunciadoAction(data: Partial<Enunciados>) {
   const questionIds = await getQuestionIds();
-
   return prisma.$transaction(async (tx) => {
     const enunciado = await tx.enunciados.create({
       data: {

@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PaginationControls } from "@/components/pagination-controls/pagination-controls";
+import { ArrowRight, Calendar, Layers } from "lucide-react";
 
 type EncuestaConRelaciones = Prisma.SurveyGetPayload<{
   include: {
@@ -26,55 +27,74 @@ type Props = {
 
 function EncuestaCard({ encuesta }: any) {
   return (
-    <Card className="bg-muted/50 hover:shadow-lg transition-shadow">
-      <CardHeader className="w-full flex flex-row justify-between">
-        <CardTitle className="text-xl text-pretty w-2/3">
-          {encuesta?.title}
-          {"   "}
-          <Badge
-            variant={encuesta?.isActive ? "default" : "destructive"}
-            className="rounded-full px-4"
-          >
-            {encuesta?.isActive ? "Activo" : "Inactivo"}
-          </Badge>
-        </CardTitle>
-        <div className="w-1/3 text-right flex flex-col gap-1">
-          <span className="text-sm font-semibold text-muted-foreground">
-            Creada{" "}
-            <span className="font-bold text-black">
-              {encuesta?.createdAt?.toLocaleDateString()}
+    <Card className="border-border bg-card hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 group">
+      <CardHeader className="pb-4">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex-1">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                <Layers className="w-5 h-5 text-primary" />
+              </div>
+              <Badge
+                variant={encuesta.isActive ? "default" : "destructive"}
+                className="rounded-full px-3 py-1 text-xs font-medium"
+              >
+                {encuesta.isActive ? "Activo" : "Inactivo"}
+              </Badge>
+            </div>
+            <CardTitle className="text-xl text-card-foreground flex items-center justify-between">
+              <span className="text-pretty">{encuesta.title}</span>
+              <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+            </CardTitle>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-6 mt-3 text-sm">
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <Calendar className="w-4 h-4" />
+            <span>Creada:</span>
+            <span className="font-semibold text-card-foreground">
+              {encuesta.createdAt?.toLocaleDateString()}
             </span>
-          </span>
-          <span className="text-sm font-semibold text-muted-foreground">
-            Finaliza{" "}
-            <span className="font-bold text-black">
-              {encuesta?.endDate?.toLocaleDateString()}
+          </div>
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <Calendar className="w-4 h-4" />
+            <span>Finaliza:</span>
+            <span className="font-semibold text-card-foreground">
+              {encuesta.endDate?.toLocaleDateString()}
             </span>
-          </span>
+          </div>
         </div>
       </CardHeader>
-      <CardContent>
-        <CardDescription className="text-sm mb-4 p-2 border-b-2 border-muted">
-          {encuesta?.description}
+
+      <CardContent className="pt-0">
+        <CardDescription className="text-muted-foreground text-sm mb-4 pb-4 border-b border-border">
+          {encuesta.description}
         </CardDescription>
-        <h3 className="text-sm font-medium mb-1">Tecnologías</h3>
-        <ul className="space-y-1 pl-2">
-          {encuesta?.tecnologias?.map((tecnologia: any, index: number) => (
-            <li key={index} className="text-sm text-muted-foreground">
-              {tecnologia.title}
-              {tecnologia._count.enunciados > 0 && (
-                <span className="ml-1">
-                  - {tecnologia._count.enunciados} enunciados
-                </span>
-              )}
-            </li>
-          ))}
-          {encuesta?.tecnologias?.length === 0 && (
-            <li className="text-sm text-muted-foreground">
-              No hay tecnologías asociadas
-            </li>
+
+        <div>
+          <h3 className="text-sm font-medium text-card-foreground mb-3">Tecnologias</h3>
+          {encuesta.tecnologias?.length > 0 ? (
+            <div className="flex flex-wrap gap-2">
+              {encuesta.tecnologias.map((tecnologia: any) => (
+                <div
+                  key={tecnologia.id}
+                  className="flex items-center gap-2 bg-secondary/50 rounded-lg px-3 py-1.5 text-sm"
+                >
+                  <div className="w-2 h-2 rounded-full bg-accent" />
+                  <span className="text-card-foreground">{tecnologia.title} - </span>
+                  {tecnologia._count?.enunciados > 0 && (
+                    <span className="text-muted-foreground">
+                     Enunciados ({tecnologia._count.enunciados}) 
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">No hay tecnologias asociadas</p>
           )}
-        </ul>
+        </div>
       </CardContent>
     </Card>
   );

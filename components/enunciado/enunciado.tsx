@@ -1,7 +1,7 @@
 import { IENUNCIADO } from "@/types/encuestas";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { Enunciados, Tecnologias } from "@/generated/prisma";
+import { Enunciados, Survey, Tecnologias } from "@/generated/prisma";
 
 interface IComponentProps {
   color: string;
@@ -34,9 +34,11 @@ const levelOfCompletion = (responses: number | undefined): IComponentProps => {
 };
 
 export default function Enunciado({
+  encuesta,
   tecnologia,
   enunciado,
 }: {
+  encuesta: string;
   tecnologia: Tecnologias;
   enunciado: Enunciados & { response: any };//ref
 }) {
@@ -58,7 +60,7 @@ export default function Enunciado({
       </p>
       <div className="flex-auto w-full py-2 md:py-0 md:w-1/3 text-right">
         <Link
-          href={`/encuestas/${tecnologia.slug}/${enunciado.slug}`}
+          href={`/encuestas/${encuesta}/${tecnologia.slug}/${enunciado.slug}`}
           className="bg-blue-500 hover:bg-gray-200 hover:text-blue-600 text-white font-bold py-2 px-4 rounded"
         >
           {level.buttonText}

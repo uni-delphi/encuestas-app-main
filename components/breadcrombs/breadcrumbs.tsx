@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { DotIcon } from "lucide-react";
+import { ChevronRight, DotIcon } from "lucide-react";
 
 import {
   Breadcrumb,
@@ -32,7 +32,7 @@ export function Breadcrumbs({ items = [] }: Props) {
             </BreadcrumbItem>
             {i < items.length - 1 && (
               <BreadcrumbSeparator>
-                <DotIcon />
+                <ChevronRight />
               </BreadcrumbSeparator>
             )}
           </span>

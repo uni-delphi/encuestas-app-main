@@ -1,6 +1,6 @@
 import { authOptions } from "@/auth.config";
 import { Session, User, getServerSession } from "next-auth";
-import { getAllEncuestas, getEncuestaById, getEncuestaBySlug, getEnunciado, getSlugs } from "@/lib/actions";
+import { getAllEncuestas, getEncuestaById, getEncuestaBySlug, getEnunciado, getFullEncuestaBySlug, getSlugs } from "@/lib/actions";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
@@ -34,15 +34,16 @@ export default async function Page({
   if (role !== "USER") redirect(redirectStrategy[role]);
 
   const slugsArr = await params;
+  const [encSlug, techSlug, enunciadoSlug] = slugsArr?.slug;
+  console.log("🚀 ~ Page ~ slugsArr:", slugsArr)
   
-  const encuestas = await getAllEncuestas();
-  const encuesta = await getEncuestaBySlug("encuesta-nueva-de-prueba"); // o buscar por slug si tenés múltiples
+  //const encuestas = await getAllEncuestas();
+  const encuesta = await getFullEncuestaBySlug(encSlug); // o buscar por slug si tenés múltiples
   console.log("🚀 ~ Page ~ encuesta:", encuesta)
 
   if (!encuesta) redirect("/encuestas");
   
-  const [techSlug, enunciadoSlug] = slugsArr?.slug;
-  const techElegida = encuestas[0]?.tecnologias.find(
+  const techElegida = encuesta?.tecnologias.find(
     (data: any) => data.slug === techSlug
   );
 
@@ -51,11 +52,12 @@ export default async function Page({
   const enunciadoElegido = techElegida.enunciados.find(
     (data: any) => data.slug === enunciadoSlug
   );
-  const slugs = await getSlugs();
+  const slugs = await getSlugs(encuesta.id);// pasar los slugs de la encuesta
+  
   const { title, tecnologias, endDate, hasEnded, isActive } = encuesta;
 
   if (surveyHasEnded({ endDate, isActive, hasEnded })) {
-    redirect("/encuestas/finalizado");
+    redirect(`/encuestas/finalizado/${encuesta.slug}`);
   }
 
 
@@ -68,7 +70,7 @@ export default async function Page({
   return (
     <main className="relative">
       <NavBar
-        encuesta={encuestas}
+        encuesta={encuesta}
         title={techElegida?.title as string}
         session={session as Session}
         user={session.user as User}

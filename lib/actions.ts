@@ -354,29 +354,29 @@ export async function getAllUsersAssignedToMySurveys(page = 0, pageSize = 10) {
   }
 }
 
-export async function updateEncuesta(surveyId: number, data: any) {
+export async function updateEncuesta(surveyId: number, data: Partial<Survey>) {
   try {
-    const response = await Encuestas.updateEncuesta(surveyId, data);
+    const response = await Encuestas.updateEncuestaAction(surveyId, data);
     revalidatePath("/");
     return response;
   } catch (error: any) {
     console.log(error);
-    throw Error("Error getTecnologia", error);
+    throw Error("Error updateEncuesta", error);
   }
 }
 
-export async function getSlugs() {
+export async function getSlugs(surveyId: number) {
   try {
-    return await Encuestas.getSlugs();
+    return await Encuestas.getSlugs(surveyId);
   } catch (error: any) {
     console.log(error);
     throw Error("Error getSlugs", error);
   }
 }
 
-export async function createEncuestaAction(data: Survey) {
+export async function createEncuesta(data: Partial<Survey>) {
   try {
-    const response = await Encuestas.createEncuesta(data);
+    const response = await Encuestas.createEncuestaAction(data);
     revalidatePath("/admin");
     return response;
   } catch (error: any) {

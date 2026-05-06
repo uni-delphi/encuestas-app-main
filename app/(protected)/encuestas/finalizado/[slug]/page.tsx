@@ -6,15 +6,17 @@ import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import LayoutDefault from "@/components/image-layout/image-layout";
 import FinishOrClose from "@/components/finish-or-close/finish-or-close";
-import { getAllEncuestasInfo } from "@/lib/actions";
+import { getAllEncuestasInfo, getEncuestaBySlug } from "@/lib/actions";
 import { surveyHasEnded } from "@/utils/date-formatter";
 import NavBar from "@/components/nav-bar/nav-bar";
 
-export default async function Page() {
+export default async function Page({ params }: { params: { slug: string } }) {
   const session = await getServerSession(authOptions);
   if (!session || !session.user) redirect("/");
-  const { name } = session.user;
-
+  const { name, role } = session.user;
+  const surveySlug: any = await params;
+  const encuesta = await getEncuestaBySlug(surveySlug.slug);
+  
   return (
     <>
       <NavBar
@@ -27,12 +29,16 @@ export default async function Page() {
       <main>
         <LayoutDefault>
           <h2 className="font-bold text-center mt-28 text-2xl ">
-            Estudio de Prospectiva tecnológica-ocupacional
+            {encuesta?.title}
           </h2>
           <h4 className="font-bold  text-center mt-14">
             Gracias por haber participado!
           </h4>
-          <FinishOrClose />
+          <FinishOrClose
+            hasEnded={encuesta?.hasEnded!}
+            endDate={encuesta?.endDate!}
+            isActive={encuesta?.isActive!}
+          />
         </LayoutDefault>
       </main>
     </>

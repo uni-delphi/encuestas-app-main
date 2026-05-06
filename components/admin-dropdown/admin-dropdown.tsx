@@ -24,6 +24,8 @@ export default function AdminDropDown({
   session: Session;
   title: string;
 }) {
+
+  const { user } = session;
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="relative" asChild>
@@ -41,29 +43,29 @@ export default function AdminDropDown({
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuLabel>¡Hola {session.user.name}!</DropdownMenuLabel>
+        <DropdownMenuLabel>¡Hola {user.name}!</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {session.user.role === "USER" && (
+        {user.role === "USER" && (
           <>
-            <DropdownMenuItem>
+            {/*<DropdownMenuItem>
               <Link href={"/bienvenido"} className="cursor-pointer w-[100%]">
                 Bienvenida
               </Link>
-            </DropdownMenuItem>
+            </DropdownMenuItem>*/}
             <DropdownMenuItem>
-              <Link href={"/estado"} className="cursor-pointer w-[100%]">
-                Estado
+              <Link href={"/encuestas"} className="cursor-pointer w-[100%]">
+                Mis encuestas
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            {/*<DropdownMenuItem>
               <Link href={"/finalizado"} className="cursor-pointer w-[100%]">
                 Más del estudio
               </Link>
-            </DropdownMenuItem>
+            </DropdownMenuItem>*/}
             <DropdownMenuSeparator />
           </>
         )}
-        {session.user.role === "ADMIN" && (
+        {(user.role === "ADMIN") && (
           <>
             <DropdownMenuItem>
               <Link href={"/admin"} className="cursor-pointer w-[100%]">
@@ -81,6 +83,32 @@ export default function AdminDropDown({
             <DropdownMenuItem>
               <Link
                 href={"/admin/usuarios"}
+                className="cursor-pointer w-[100%]"
+              >
+                Usuarios
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+          </>
+        )}
+        {(user.role === "RESEARCHER") && (
+          <>
+            <DropdownMenuItem>
+              <Link href={"/investigador"} className="cursor-pointer w-[100%]">
+                Panel
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link
+                href={"/investigador/encuestas"}
+                className="cursor-pointer w-[100%]"
+              >
+                Encuestas
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link
+                href={"/investigador/usuarios"}
                 className="cursor-pointer w-[100%]"
               >
                 Usuarios

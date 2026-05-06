@@ -1,10 +1,11 @@
 import { authOptions } from "@/auth.config";
 import { Breadcrumbs } from "@/components/breadcrombs/breadcrumbs";
-import SurveyForm, { SurveyFormData } from "@/components/create-encuesta-form/create-encuesta-form";
+
 import NavBar from "@/components/nav-bar/nav-bar";
 import { getServerSession, Session, User } from "next-auth";
 import { redirect } from "next/navigation";
-import { createEncuestaAction } from "@/lib/actions";
+import { createEncuesta } from "@/lib/actions";
+import { SurveyForm } from "@/components/survey/survey-form";
 
 export default async function Page() {
   const session = await getServerSession(authOptions);
@@ -19,7 +20,7 @@ export default async function Page() {
         <Breadcrumbs items={[{ label: "Panel", href: "/investigador" }]} />
       </div>
       <div className="my-10">
-        <SurveyForm availableTecnologias={[]} onSubmit={createEncuestaAction as any } />
+        <SurveyForm defaultValues={null} onSubmit={createEncuesta as any} />
       </div>
     </section>
   );

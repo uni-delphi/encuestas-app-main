@@ -81,6 +81,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
                       tecnologia.enunciados.map((enunciado: any) => (
                         <Enunciado
                           key={enunciado.id}
+                          encuesta={encuesta?.slug!}
                           tecnologia={tecnologia}
                           enunciado={enunciado}
                         />

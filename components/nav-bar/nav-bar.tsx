@@ -13,7 +13,7 @@ export default function NavBar({
   title,
   slugs,
 }: {
-  encuesta: any[];
+  encuesta: any;
   user?: User;
   session: Session;
   title: string;
@@ -21,8 +21,8 @@ export default function NavBar({
 }) {
   return (
     <header className="fixed grid h-20 w-full z-40 bg-transparent">
-      {encuesta[0]?.tecnologias?.length > 0 && (
-        <TemasSelect tecnologias={encuesta[0]?.tecnologias} slugs={slugs} />
+      {encuesta?.tecnologias?.length > 0 && (
+        <TemasSelect tecnologias={encuesta?.tecnologias} slugs={slugs} />
       )}
       <nav
         className={`${
