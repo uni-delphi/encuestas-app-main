@@ -26,8 +26,11 @@ export async function getSampleRespuestasByEnunciado(
   });
 }
 
-export async function getResponsesForCSV() {
+export async function getResponsesForCSV(surveyId: number) {
   const formattedData = await prisma.response.findMany({
+    where: {
+      id: surveyId
+    },
     include: {
       respondent: true,
       singleChoice: {

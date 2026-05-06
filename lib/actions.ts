@@ -113,6 +113,16 @@ export const getEncuestaById = cache(async (id: number) => {
   }
 });
 
+export const getFullEncuestaById = cache(async (id: number) => {
+  try {
+    const response = await Encuestas.getFullEncuestaByIdAction({ id });
+    return response;
+  } catch (error: any) {
+    console.log(error);
+    throw Error("Error getEncuesta by id", error);
+  }
+});
+
 export async function getMyEncuestas(page = 0, pageSize = 10) {
   try {
     const response = await Encuestas.getMyEncuestas(page, pageSize);
@@ -309,9 +319,9 @@ export async function updateCheckboxResponse(data: any, responseId: number) {
   }
 }
 
-export async function getResponsesForCSV() {
+export async function getResponsesForCSV(surveyId: number) {
   try {
-    return await Respuestas.getResponsesForCSV();
+    return await Respuestas.getResponsesForCSV(surveyId);
   } catch (error: any) {
     console.log(error);
     throw Error("Error getResponsesForCSV", error);

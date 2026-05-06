@@ -460,6 +460,69 @@ export async function getEncuestaByIdAction(params: { id: number }) {
   };
 }
 
+export async function getFullEncuestaByIdAction(params: { id: number }) {
+  const survey = await prisma.survey.findUnique({
+    where: {
+      id: params.id,
+    },
+    include: {
+      tecnologias: {
+        include: {
+          enunciados: {
+            include: {
+              response: {
+                include: {
+                  respondent: true,
+                  singleChoice: true,
+                  checkbox: true,
+                  question: true,
+                },
+              },
+              questionsEnunciados: {
+                orderBy: { questionId: "asc" },
+                include: { question: true },
+              },
+            },
+          },
+        },
+      },
+      createdBy: {
+        select: {
+          id: true,
+          name: true,
+          lastName: true,
+          email: true,
+        },
+      },
+      assignedUsers: {
+        select: {
+          id: true,
+          name: true,
+          lastName: true,
+          email: true,
+        },
+        orderBy: [{ name: "asc" }, { lastName: "asc" }],
+      },
+    },
+  });
+
+  if (!survey) return null;
+
+  return {
+    ...survey,
+    tecnologias: survey.tecnologias.map((t) => ({
+      ...t,
+      enunciados: t.enunciados.map((e) => ({
+        ...e,
+        questions: e.questionsEnunciados.map((qe) => ({
+          ...qe.question,
+          isVisibleInEnunciado: qe.isActive, // 👈 agregás esto
+        })),
+      })),
+    })),
+  };
+}
+
 // Cache en módulo — persiste entre llamadas en el mismo proceso
 let cachedQuestionIds: number[] | null = null;
 
