@@ -52,6 +52,11 @@ const surveySchema = z.object({
     .or(z.literal("")),
   endDate: z.string().min(1, "La fecha de finalizacion es requerida"),
   isActive: z.boolean().default(true),
+  aboutLink: z
+    .string()
+    .url("Debe ser una URL válida")
+    .optional()
+    .or(z.literal("")),
 });
 
 export type SurveyFormValues = z.infer<typeof surveySchema>;
@@ -70,7 +75,7 @@ export type SurveyFormValues = z.infer<typeof surveySchema>;
 }*/
 
 interface SurveyFormProps {
-  onSubmit: (data: SurveyFormValues) => void | Promise<void>;
+  onSubmit: ({ data, id }: {data: SurveyFormValues, id?: number}) => void | Promise<void>;
   defaultValues:
     | (Survey & {
         tecnologias: Tecnologias[];
@@ -86,6 +91,7 @@ export function SurveyForm({ onSubmit, defaultValues }: SurveyFormProps) {
       description: "",
       endDate: "",
       isActive: true,
+      aboutLink: "",
     },
   });
 
@@ -98,13 +104,13 @@ export function SurveyForm({ onSubmit, defaultValues }: SurveyFormProps) {
           ? toDatetimeLocal(new Date(defaultValues.endDate))
           : "",
         isActive: defaultValues.isActive ?? true,
+        aboutLink: defaultValues.aboutLink ?? "",
       });
     }
   }, [defaultValues]);
 
   const handleSubmit = (data: SurveyFormValues) => {
-    const slug = generateSlug(data.title);
-    onSubmit(data);
+    onSubmit({ data, id: defaultValues?.id });
     form.reset();
   };
 
@@ -114,7 +120,7 @@ export function SurveyForm({ onSubmit, defaultValues }: SurveyFormProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Nueva Encuesta</CardTitle>
+        <CardTitle>Información principal</CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -169,10 +175,7 @@ export function SurveyForm({ onSubmit, defaultValues }: SurveyFormProps) {
                 <FormItem>
                   <FormLabel>Fecha de finalizacion</FormLabel>
                   <FormControl>
-                    <Input
-                      type="datetime-local"
-                      {...field}                      
-                    />
+                    <Input type="datetime-local" {...field} />
                   </FormControl>
                   <FormDescription>
                     La encuesta se cerrara automaticamente en esta fecha
@@ -195,10 +198,31 @@ export function SurveyForm({ onSubmit, defaultValues }: SurveyFormProps) {
                   </div>
                   <FormControl>
                     <Switch
-                      checked={defaultValues?.isActive ?? field.value}
+                      checked={field.value}
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="aboutLink"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Link de referencia (opcional)</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="https://ejemplo.com"
+                      type="url"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    URL con información adicional sobre la encuesta
+                  </FormDescription>
+                  <FormMessage />
                 </FormItem>
               )}
             />

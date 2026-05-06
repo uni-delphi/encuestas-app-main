@@ -8,13 +8,10 @@ export type QuestionType = z.infer<typeof QuestionType>
 export const InputQuestionType = z.enum([
   "NIVEL",
   "IMPORTANCIA",
-  "DIFUSION",
-  "ACELERAN",
-  "FRENAN",
-  "IMPACTO",
-  "DIFUSION_2024",
-  "DIFUSION_2027",
-  "DIFUSION_2030",
+  "HORIZONTE",
+  "CAPACIDADES",
+  "BARRERAS",
+  "AREAS",
 ])
 export type InputQuestionType = z.infer<typeof InputQuestionType>
 
@@ -46,13 +43,10 @@ export const questionTypeLabels: Record<z.infer<typeof QuestionType>, string> = 
 
 // Labels para los tipos de input
 export const inputQuestionTypeLabels: Record<z.infer<typeof InputQuestionType>, string> = {
-  NIVEL: "Nivel",
+  NIVEL: "Nivel de conocimiento y/o experiencia",
   IMPORTANCIA: "Importancia",
-  DIFUSION: "Difusión",
-  ACELERAN: "Aceleran",
-  FRENAN: "Frenan",
-  IMPACTO: "Impacto",
-  DIFUSION_2024: "Difusión 2024",
-  DIFUSION_2027: "Difusión 2027",
-  DIFUSION_2030: "Difusión 2030",
+  HORIZONTE: "Horizonte temporal",
+  CAPACIDADES: "Capacidades habilitantes",
+  BARRERAS: "Barreras / restricciones",
+  AREAS: "Áreas de impacto",
 }

@@ -25,6 +25,7 @@ model Survey {
   hasEnded      Boolean       @default(false)
   endDate       DateTime
   assignedUsers User[] @relation("AssignedSurveys")
+  aboutLink     String?
 }
 
 model Tecnologias {
@@ -80,6 +81,7 @@ model Question {
   singleChoiceResponses SingleChoiceResponse[]
   checkboxResponses     CheckboxResponse[]
   questionEnunciados    QuestionEnunciado[] // Relación inversa con QuestionEnunciado
+  isActive              Boolean               @default(true)
 }
 
 // Enum para definir los tipos de preguntas posibles
