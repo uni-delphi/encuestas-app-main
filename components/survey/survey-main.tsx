@@ -67,7 +67,7 @@ export default function SurveyMain({
     handleDeleteStatement,
     handleEditStatement,
     handleAddQuestion,
-    handleDeleteQuestion,
+    handleDisplayQuestion,
   } = useSurveyManager(encuesta);
 
   return (
@@ -234,6 +234,7 @@ export default function SurveyMain({
                           setEditingStatement(statement);
                           setShowStatementForm(false);
                         }}
+                        onToggleQuestion={handleDisplayQuestion}
                       />
                     </div>
                   </TabsContent>

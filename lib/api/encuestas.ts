@@ -318,17 +318,6 @@ export async function updateEncuestaAction(
   data: Partial<Survey>,
 ) {
   const session = await getServerSession(authOptions);
-  console.log("🚀 ~ updateEncuestaAction ~ data:", {
-    title: data.title!,
-    description: data.description,
-    slug: generateSlug(data.title!),
-    isActive: data.isActive,
-    endDate: data.endDate!,
-    createdById: session?.user.id!,
-    aboutLink: data.aboutLink,
-  });
-  // return
-
   return await prisma.survey.update({
     where: {
       id: surveyId,

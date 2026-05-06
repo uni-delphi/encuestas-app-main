@@ -92,9 +92,7 @@ export function UserCard({
   const canEditUser = session?.user.role! === "ADMIN"? true : user.role !== "ADMIN";
 
   const handleChangeRole = (role: RoleType) => {
-    startTransition(async () => {
-      
-      console.log("🚀 ~ handleChangeRole ~ user.id, role:", user, role)
+    startTransition(async () => {      
       await changeUserRole(user.email, role);
     });
   };

@@ -115,7 +115,7 @@ export function useSurveyManager(
     setShowQuestionForm(false);
   };
 
-  const handleDeleteQuestion = (id: number) => {
+  const handleDisplayQuestion = (id: number) => {
     setQuestions((prev) => prev.filter((q) => q.id !== id));
   };
 
@@ -146,6 +146,6 @@ export function useSurveyManager(
     handleDeleteStatement,
     handleEditStatement,
     handleAddQuestion,
-    handleDeleteQuestion,
+    handleDisplayQuestion,
   };
 }

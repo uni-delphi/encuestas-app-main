@@ -45,7 +45,6 @@ export function StatementList({
   onEdit,
   onToggleQuestion,
 }: StatementListProps) {
-  console.log("🚀 ~ StatementList ~ enunciados:", enunciados)
   
   const [expandedCards, setExpandedCards] = useState<Record<number, boolean>>({});
 
@@ -178,12 +177,13 @@ export function StatementList({
                                 </p>
                               )}
                             </div>
-                            <div className="flex items-center gap-2">
+                            {/** ref que se vea o no */}
+                            <div className="hidden flex items-center gap-2">
                               <span className="text-xs text-muted-foreground">
                                 {question.isActive ? "Activa" : "Inactiva"}
                               </span>
                               <Switch
-                                checked={question.isActive ?? true}
+                                checked={question.isActive}
                                 onCheckedChange={(checked) =>
                                   onToggleQuestion?.(enunciado.id, question.id, checked)
                                 }
