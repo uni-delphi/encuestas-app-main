@@ -237,7 +237,7 @@ export async function getTecnologia(slug: string) {
   });
 }
 
-export async function getEnunciado({
+export async function getEnunciadoAction({
   dataSlug,
   dataUserId,
   dataEnunciadoId,
@@ -276,7 +276,10 @@ export async function getEnunciado({
   // Misma forma que antes — los componentes no se enteran del cambio
   return {
     ...enunciado,
-    questions: enunciado.questionsEnunciados.map((qe) => qe.question),
+    questions: enunciado.questionsEnunciados.map((qe) => ({
+      ...qe.question,
+      isVisibleInEnunciado: qe.isActive,
+    })),
   };
 }
 
@@ -364,7 +367,7 @@ export async function getSlugs(surveyId: number) {
 export async function createEncuestaAction(surveyInfo: any) {
   const session = await getServerSession(authOptions);
   const { data } = surveyInfo;
-  
+
   return await prisma.survey.create({
     data: {
       title: data.title!,
@@ -448,7 +451,10 @@ export async function getEncuestaByIdAction(params: { id: number }) {
       ...t,
       enunciados: t.enunciados.map((e) => ({
         ...e,
-        questions: e.questionsEnunciados.map((qe) => qe.question),
+        questions: e.questionsEnunciados.map((qe) => ({
+          ...qe.question,
+          isVisibleInEnunciado: qe.isActive, // 👈 agregás esto
+        })),
       })),
     })),
   };
@@ -503,5 +509,16 @@ export async function updateEnunciadoAction(data: Partial<Enunciados>) {
       description: data.description,
       slug: data.slug,
     },
+  });
+}
+
+export async function toggleQuestionEnunciadoAction(
+  enunciadoId: number,
+  questionId: number,
+  isActive: boolean,
+) {
+  return await prisma.questionEnunciado.update({
+    where: { enunciadoId_questionId: { enunciadoId, questionId } },
+    data: { isActive },
   });
 }

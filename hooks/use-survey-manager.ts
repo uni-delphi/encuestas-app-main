@@ -1,18 +1,25 @@
 // hooks/use-survey-manager.ts
 import { useState } from "react";
 import { Survey, Tecnologias, Enunciados, Question } from "@/generated/prisma";
-import {
-  type SurveyFormValues,
-} from "@/components/survey/survey-form";
+import { type SurveyFormValues } from "@/components/survey/survey-form";
 import { type QuestionFormValues } from "@/lib/schemas/question";
-import { createEnunciado, createTecnologia, updateEncuesta, updateEnunciado, updateTecnologia } from "@/lib/actions";
+import {
+  createEnunciado,
+  createTecnologia,
+  updateEncuesta,
+  updateEnunciado,
+  updateTecnologia,
+  updateQuestionVisible,
+} from "@/lib/actions";
 import { TecnologiaFormValues } from "@/components/technology/technology-form";
 import { StatementFormValues } from "@/components/statement/statement-form";
 
 type TecnologiaWithEnunciados = Tecnologias & { enunciados: Enunciados[] };
 
 export function useSurveyManager(
-  encuesta: (Survey & { tecnologias: (Tecnologias & { enunciados: Enunciados[] })[] }) | null
+  encuesta:
+    | (Survey & { tecnologias: (Tecnologias & { enunciados: Enunciados[] })[] })
+    | null,
 ) {
   const [survey, setSurvey] = useState<Survey | null>(null);
   const [tecnologias, setTecnologias] = useState<Tecnologias[]>([]);
@@ -36,17 +43,15 @@ export function useSurveyManager(
 
   // ── Survey ────────────────────────────────────────────────────────
   const handleSurveySubmit = (sureyData: SurveyFormValues & any) => {
-    const {id} = sureyData;
-    
-    updateEncuesta(id, sureyData.data);
+    const { id } = sureyData;
 
+    updateEncuesta(id, sureyData.data);
   };
 
   // ── Tecnologías ───────────────────────────────────────────────────
   const handleAddTecnologia = async (data: TecnologiaFormValues & any) => {
     try {
       if (editingTech) {
-
         const resp = await updateTecnologia({
           ...data,
           id: editingTech.id,
@@ -91,7 +96,10 @@ export function useSurveyManager(
         } as Enunciados);
         setEditingStatement(null);
       } else {
-        const resp = await createEnunciado({ ...data, tecnologiaId: Number(data.tecnologiaId) } as Enunciados);
+        const resp = await createEnunciado({
+          ...data,
+          tecnologiaId: Number(data.tecnologiaId),
+        } as Enunciados);
         setStatements((prev) => [...prev, resp]);
         setShowStatementForm(false);
       }
@@ -115,8 +123,16 @@ export function useSurveyManager(
     setShowQuestionForm(false);
   };
 
-  const handleDisplayQuestion = (id: number) => {
-    setQuestions((prev) => prev.filter((q) => q.id !== id));
+  const handleToggleQuestion = async (
+    enunciadoId: number,
+    questionId: number,
+    isActive: boolean,
+  ) => {
+    try {
+      await updateQuestionVisible(enunciadoId, questionId, isActive);
+    } catch (error) {
+      console.error("Error toggling question:", error);
+    }
   };
 
   return {
@@ -146,6 +162,6 @@ export function useSurveyManager(
     handleDeleteStatement,
     handleEditStatement,
     handleAddQuestion,
-    handleDisplayQuestion,
+    handleToggleQuestion,
   };
 }

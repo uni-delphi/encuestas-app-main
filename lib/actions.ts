@@ -62,8 +62,8 @@ export async function searchUsers(query: string) {
 
 export async function changeUserRole(userEmail: string, role: RoleType) {
   try {
-    const response =  await Users.changeUserRoleAction(userEmail, role);
-    revalidatePath("/admin")
+    const response = await Users.changeUserRoleAction(userEmail, role);
+    revalidatePath("/admin");
     return response;
   } catch (error) {
     console.log("Error en changeUserRole:", error);
@@ -232,7 +232,7 @@ export async function getEnunciado({
   dataEnunciadoId: number;
 }) {
   try {
-    return await Encuestas.getEnunciado({
+    return await Encuestas.getEnunciadoAction({
       dataSlug,
       dataUserId,
       dataEnunciadoId,
@@ -377,6 +377,26 @@ export async function getSlugs(surveyId: number) {
 export async function createEncuesta(data: Partial<Survey>) {
   try {
     const response = await Encuestas.createEncuestaAction(data);
+    revalidatePath("/admin");
+    return response;
+  } catch (error: any) {
+    console.log(error);
+    throw Error("Error creando la encuesta", error);
+  }
+  revalidatePath("/admin");
+}
+
+export async function updateQuestionVisible(
+  enunciadoId: number,
+  questionId: number,
+  isActive: boolean,
+) {
+  try {
+    const response = await Encuestas.toggleQuestionEnunciadoAction(
+      enunciadoId,
+      questionId,
+      isActive,
+    );
     revalidatePath("/admin");
     return response;
   } catch (error: any) {
