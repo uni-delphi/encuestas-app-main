@@ -35,11 +35,9 @@ export default async function Page({
 
   const slugsArr = await params;
   const [encSlug, techSlug, enunciadoSlug] = slugsArr?.slug;
-  console.log("🚀 ~ Page ~ slugsArr:", slugsArr)
   
   //const encuestas = await getAllEncuestas();
   const encuesta = await getFullEncuestaBySlug(encSlug); // o buscar por slug si tenés múltiples
-  console.log("🚀 ~ Page ~ encuesta:", encuesta)
 
   if (!encuesta) redirect("/encuestas");
   

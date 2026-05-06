@@ -64,6 +64,8 @@ model QuestionEnunciado {
   question   Question @relation(fields: [questionId], references: [id])
   questionId Int
 
+  isActive              Boolean               @default(true)
+
   @@id([enunciadoId, questionId])
 }
 

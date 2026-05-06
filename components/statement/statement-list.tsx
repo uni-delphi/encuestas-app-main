@@ -13,26 +13,19 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Pencil, Trash2, ChevronDown, ChevronUp } from "lucide-react";
 
-import { Enunciados } from "@/generated/prisma";
+import { Enunciados, Question } from "@/generated/prisma";
 
 export type QuestionType = "OPEN" | "SINGLE_CHOICE" | "CHECKBOX";
 export type InputQuestionType = "TEXT" | "TEXTAREA" | "NUMBER" | "DATE";
 
-export interface Question {
-  id: number;
-  text: string;
-  type: QuestionType;
-  inputType?: InputQuestionType | null;
-  additionalInfo?: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-  isActive?: boolean;
+export interface QuestionWithVisibility extends Question {
+  isVisibleInEnunciado: boolean; // viene de QuestionEnunciado.isActive
 }
 
 interface StatementListProps {
   enunciados: (Enunciados & { 
     tecnologiaTitle: string;
-    questions?: Question[];
+    questions?: QuestionWithVisibility[];
   })[];
   onDelete: (id: number) => void;
   onEdit: (statement: Enunciados) => void;
@@ -45,7 +38,6 @@ export function StatementList({
   onEdit,
   onToggleQuestion,
 }: StatementListProps) {
-  console.log("🚀 ~ StatementList ~ enunciados:", enunciados)
   
   const [expandedCards, setExpandedCards] = useState<Record<number, boolean>>({});
 
@@ -149,9 +141,7 @@ export function StatementList({
 
                   {expandedCards[enunciado.id] && (
                     <div className="mt-3 space-y-3">
-                      {enunciado.questions.map((question) => {
-                        console.log("🚀 ~ StatementList ~ question:", question)
-                        
+                      {enunciado.questions.map((question) => {                        
                         const typeBadge = getQuestionTypeBadge(question.type);
                         return (
                           <div
@@ -178,12 +168,13 @@ export function StatementList({
                                 </p>
                               )}
                             </div>
+                            {/** ref que se vea o no */}
                             <div className="flex items-center gap-2">
                               <span className="text-xs text-muted-foreground">
-                                {question.isActive ? "Activa" : "Inactiva"}
+                               {question.isVisibleInEnunciado ? "Visible" : "Oculta"}
                               </span>
                               <Switch
-                                checked={question.isActive ?? true}
+                                checked={question.isVisibleInEnunciado ?? true}
                                 onCheckedChange={(checked) =>
                                   onToggleQuestion?.(enunciado.id, question.id, checked)
                                 }

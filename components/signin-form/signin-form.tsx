@@ -99,7 +99,7 @@ const formSchema = z
     {
       message: "Este campo es requerido",
       path: ["sector"],
-    }
+    },
   )
   .refine(
     (values) => {
@@ -108,7 +108,7 @@ const formSchema = z
     {
       message: "Este campo es requerido",
       path: ["otherSectorText"],
-    }
+    },
   )
   .refine((values) => values.password === values.validatedPassword, {
     message: "Las contraseñas deben coincidir",
@@ -123,7 +123,7 @@ const formSchema = z
       message:
         "La contraseña debe contener al menos una letra mayúscula y un número",
       path: ["password"],
-    }
+    },
   )
   .refine(
     (values) => {
@@ -133,7 +133,7 @@ const formSchema = z
     {
       message: "Ingrese un año válido en formato 2003",
       path: ["years"],
-    }
+    },
   );
 
 export default function SignInForm() {
@@ -193,7 +193,7 @@ export default function SignInForm() {
         signIn("credentials", {
           email: values?.email,
           password: values?.password,
-          callbackUrl: "/bienvenido",
+          callbackUrl: "/encuestas",
         });
       })
       .catch((error: any) => {
@@ -336,28 +336,15 @@ export default function SignInForm() {
             render={({ field }) => (
               <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto text-left">
                 <FormLabel>Actividad principal de su desempeño* </FormLabel>
-                <Select onValueChange={field.onChange}>
-                  <SelectTrigger
-                    className="w-full"
-                    disabled={isOtherSectorSelected}
-                  >
-                    <SelectValue placeholder="Elige actividad" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {sectors &&
-                      sectors.map((edu: string, index: number) => (
-                        <SelectGroup key={index}>
-                          <SelectItem value={edu}>{edu}</SelectItem>
-                        </SelectGroup>
-                      ))}
-                  </SelectContent>
-                </Select>
+                <FormControl>
+                  <Input placeholder="" {...field} />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          <div className="flex items-center xl:w-[40%] sm:w-[60%] mx-auto text-left">
+          <div className="hidden flex items-center xl:w-[40%] sm:w-[60%] mx-auto text-left">
             <FormField
               control={form.control}
               name="otherSector"
