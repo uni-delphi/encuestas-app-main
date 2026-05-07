@@ -52,7 +52,7 @@ export default async function Page({
   );
   const slugs = await getSlugs(encuesta.id);// pasar los slugs de la encuesta
   
-  const { title, tecnologias, endDate, hasEnded, isActive } = encuesta;
+  const { title, tecnologias, endDate, hasEnded, isActive, slug } = encuesta;
 
   if (surveyHasEnded({ endDate, isActive, hasEnded })) {
     redirect(`/encuestas/finalizado/${encuesta.slug}`);
@@ -112,6 +112,7 @@ export default async function Page({
           />
         </Suspense>
         <RedirectButtons
+        encuestaSlug={slug}
           encuesta={slugs}
           techActual={techSlug}
           enunActual={enunciadoSlug}

@@ -73,7 +73,7 @@ export default function TemasSelect({
                                 className="text-small"
                                 onChange={handleChange}
                                 key={enunciado.id}
-                                value={`/encuestas/${tecnologia.slug}/${enunciado.slug}`}
+                                value={`/encuestas/${encSlug}/${tecnologia.slug}/${enunciado.slug}`}
                               >
                                 {enunciado.title}
                               </SelectItem>
