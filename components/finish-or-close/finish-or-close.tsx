@@ -3,16 +3,15 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import { getAllEncuestasInfo } from "@/lib/actions";
 import { surveyHasEnded } from "@/utils/date-formatter";
+import { Survey } from "@/generated/prisma";
 
 export default async function FinishOrClose({
-  hasEnded,
-  endDate,
-  isActive,
+  encuesta,
 }: {
-  hasEnded: boolean;
-  endDate: Date;
-  isActive: boolean;
+  encuesta: Survey;
 }) {
+  const { endDate, isActive, hasEnded, aboutLink } = encuesta;
+
   return surveyHasEnded({ endDate, isActive, hasEnded }) ? (
     <>
       <div className="w-full md:max-w-[80%] md:mx-auto mt-14">
@@ -23,13 +22,23 @@ export default async function FinishOrClose({
         </p>
       </div>
       <div className="flex justify-center gap-5">
-        <Link
-          target="_blank"
-          href={`https://campusnorte.unc.edu.ar/prospectiva-tecnologica-ocupacional/agrobioindustria-alimentaria/`}
-          className="hover:text-blue-600 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-blue-600 text-white md:mx-10 hover:bg-gray-200 my-4"
-        >
-          Ver más del estudio
-        </Link>
+        {aboutLink && (
+          <Link
+            target="_blank"
+            href={aboutLink!}
+            className="hover:text-blue-600 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-white text-blue-600 md:mx-10 hover:bg-gray-200 my-4 border"
+          >
+            Ver más del estudio
+          </Link>
+        )}
+        {!aboutLink && (
+          <Link
+            href="/encuestas/"
+            className="hover:text-blue-600 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-blue-600 text-white md:mx-10 hover:bg-gray-200 my-4"
+          >
+            Ir a mis encuestas
+          </Link>
+        )}
       </div>
     </>
   ) : (
@@ -56,13 +65,23 @@ export default async function FinishOrClose({
         >
           Ver mis respuestas
         </Link>
-        <Link
-          target="_blank"
-          href={`https://campusnorte.unc.edu.ar/prospectiva-tecnologica-ocupacional/agrobioindustria-alimentaria/`}
-          className="hover:text-blue-600 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-white text-blue-600 md:mx-10 hover:bg-gray-200 my-4 border"
-        >
-          Ver más del estudio
-        </Link>
+        {aboutLink && (
+          <Link
+            target="_blank"
+            href={aboutLink!}
+            className="hover:text-blue-600 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-white text-blue-600 md:mx-10 hover:bg-gray-200 my-4 border"
+          >
+            Ver más del estudio
+          </Link>
+        )}
+        {!aboutLink && (
+          <Link
+            href="/encuestas/"
+            className="hover:text-blue-600 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-blue-600 text-white md:mx-10 hover:bg-gray-200 my-4"
+          >
+            Ir a mis encuestas
+          </Link>
+        )}
       </div>
     </>
   );

@@ -365,9 +365,10 @@ export async function getAllUsersAssignedToMySurveys(page = 0, pageSize = 10) {
 }
 
 export async function updateEncuesta(surveyId: number, data: Partial<Survey>) {
+  
   try {
     const response = await Encuestas.updateEncuestaAction(surveyId, data);
-    revalidatePath("/");
+    revalidatePath("/admin/encuestas");
     return response;
   } catch (error: any) {
     console.log(error);

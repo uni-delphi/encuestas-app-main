@@ -9,6 +9,7 @@ import FinishOrClose from "@/components/finish-or-close/finish-or-close";
 import { getAllEncuestasInfo, getEncuestaBySlug } from "@/lib/actions";
 import { surveyHasEnded } from "@/utils/date-formatter";
 import NavBar from "@/components/nav-bar/nav-bar";
+import { Survey } from "@/generated/prisma";
 
 export default async function Page({ params }: { params: { slug: string } }) {
   const session = await getServerSession(authOptions);
@@ -16,7 +17,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
   const { name, role } = session.user;
   const surveySlug: any = await params;
   const encuesta = await getEncuestaBySlug(surveySlug.slug);
-  
+
   return (
     <>
       <NavBar
@@ -34,11 +35,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
           <h4 className="font-bold  text-center mt-14">
             Gracias por haber participado!
           </h4>
-          <FinishOrClose
-            hasEnded={encuesta?.hasEnded!}
-            endDate={encuesta?.endDate!}
-            isActive={encuesta?.isActive!}
-          />
+          <FinishOrClose encuesta={encuesta as Survey} />
         </LayoutDefault>
       </main>
     </>

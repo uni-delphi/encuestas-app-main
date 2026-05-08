@@ -57,6 +57,7 @@ export default function ModalCloseSurvey({ action, open, encuesta }: Props) {
     setIsLoading(true);
 
     const endedSurveyResponse = await updateEncuesta(encuesta.id, {
+      ...encuesta,
       isActive: false,
     });
 
