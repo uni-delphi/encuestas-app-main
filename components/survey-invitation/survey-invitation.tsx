@@ -71,7 +71,6 @@ function generateToken(): string {
 }
 
 export function SurveyInvitation({encuesta, usuarios}: any) {
-    console.log("🚀 ~ SurveyInvitation ~ encuesta:", encuesta)
     
   // Estado para búsqueda de usuarios
   const [searchEmail, setSearchEmail] = useState("")

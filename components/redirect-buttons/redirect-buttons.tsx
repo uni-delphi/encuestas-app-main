@@ -6,9 +6,6 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
 const nextSlugFinder = (encuestaSlug: string,slug: string, encuesta: any[]) => {
-  console.log("🚀 ~ nextSlugFinder ~ encuesta:", encuesta)
-  console.log("🚀 ~ nextSlugFinder ~ slug:", slug)
-  
   const currentIndex = encuesta.findIndex(
     (item: any) => item.enunciadoSlug === slug
   );

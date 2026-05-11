@@ -51,9 +51,6 @@ function generateTokenFromSlug(slug: string): string {
 }
 
 export function TokenLinkGenerator({ encuestas, usuarios }: any) {
-  console.log("🚀 ~ TokenLinkGenerator ~ encuestas:", encuestas);
-  console.log("🚀 ~ TokenLinkGenerator ~ usuarios:", usuarios);
-
   const [selectedSurvey, setSelectedSurvey] = useState<string>("");
   const [token, setToken] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);

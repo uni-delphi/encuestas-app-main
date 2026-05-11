@@ -18,8 +18,6 @@ type Props = {
 };
 
 function EncuestaCard({ encuesta }: Props) {
-console.log("🚀 ~ EncuestaCard ~ encuesta:", typeof encuesta.createdAt )
-
   return (
     <Card className="border-border bg-card hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 group">
       <CardHeader className="pb-4">

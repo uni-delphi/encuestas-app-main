@@ -339,7 +339,6 @@ export async function updateEnunciado(data: Partial<Enunciados>) {
 export async function deleteEnunciado(enunciadoId: number) {
   try {
     const response = await Encuestas.deleteEnunciadoAction(enunciadoId);
-    console.log("🚀 ~ deleteEnunciado ~ response:", response)
     
     invalidate("enunciados");
     invalidate("encuestas");
