@@ -416,7 +416,7 @@ export default function SignInForm() {
             render={({ field }) => (
               <FormItem className="xl:w-[40%] sm:w-[60%] mx-auto text-left">
                 <FormLabel>
-                  Año de inicio en el sector de maquinaria agrícola
+                  Año de inicio en la actividad de su sector
                 </FormLabel>
                 <FormControl>
                   <Input placeholder="Ej: 2006" {...field} />
