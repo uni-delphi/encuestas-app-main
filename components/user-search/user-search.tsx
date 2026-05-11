@@ -67,7 +67,7 @@ export function UserSearch() {
         <SelectContent>
           <SelectItem value="ALL">Todos</SelectItem>
           <SelectItem value="RESEARCHER">Investigador</SelectItem>
-          <SelectItem value="USER">Usuario</SelectItem>
+          <SelectItem value="USER">Encuestado</SelectItem>
         </SelectContent>
       </Select>
     </div>
