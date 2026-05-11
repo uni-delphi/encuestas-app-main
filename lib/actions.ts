@@ -83,7 +83,8 @@ export async function changeUserRole(userEmail: string, role: RoleType) {
 
 export async function createInvitation(surveyId: number, email: string) {
   try {
-    const response = await Users.createInvitationAction(surveyId, email);
+    const response = await Users.crearInvitacionAction(surveyId, email);
+    revalidatePath("/admin/usuarios");
     revalidatePath("/investigador/usuarios");
     return response;
   } catch (error) {
@@ -150,9 +151,9 @@ export async function getEncuestas(page = 0, pageSize = 10) {
   return await Encuestas.getEncuestasAction(page, pageSize);
 }
 
-export async function getAllUsers(page = 0, pageSize = 10) {
+export async function getAllUsers(page = 0, pageSize = 10, query: string, role?: string) {
   try {
-    return await Users.getAllUsersActions(page, pageSize);
+    return await Users.getAllUsersAction(page, pageSize, query, role);
   } catch (error: any) {
     throw new Error(`Error getAllUsers: ${error}`);
   }
@@ -477,3 +478,4 @@ export async function deleteSurvey(surveyId: number) {
     throw new Error(`Error en deleteSurvey: ${error}`);
   }
 }
+

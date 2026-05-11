@@ -1,10 +1,10 @@
 import { prisma } from "../prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/auth.config";
-import { RoleType } from "@/generated/prisma";
+import { Prisma, RoleType } from "@/generated/prisma";
 import { hasRole } from "@/lib/permissions";
 
-export async function getAllUsersActions(page = 0, pageSize = 10) {
+{/*export async function getAllUsersActions(page = 0, pageSize = 10) {
   const [usuarios, total] = await Promise.all([
     prisma.user.findMany({
       skip: page * pageSize,
@@ -24,6 +24,37 @@ export async function getAllUsersActions(page = 0, pageSize = 10) {
     prisma.user.count(),
   ]);
   return { usuarios: usuarios, total, pageCount: Math.ceil(total / pageSize) };
+}*/}
+
+export async function getAllUsersAction(page: number, pageSize: number, query?: string, role?: string) {
+  const where: Prisma.UserWhereInput = {
+    ...(query && {
+      OR: [
+        { name: { contains: query, mode: "insensitive" } },
+        { lastName: { contains: query, mode: "insensitive" } },
+        { email: { contains: query, mode: "insensitive" } },
+      ],
+    }),
+    ...(role && role !== "ALL" && {
+      role: role as RoleType,
+    }),
+  }
+
+  const [usuarios, total] = await Promise.all([
+    prisma.user.findMany({
+      where,
+      skip: page * pageSize,
+      take: pageSize,
+      orderBy: { createdat: "desc" },
+    }),
+    prisma.user.count({ where }),
+  ])
+
+  return {
+    usuarios,
+    total,
+    pageCount: Math.ceil(total / pageSize),
+  }
 }
 
 export async function getAllUsersAssignedToMySurveysAction(
@@ -143,17 +174,25 @@ export async function changeUserRoleAction(email: string, role: RoleType) {
   });
 }
 
-export async function createInvitationAction(surveyId: number, email: string) {
-  const expiresAt = new Date();
-  expiresAt.setDate(expiresAt.getDate() + 7); // expira en 7 días
+export async function crearInvitacionAction(surveyId: number, email: string): Promise<string> {
+  const expiresAt = new Date()
+  expiresAt.setDate(expiresAt.getDate() + 7)
 
-  const invitation = await prisma.surveyInvitation.create({
-    data: {
+  const invitation = await prisma.surveyInvitation.upsert({
+    where: {
+      surveyId_email: { surveyId, email },
+    },
+    update: {
+      usedAt: null,
+      expiresAt,
+      token: crypto.randomUUID(),
+    },
+    create: {
       surveyId,
       email,
       expiresAt,
     },
-  });
+  })
 
-  return invitation.token; // cuid() generado por Prisma
+  return invitation.token
 }

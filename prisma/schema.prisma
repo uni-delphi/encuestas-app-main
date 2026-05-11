@@ -214,6 +214,7 @@ model SurveyInvitation {
   expiresAt DateTime
   createdAt DateTime  @default(now())
 
+  @@unique([surveyId, email])
   @@index([email])
   @@index([surveyId])
   @@index([expiresAt])
