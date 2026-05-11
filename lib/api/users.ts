@@ -142,3 +142,18 @@ export async function changeUserRoleAction(email: string, role: RoleType) {
     data: { role },
   });
 }
+
+export async function createInvitationAction(surveyId: number, email: string) {
+  const expiresAt = new Date();
+  expiresAt.setDate(expiresAt.getDate() + 7); // expira en 7 días
+
+  const invitation = await prisma.surveyInvitation.create({
+    data: {
+      surveyId,
+      email,
+      expiresAt,
+    },
+  });
+
+  return invitation.token; // cuid() generado por Prisma
+}

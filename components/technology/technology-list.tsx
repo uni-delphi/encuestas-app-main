@@ -104,7 +104,7 @@ export function TechnologyList({
                 {/*<p>Finaliza: {formatDate(tech?.endDate)}</p>
                 
                 */}
-                <p>Creado: {tech?.createdAt?.toLocaleDateString("es-ES")}</p>
+                <p>Creado: {new Date(tech?.createdAt).toLocaleDateString("es-ES")}</p>
               </div>
             </CardContent>
           </Card>

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { Prisma, Survey } from "@/generated/prisma";
+import type { Prisma, Survey, Tecnologias } from "@/generated/prisma";
 
 import {
   Card,
@@ -12,20 +12,14 @@ import { Badge } from "@/components/ui/badge";
 import { PaginationControls } from "@/components/pagination-controls/pagination-controls";
 import { ArrowRight, Calendar, Layers } from "lucide-react";
 
-type EncuestaConRelaciones = Prisma.SurveyGetPayload<{
-  include: {
-    createdBy: true;
-    tecnologias: {
-      include: { enunciados: true };
-    };
-  };
-}>;
 
 type Props = {
-  encuestas: Survey[];
+  encuesta: Survey & { tecnologias: Tecnologias[]};
 };
 
-function EncuestaCard({ encuesta }: any) {
+function EncuestaCard({ encuesta }: Props) {
+console.log("🚀 ~ EncuestaCard ~ encuesta:", typeof encuesta.createdAt )
+
   return (
     <Card className="border-border bg-card hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 group">
       <CardHeader className="pb-4">
@@ -54,14 +48,14 @@ function EncuestaCard({ encuesta }: any) {
             <Calendar className="w-4 h-4" />
             <span>Creada:</span>
             <span className="font-semibold text-card-foreground">
-              {encuesta.createdAt?.toLocaleDateString()}
+              {new Date(encuesta.createdAt).toLocaleDateString("es-ES")}
             </span>
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">
             <Calendar className="w-4 h-4" />
             <span>Finaliza:</span>
             <span className="font-semibold text-card-foreground">
-              {encuesta.endDate?.toLocaleDateString()}
+              {new Date(encuesta.endDate).toLocaleDateString("es-ES")}
             </span>
           </div>
         </div>
@@ -106,7 +100,7 @@ export default async function AdminEncuestas({
   page = 0,
   pageCount = 10,
 }: {
-  encuestas: EncuestaConRelaciones[];
+  encuestas: Survey[];
   urlLink?: string;
   page?: number;
   pageCount?: number;

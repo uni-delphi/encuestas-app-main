@@ -6,8 +6,20 @@ export async function GET(req: NextRequest) {
   if (!token) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 });
   }
+
+  const generateTokenFromSlug = (slug: string): string => {
+  // Codifica el slug en base64 y añade un identificador único
+  const timestamp = Date.now().toString(36);
+  const random = Array.from(crypto.getRandomValues(new Uint8Array(8)))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+  const encodedSlug = btoa(slug);
+  return `${encodedSlug}.${timestamp}.${random}`;
+} //revertir para verificar si existe esa encuesta y si el token es valido desp asignar a la encuesta con la tabla de relacion  
+
 }
 
+/*
 export async function POST(req: NextRequest) {
   try {
     const { u, n, t } = await req.json();
@@ -109,3 +121,4 @@ export async function PUT(req: NextRequest) {
     );
   }
 }
+*/

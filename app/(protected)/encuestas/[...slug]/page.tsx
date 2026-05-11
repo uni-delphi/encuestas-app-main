@@ -1,16 +1,22 @@
 import { authOptions } from "@/auth.config";
 import { Session, User, getServerSession } from "next-auth";
-import { getAllEncuestas, getEncuestaById, getEncuestaBySlug, getEnunciado, getFullEncuestaBySlug, getSlugs } from "@/lib/actions";
+import {
+  getAllEncuestas,
+  getEncuestaById,
+  getEncuestaBySlug,
+  getEnunciado,
+  getFullEncuestaBySlug,
+  getSlugs,
+} from "@/lib/actions";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
-
 
 import { calculateRemainingDays, surveyHasEnded } from "@/utils/date-formatter";
 
 import EncuestaForm from "@/components/encuesta-form/encuesta-form";
 import NavBar from "@/components/nav-bar/nav-bar";
 import RedirectButtons from "@/components/redirect-buttons/redirect-buttons";
-import { QuestionEnunciado, Enunciados  } from "@/generated/prisma";
+import { QuestionEnunciado, Enunciados } from "@/generated/prisma";
 import LayoutDefault from "@/components/image-layout/image-layout";
 import { calculateResponsesPercents } from "@/utils/text-helper";
 import Enunciado from "@/components/enunciado/enunciado";
@@ -25,45 +31,51 @@ export default async function Page({
   params,
   searchParams,
 }: {
-  params: Promise<{ slug: string }>
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const session: Session | null = await getServerSession(authOptions);
   if (!session || !session.user) redirect("/");
-  const { name, role } = session.user;
+  const { name, role, id } = session.user;
   if (role !== "USER") redirect(redirectStrategy[role]);
 
   const slugsArr = await params;
   const [encSlug, techSlug, enunciadoSlug] = slugsArr?.slug;
-  
+
   //const encuestas = await getAllEncuestas();
   const encuesta = await getFullEncuestaBySlug(encSlug); // o buscar por slug si tenés múltiples
 
   if (!encuesta) redirect("/encuestas");
-  
+
   const techElegida = encuesta?.tecnologias.find(
-    (data: any) => data.slug === techSlug
+    (data: any) => data.slug === techSlug,
   );
 
   if (!techElegida) redirect("/encuestas");
 
   const enunciadoElegido = techElegida.enunciados.find(
-    (data: any) => data.slug === enunciadoSlug
+    (data: any) => data.slug === enunciadoSlug,
   );
-  const slugs = await getSlugs(encuesta.id);// pasar los slugs de la encuesta
-  
-  const { title, tecnologias, endDate, hasEnded, isActive, slug } = encuesta;
+  const slugs = await getSlugs(encuesta.id); // pasar los slugs de la encuesta
+
+  const {
+    title,
+    tecnologias,
+    endDate,
+    hasEnded,
+    isActive,
+    slug: encuestaSlug,
+  } = encuesta;
 
   if (surveyHasEnded({ endDate, isActive, hasEnded })) {
     redirect(`/encuestas/finalizado/${encuesta.slug}`);
   }
 
+  let dataSlug = enunciadoElegido?.slug! ?? techElegida.enunciados[0].slug!;
+  let dataUserId = session?.user.id;
+  let dataEnunciadoId = enunciadoElegido?.id ?? techElegida.enunciados[0].id;
 
-  const enunciados = await getEnunciado({
-    dataSlug: enunciadoElegido?.slug! ?? techElegida.enunciados[0].slug!,
-    dataUserId: session?.user.id,
-    dataEnunciadoId: enunciadoElegido?.id ?? techElegida.enunciados[0].id,
-  });
+  const enunciados = await getEnunciado(dataSlug, dataUserId, dataEnunciadoId);
 
   return (
     <main className="relative">
@@ -112,7 +124,7 @@ export default async function Page({
           />
         </Suspense>
         <RedirectButtons
-        encuestaSlug={slug}
+          encuestaSlug={encuestaSlug}
           encuesta={slugs}
           techActual={techSlug}
           enunActual={enunciadoSlug}

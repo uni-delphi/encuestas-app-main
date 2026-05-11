@@ -11,21 +11,26 @@ datasource db {
 
 // Modelo para representar una encuesta
 model Survey {
-  id            Int           @id @default(autoincrement())
+  id            Int                @id @default(autoincrement())
   title         String
   description   String?
-  slug          String       @unique
-  createdBy     User          @relation("CreatedSurveys", fields: [createdById], references: [id])
+  slug          String             @unique
+  createdBy     User               @relation("CreatedSurveys", fields: [createdById], references: [id])
   createdById   String
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
   tecnologias   Tecnologias[]
-  responseCount Int           @default(0) // New field to track the number of responses
-  isActive      Boolean       @default(true)
-  hasEnded      Boolean       @default(false)
+  responseCount Int                @default(0) // New field to track the number of responses
+  isActive      Boolean            @default(true)
+  hasEnded      Boolean            @default(false)
   endDate       DateTime
-  assignedUsers User[] @relation("AssignedSurveys")
+  assignedUsers User[]             @relation("AssignedSurveys")
+  invitations   SurveyInvitation[]
   aboutLink     String?
+
+  @@index([createdById])
+  @@index([isActive, hasEnded])
+  @@index([endDate])
 }
 
 model Tecnologias {
@@ -38,6 +43,8 @@ model Tecnologias {
   surveyId    Int
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
+
+  @@index([surveyId])
 }
 
 model Enunciados {
@@ -46,7 +53,7 @@ model Enunciados {
   description          String
   slug                 String?                @unique
   questionsEnunciados  QuestionEnunciado[] // Relación many-to-many con Question
-  tecnologia           Tecnologias            @relation(fields: [tecnologiaId], references: [id])
+  tecnologia           Tecnologias            @relation(fields: [tecnologiaId], references: [id], onDelete: Cascade)
   tecnologiaId         Int
   //questions            Question[]
   response             Response[]
@@ -54,19 +61,22 @@ model Enunciados {
   updatedAt            DateTime               @updatedAt
   SingleChoiceResponse SingleChoiceResponse[]
   CheckboxResponse     CheckboxResponse?
+
+  @@index([tecnologiaId])
 }
 
 // Tabla intermedia para la relación many-to-many entre Question y Enunciado
 model QuestionEnunciado {
-  enunciado   Enunciados @relation(fields: [enunciadoId], references: [id])
+  enunciado   Enunciados @relation(fields: [enunciadoId], references: [id], onDelete: Cascade)
   enunciadoId Int
 
   question   Question @relation(fields: [questionId], references: [id])
   questionId Int
 
-  isActive              Boolean               @default(true)
+  isActive Boolean @default(true)
 
   @@id([enunciadoId, questionId])
+  @@index([questionId])
 }
 
 // Modelo para representar una pregunta
@@ -83,7 +93,10 @@ model Question {
   singleChoiceResponses SingleChoiceResponse[]
   checkboxResponses     CheckboxResponse[]
   questionEnunciados    QuestionEnunciado[] // Relación inversa con QuestionEnunciado
-  isActive              Boolean               @default(true)
+  isActive              Boolean                @default(true)
+
+  @@index([type])
+  @@index([isActive])
 }
 
 // Enum para definir los tipos de preguntas posibles
@@ -108,7 +121,7 @@ model Response {
   respondentId   String
   question       Question?             @relation(fields: [questionId], references: [id])
   questionId     Int?
-  enunciados     Enunciados            @relation(fields: [enunciadosId], references: [id])
+  enunciados     Enunciados            @relation(fields: [enunciadosId], references: [id], onDelete: Cascade)
   enunciadosId   Int
   answer         String // You may adjust this based on the type of answers expected
   responseType   ResponseType // New field to specify the type of response
@@ -118,6 +131,11 @@ model Response {
   checkboxId     Int?
   createdAt      DateTime              @default(now())
   updatedAt      DateTime              @updatedAt
+
+  @@index([respondentId])
+  @@index([enunciadosId])
+  @@index([questionId])
+  @@index([respondentId, enunciadosId])
 }
 
 // Enum to define the types of responses
@@ -136,8 +154,10 @@ model SingleChoiceResponse {
   answer       String
   response     Response?   @relation(fields: [responseId], references: [id])
   responseId   Int?        @unique
-  enunciados   Enunciados? @relation(fields: [enunciadosId], references: [id])
+  enunciados   Enunciados? @relation(fields: [enunciadosId], references: [id], onDelete: Cascade)
   enunciadosId Int?        @unique
+
+  @@index([questionId])
 }
 
 // Modelo para representar una respuesta a una pregunta de selección múltiple (checkbox)
@@ -150,8 +170,10 @@ model CheckboxResponse {
   answer       String
   response     Response?   @relation(fields: [responseId], references: [id])
   responseId   Int?        @unique
-  enunciados   Enunciados? @relation(fields: [enunciadosId], references: [id])
+  enunciados   Enunciados? @relation(fields: [enunciadosId], references: [id], onDelete: Cascade)
   enunciadosId Int?        @unique
+
+  @@index([questionId])
 }
 
 model User {
@@ -172,12 +194,30 @@ model User {
   role               RoleType             @default(USER)
   accounts           Account[]
   sessions           Session[]
-  createdSurveys     Survey[]             @relation("CreatedSurveys")// Relación inversa para las encuestas creadas por el administrador
+  createdSurveys     Survey[]             @relation("CreatedSurveys") // Relación inversa para las encuestas creadas por el administrador
   assignedSurveys    Survey[]             @relation("AssignedSurveys")
   responses          Response[] // Add this line to establish the relation with responses
   passwordReserToken PasswordReserToken[]
   //singleChoiceResponses SingleChoiceResponse[] // Add this line to establish the relation with single choice responses
   //checkboxResponses     CheckboxResponse[] // Add this line to establish the relation with checkbox responses
+
+  @@index([role])
+}
+
+model SurveyInvitation {
+  id        Int       @id @default(autoincrement())
+  token     String    @unique @default(cuid())
+  survey    Survey    @relation(fields: [surveyId], references: [id])
+  surveyId  Int
+  email     String
+  usedAt    DateTime?
+  expiresAt DateTime
+  createdAt DateTime  @default(now())
+
+  @@index([email])
+  @@index([surveyId])
+  @@index([expiresAt])
+  @@index([surveyId, email])
 }
 
 model PasswordReserToken {
@@ -187,6 +227,8 @@ model PasswordReserToken {
   resetAt   DateTime?
   user      User      @relation(fields: [userId], references: [id])
   userId    String
+
+  @@index([userId])
 }
 
 enum RoleType {

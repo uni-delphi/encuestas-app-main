@@ -4,11 +4,11 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/auth.config";
 import { generateSlug } from "@/utils/text-helper";
 
-export async function getAllEncuestas() {
-  const session = await getServerSession(authOptions);
+export async function getAllEncuestas(userId: string) {
+  /*const session = await getServerSession(authOptions);
   if (!session?.user) throw new Error("No autenticado");
 
-  const { id: userId, role } = session.user;
+  const { id: userId, role } = session.user;*/
   return await prisma.survey.findMany({
     include: {
       tecnologias: {
@@ -70,11 +70,11 @@ export async function getEncuestasAction(page = 0, pageSize = 10) {
   return { encuestas, total, pageCount: Math.ceil(total / pageSize) };
 }
 
-export async function getMyEncuestas(page = 0, pageSize = 10) {
-  const session = await getServerSession(authOptions);
+export async function getMyEncuestas(userId: any, page:number = 0, pageSize:number = 10) {
+ /* const session = await getServerSession(authOptions);
   if (!session?.user) throw new Error("No autenticado");
 
-  const { id: userId, role } = session.user;
+  const { id: userId, role } = session.user;*/
   const [encuestas, total] = await Promise.all([
     prisma.survey.findMany({
       where: {
@@ -107,10 +107,10 @@ export async function getMyEncuestas(page = 0, pageSize = 10) {
   return { encuestas, total, pageCount: Math.ceil(total / pageSize) };
 }
 
-export async function getMyEncuestasByAssignedAction(page = 0, pageSize = 10) {
-  const session = await getServerSession(authOptions);
+export async function getMyEncuestasByAssignedAction(userId: string, page: number = 0, pageSize: number = 10) {
+  /*const session = await getServerSession(authOptions);
   if (!session?.user) throw new Error("No autenticado");
-  const { id: userId, role } = session.user;
+  const { id: userId, role } = session.user;*/
   const [encuestas, total] = await Promise.all([
     prisma.survey.findMany({
       where: {
@@ -584,4 +584,138 @@ export async function toggleQuestionEnunciadoAction(
     where: { enunciadoId_questionId: { enunciadoId, questionId } },
     data: { isActive },
   });
+}
+
+// actions/tecnologia.ts
+export async function deleteTecnologiaAction(tecnologiaId: number) {
+  return await prisma.$transaction(async (tx) => {
+
+    // 1. Obtener todos los enunciados de la tecnología
+    const enunciados = await tx.enunciados.findMany({
+      where: { tecnologiaId },
+      select: { id: true }
+    })
+    const enunciadoIds = enunciados.map(e => e.id)
+
+    if (enunciadoIds.length > 0) {
+      // 2. Borrar SingleChoiceResponse y CheckboxResponse primero
+      await tx.singleChoiceResponse.deleteMany({
+        where: { enunciadosId: { in: enunciadoIds } }
+      })
+      await tx.checkboxResponse.deleteMany({
+        where: { enunciadosId: { in: enunciadoIds } }
+      })
+
+      // 3. Borrar Responses
+      await tx.response.deleteMany({
+        where: { enunciadosId: { in: enunciadoIds } }
+      })
+
+      // 4. Borrar QuestionEnunciado
+      await tx.questionEnunciado.deleteMany({
+        where: { enunciadoId: { in: enunciadoIds } }
+      })
+
+      // 5. Borrar Enunciados
+      await tx.enunciados.deleteMany({
+        where: { tecnologiaId }
+      })
+    }
+
+    // 6. Borrar la Tecnología
+    return await tx.tecnologias.delete({
+      where: { id: tecnologiaId }
+    })
+  })
+}
+
+// actions/enunciado.ts
+export async function deleteEnunciadoAction(enunciadoId: number) {
+  return await prisma.$transaction(async (tx) => {
+
+    // 1. Borrar SingleChoiceResponse y CheckboxResponse
+    await tx.singleChoiceResponse.deleteMany({
+      where: { enunciadosId: enunciadoId }
+    })
+    await tx.checkboxResponse.deleteMany({
+      where: { enunciadosId: enunciadoId }
+    })
+
+    // 2. Borrar Responses
+    await tx.response.deleteMany({
+      where: { enunciadosId: enunciadoId }
+    })
+
+    // 3. Borrar QuestionEnunciado
+    await tx.questionEnunciado.deleteMany({
+      where: { enunciadoId }
+    })
+
+    // 4. Borrar el Enunciado
+    return await tx.enunciados.delete({
+      where: { id: enunciadoId }
+    })
+  })
+}
+
+// actions/survey.ts
+export async function deleteSurveyAction(surveyId: number) {
+  return await prisma.$transaction(async (tx) => {
+
+    // 1. Obtener todas las tecnologías de la encuesta
+    const tecnologias = await tx.tecnologias.findMany({
+      where: { surveyId },
+      select: { id: true }
+    })
+    const tecnologiaIds = tecnologias.map(t => t.id)
+
+    if (tecnologiaIds.length > 0) {
+      // 2. Obtener todos los enunciados de esas tecnologías
+      const enunciados = await tx.enunciados.findMany({
+        where: { tecnologiaId: { in: tecnologiaIds } },
+        select: { id: true }
+      })
+      const enunciadoIds = enunciados.map(e => e.id)
+
+      if (enunciadoIds.length > 0) {
+        // 3. Borrar SingleChoiceResponse y CheckboxResponse
+        await tx.singleChoiceResponse.deleteMany({
+          where: { enunciadosId: { in: enunciadoIds } }
+        })
+        await tx.checkboxResponse.deleteMany({
+          where: { enunciadosId: { in: enunciadoIds } }
+        })
+
+        // 4. Borrar Responses
+        await tx.response.deleteMany({
+          where: { enunciadosId: { in: enunciadoIds } }
+        })
+
+        // 5. Borrar QuestionEnunciado
+        await tx.questionEnunciado.deleteMany({
+          where: { enunciadoId: { in: enunciadoIds } }
+        })
+
+        // 6. Borrar Enunciados
+        await tx.enunciados.deleteMany({
+          where: { tecnologiaId: { in: tecnologiaIds } }
+        })
+      }
+
+      // 7. Borrar Tecnologías
+      await tx.tecnologias.deleteMany({
+        where: { surveyId }
+      })
+    }
+
+    // 8. Borrar invitaciones de la encuesta
+    await tx.surveyInvitation.deleteMany({
+      where: { surveyId }
+    })
+
+    // 9. Borrar la Survey
+    return await tx.survey.delete({
+      where: { id: surveyId }
+    })
+  })
 }
