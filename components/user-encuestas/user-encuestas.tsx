@@ -42,13 +42,13 @@ function EncuestaCard({ encuesta }: any) {
           <span className="text-sm font-semibold text-muted-foreground">
             Creada{" "}
             <span className="font-bold text-black">
-              {encuesta?.createdAt?.toLocaleDateString()}
+              {new Date(encuesta?.createdAt).toLocaleDateString()}
             </span>
           </span>
           <span className="text-sm font-semibold text-muted-foreground">
             Finaliza{" "}
             <span className="font-bold text-black">
-              {encuesta?.endDate?.toLocaleDateString()}
+              {new Date(encuesta?.endDate).toLocaleDateString()}
             </span>
           </span>
         </div>

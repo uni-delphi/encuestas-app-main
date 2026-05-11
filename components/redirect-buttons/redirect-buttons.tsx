@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
-const nextSlugFinder = (slug: string, encuesta: any[]) => {
+const nextSlugFinder = (encuestaSlug: string,slug: string, encuesta: any[]) => {
   const currentIndex = encuesta.findIndex(
     (item: any) => item.enunciadoSlug === slug
   );
@@ -15,17 +15,19 @@ const nextSlugFinder = (slug: string, encuesta: any[]) => {
 
   const nextIndex = currentIndex + 1;
   if (nextIndex < encuesta.length) {
-    return `/encuestas/${encuesta[nextIndex].tecnologiaSlug}/${encuesta[nextIndex].enunciadoSlug}`;
+    return `/encuestas/${encuestaSlug}/${encuesta[nextIndex].tecnologiaSlug}/${encuesta[nextIndex].enunciadoSlug}`;
   } else {
-    return "/encuestas/finalizado";
+    return `/encuestas/estado/${encuestaSlug}`;
   }
 };
 
 export default function RedirectButtons({
+  encuestaSlug,
   encuesta,
   techActual,
   enunActual,
 }: {
+  encuestaSlug: string;
   encuesta: any;
   techActual: string;
   enunActual: string;
@@ -33,13 +35,13 @@ export default function RedirectButtons({
   const router = useRouter();
 
   const handleClic = () => {
-    const nextSlug = nextSlugFinder(enunActual, encuesta);
+    const nextSlug = nextSlugFinder(encuestaSlug, enunActual, encuesta);
     router.push(`${nextSlug}`);
   };
 
   return (
     <div className="flex justify-center items-center gap-5 p-4">
-      <Link href={`/encuestas/estado/${encuesta.slug}`}>Ver avance</Link>
+      <Link href={`/encuestas/estado/${encuestaSlug}`}>Ver avance</Link>
       <Button
         onClick={() => handleClic()}
         className="bg-blue-600 text-white md:mx-10 hover:bg-gray-200 hover:text-blue-600 font-bold"

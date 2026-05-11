@@ -3,9 +3,10 @@
 import { authOptions } from "@/auth.config";
 import { Breadcrumbs } from "@/components/breadcrombs/breadcrumbs";
 import { PaginationControls } from "@/components/pagination-controls/pagination-controls";
+import { GeneradorLinkEncuesta } from "@/components/token-link-generator.tsx/token-link-generator";
 import { UserCard } from "@/components/user-card/user-card";
 import { RoleType, User } from "@/generated/prisma";
-import { changeUserRole, getAllUsers, getAllUsersAssignedToMySurveys } from "@/lib/actions";
+import { changeUserRole, getAllUsers, getAllUsersAssignedToMySurveys, getMyEncuestas } from "@/lib/actions";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 
@@ -15,10 +16,16 @@ async function Page({ searchParams }: { searchParams: { page?: string } }) {
 
   const pageParams = await searchParams;
   const page = Math.max(0, Number(pageParams.page ?? 0));
-  const { usuarios, total, pageCount } = await getAllUsersAssignedToMySurveys(
+  {/*const { usuarios, total, pageCount } = await getAllUsersAssignedToMySurveys(
     page,
     10,
-  );
+  );*/}
+  const {
+      encuestas,
+      total,
+      pageCount,
+    }: { encuestas: any[]; total: number; pageCount: number } =
+      await getMyEncuestas(page, 10);
 
   return (
     <section>
@@ -27,13 +34,14 @@ async function Page({ searchParams }: { searchParams: { page?: string } }) {
         <Breadcrumbs items={[{ label: "Panel", href: "/investigador" }]} />
       </div>
       <div className="my-10 flex flex-col gap-4 pl-[20vw]">
-        {usuarios.map((user: any, i: number) => (
+        {/*usuarios.map((user: any, i: number) => (
           <UserCard
             key={i}
             user={user}
           />
-        ))}
-        <PaginationControls page={page} pageCount={pageCount} />
+        ))*/}
+        {/*<PaginationControls page={page} pageCount={pageCount} />*/}
+        <GeneradorLinkEncuesta encuestas={encuestas} />
       </div>
     </section>
   );

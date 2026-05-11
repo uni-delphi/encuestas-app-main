@@ -1,5 +1,8 @@
 // hooks/use-survey-manager.ts
 import { useState } from "react";
+
+import { useConfirmModal } from "./use-confirm-modal";
+
 import { Survey, Tecnologias, Enunciados, Question } from "@/generated/prisma";
 import { type SurveyFormValues } from "@/components/survey/survey-form";
 import { type QuestionFormValues } from "@/lib/schemas/question";
@@ -10,6 +13,8 @@ import {
   updateEnunciado,
   updateTecnologia,
   updateQuestionVisible,
+  deleteEnunciado,
+  deleteTecnologia,
 } from "@/lib/actions";
 import { TecnologiaFormValues } from "@/components/technology/technology-form";
 import { StatementFormValues } from "@/components/statement/statement-form";
@@ -21,6 +26,8 @@ export function useSurveyManager(
     | (Survey & { tecnologias: (Tecnologias & { enunciados: Enunciados[] })[] })
     | null,
 ) {
+  const { confirm, confirmModalProps } = useConfirmModal();
+
   const [survey, setSurvey] = useState<Survey | null>(null);
   const [tecnologias, setTecnologias] = useState<Tecnologias[]>([]);
   const [statements, setStatements] = useState<Enunciados[]>([]);
@@ -73,12 +80,18 @@ export function useSurveyManager(
   };
 
   const handleDeleteTecnologia = (id: number) => {
-    setTecnologias((prev) => prev.filter((t) => t.id !== id));
-    const orphanIds = statements
-      .filter((s) => s.tecnologiaId === id)
-      .map((s) => s.id);
-    setStatements((prev) => prev.filter((s) => s.tecnologiaId !== id));
-    setQuestions((prev) => prev.filter((q) => !orphanIds.includes(q.id)));
+    confirm({
+      title: "Eliminar tecnología",
+      description:
+        "¿Estás seguro? Se eliminarán también todos sus enunciados asociados. Esta acción no se puede deshacer.",
+      onConfirm: async () => {
+        const resp = await deleteTecnologia(id);
+        setTecnologias((prev) => prev.filter((t) => t.id !== id)); // ← fix: era prev.push
+        const orphanIds = statements.filter((s) => s.tecnologiaId === id).map((s) => s.id);
+        setStatements((prev) => prev.filter((s) => s.tecnologiaId !== id));
+        setQuestions((prev) => prev.filter((q) => !orphanIds.includes(q.id)));
+      },
+    });
   };
 
   const handleEditTecnologia = (tech: Tecnologias) => {
@@ -109,8 +122,16 @@ export function useSurveyManager(
   };
 
   const handleDeleteStatement = (id: number) => {
-    setStatements((prev) => prev.filter((s) => s.id !== id));
-    setQuestions((prev) => prev.filter((q) => q.id !== id));
+    confirm({
+      title: "Eliminar enunciado",
+      description:
+        "¿Estás seguro que querés eliminar este enunciado? Esta acción no se puede deshacer.",
+      onConfirm: async () => {
+        await deleteEnunciado(id);
+        setStatements((prev) => prev.filter((s) => s.id !== id)); // ← fix: era prev.push
+        setQuestions((prev) => prev.filter((q) => q.id !== id));
+      },
+    });
   };
 
   const handleEditStatement = (statement: Enunciados) => {
@@ -163,5 +184,6 @@ export function useSurveyManager(
     handleEditStatement,
     handleAddQuestion,
     handleToggleQuestion,
+    confirmModalProps
   };
 }

@@ -18,8 +18,6 @@ async function main() {
     return;
   }
 
-  console.log("🚀 Migrando relaciones...");
-
   const result = await prisma.questionEnunciado.createMany({
     data: oldRelations.map((r) => ({
       enunciadoId: r.A,

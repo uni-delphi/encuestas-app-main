@@ -176,20 +176,6 @@ export default async function Page({ params }: { params: { id: number } }) {
           </p>
         </div>
 
-        {/* Gráfico de barras */}
-        <div className="bg-card border border-border rounded-xl p-6 mb-10">
-          <h2 className="text-lg font-semibold mb-6">
-            Resultados de la encuesta
-          </h2>
-          <div className="space-y-4">
-            <BarChart chartData={chartData} chartOptions={chartOptions} />
-          </div>
-          <p className="text-sm text-muted-foreground mt-4">
-            Total de respuestas:{" "}
-            <span className="text-foreground font-medium">{respuestas.length}</span>
-          </p>
-        </div>
-
         {/* Detalles de la encuesta */}
         <div className="bg-card border border-border rounded-xl p-6 mb-10">
           <h2 className="text-lg font-semibold mb-6">
@@ -205,7 +191,7 @@ export default async function Page({ params }: { params: { id: number } }) {
                   Fecha de creación
                 </p>
                 <p className="text-foreground font-medium">
-                  {encuesta?.createdAt.toLocaleDateString("es-ES", {
+                  {new Date(encuesta?.createdAt).toLocaleDateString("es-ES", {
                     day: "numeric",
                     month: "long",
                     year: "numeric",
@@ -222,7 +208,7 @@ export default async function Page({ params }: { params: { id: number } }) {
                   Fecha de finalización
                 </p>
                 <p className="text-foreground font-medium">
-                  {encuesta?.endDate?.toLocaleDateString("es-ES", {
+                  {new Date(encuesta?.endDate).toLocaleDateString("es-ES", {
                     day: "numeric",
                     month: "long",
                     year: "numeric",
@@ -234,7 +220,7 @@ export default async function Page({ params }: { params: { id: number } }) {
               <div
                 className={`p-3 rounded-lg ${encuesta?.hasEnded ? "bg-muted" : "bg-green-500/10"}`}
               >
-                {encuesta?.hasEnded ? (
+                {!encuesta?.isActive || encuesta.hasEnded ? (
                   <AlertCircle className="w-5 h-5 text-muted-foreground" />
                 ) : (
                   <CheckCircle2 className="w-5 h-5 text-green-500" />
@@ -243,14 +229,30 @@ export default async function Page({ params }: { params: { id: number } }) {
               <div>
                 <p className="text-sm text-muted-foreground">Estado</p>
                 <p
-                  className={`font-medium ${encuesta?.hasEnded ? "text-muted-foreground" : "text-green-500"}`}
+                  className={`font-medium ${!encuesta?.isActive || encuesta.hasEnded ? "text-muted-foreground" : "text-green-500"}`}
                 >
-                  {encuesta?.hasEnded ? "Finalizada" : "En curso"}
+                  {!encuesta?.isActive || encuesta.hasEnded ? "Finalizada" : "En curso"}
                 </p>
               </div>
             </div>
           </div>
         </div>
+
+        {/* Gráfico de barras */}
+        <div className="bg-card border border-border rounded-xl p-6 mb-10">
+          <h2 className="text-lg font-semibold mb-6">
+            Resultados de la encuesta
+          </h2>
+          <div className="space-y-4">
+            <BarChart chartData={chartData} chartOptions={chartOptions} />
+          </div>
+          <p className="text-sm text-muted-foreground mt-4">
+            Total de respuestas:{" "}
+            <span className="text-foreground font-medium">{respuestas.length}</span>
+          </p>
+        </div>
+
+        
 
         {/* Tecnologías */}
         <div className="bg-card border border-border rounded-xl p-6">

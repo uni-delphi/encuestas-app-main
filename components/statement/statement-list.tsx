@@ -116,7 +116,7 @@ export function StatementList({
                 {enunciado.description}
               </p>
               <div className="mt-3 text-xs text-muted-foreground">
-                <p>Creado: {enunciado.createdAt.toLocaleDateString("es-ES")}</p>
+                <p>Creado: {new Date(enunciado.createdAt).toLocaleDateString("es-ES")}</p>
               </div>
 
               {/* Questions Section */}
