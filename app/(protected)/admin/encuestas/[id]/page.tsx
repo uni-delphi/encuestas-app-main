@@ -205,7 +205,7 @@ export default async function Page({ params }: { params: { id: number } }) {
                   Fecha de creación
                 </p>
                 <p className="text-foreground font-medium">
-                  {encuesta?.createdAt.toLocaleDateString("es-ES", {
+                  {new Date(encuesta?.createdAt).toLocaleDateString("es-ES", {
                     day: "numeric",
                     month: "long",
                     year: "numeric",
@@ -222,7 +222,7 @@ export default async function Page({ params }: { params: { id: number } }) {
                   Fecha de finalización
                 </p>
                 <p className="text-foreground font-medium">
-                  {encuesta?.endDate?.toLocaleDateString("es-ES", {
+                  {new Date(encuesta?.endDate).toLocaleDateString("es-ES", {
                     day: "numeric",
                     month: "long",
                     year: "numeric",

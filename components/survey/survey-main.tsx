@@ -34,6 +34,7 @@ import { Question } from "@/generated/prisma";
 import { create } from "domain";
 import { createTecnologia } from "@/lib/actions";
 import { SurveyUserManager } from "../survey-user-manager/survey-user-manager";
+import { ConfirmModal } from "../confirm-modal/confirm-modal";
 
 type TecnologiaWithEnunciados = Tecnologias & {
   enunciados: Enunciados[];
@@ -68,6 +69,7 @@ export default function SurveyMain({
     handleEditStatement,
     handleAddQuestion,
     handleToggleQuestion,
+    confirmModalProps
   } = useSurveyManager(encuesta);
 
   return (
@@ -279,6 +281,7 @@ export default function SurveyMain({
           </div>
         </section>
       </div>
+      <ConfirmModal {...confirmModalProps} />
     </section>
   );
 }

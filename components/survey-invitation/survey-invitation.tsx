@@ -350,7 +350,7 @@ export function SurveyInvitation({encuesta, usuarios}: any) {
                           
                         </TableCell>
                         <TableCell className="hidden sm:table-cell text-muted-foreground">
-                          {user.assignedAt?.toLocaleDateString("es-ES")}
+                          {new Date(user.assignedAt).toLocaleDateString("es-ES")}
                         </TableCell>
                         <TableCell className="hidden">
                           <Badge className={status?.className}>
