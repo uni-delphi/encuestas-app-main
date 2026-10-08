@@ -22,6 +22,8 @@ import { calculateResponsesPercents } from "@/utils/text-helper";
 import Enunciado from "@/components/enunciado/enunciado";
 import { redirectStrategy } from "@/lib/constants";
 
+export const dynamic = "force-dynamic";
+
 interface EncuestaFormProps {
   enunciado: QuestionEnunciado;
   user: User;
@@ -76,6 +78,7 @@ export default async function Page({
   let dataEnunciadoId = enunciadoElegido?.id ?? techElegida.enunciados[0].id;
 
   const enunciados = await getEnunciado(dataSlug, dataUserId, dataEnunciadoId);
+  //console.log("🚀 ~ Page ~ enunciados:", enunciados)
 
   return (
     <main className="relative">

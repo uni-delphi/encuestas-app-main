@@ -26,6 +26,8 @@ import { createResponse, updateSingleChoiceResponse } from "@/lib/actions";
 import { IDATAQUESTION, IQUESTION, IENUNCIADOPROPS } from "@/types/encuestas";
 import { User } from "next-auth";
 
+import { useSaveOnce } from "@/hooks/use-save-once";
+
 const formSchema = z.object({
   items: z.array(z.string()),
   type: z.enum(["Any"], {
@@ -47,6 +49,8 @@ export default function QuestionRadioField({
   singleChoiceResponse: any;
   user: User;
 }) {
+  console.log("🚀 ~ QuestionRadioField ~ values:", values);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -60,7 +64,7 @@ export default function QuestionRadioField({
   const [count, setCount] = useState<number>(0);
 
   const [debouncedValue, setDebouncedValue] = useState<string>(
-    form.getValues("textField")
+    form.getValues("textField"),
   );
   const timerRef = useRef<number | undefined>();
 
@@ -101,37 +105,36 @@ export default function QuestionRadioField({
     }, 1500);
   };
 
-  const updateDatabase = async (value: any) => {
-    if (values.responses.length > 0) {
-      const response = await updateSingleChoiceResponse(
-        value,
-        values.responses[0]?.singleChoice.id
-      );
-      return;
-    }
+  const singleChoiceId = useRef<number | undefined>(
+    values.responses[0]?.singleChoice?.id,
+  );
+  const creating = useRef<Promise<any> | null>(null);
 
-    const { choice, answer } = value;
+  const updateDatabase = useSaveOnce<{ choice?: string; answer?: string }>({
+    initialId: values.responses[0]?.singleChoice?.id,
 
-    const responseData: any = {
-      respondentId: user.id,
-      questionId: values.id,
-      enunciadosId: enunciadoData.id,
-      responseType: values.type,
-      answer: "",
-      singleChoice: {
+    create: async ({ choice, answer }) => {
+      const created = await createResponse({
+        respondentId: user.id,
         questionId: values.id,
-        choice: choice ?? "",
-        answer: answer ?? "",
         enunciadosId: enunciadoData.id,
-      },
-      checkbox: {},
-    };
+        responseType: values.type,
+        answer: "",
+        singleChoice: {
+          questionId: values.id,
+          choice: choice ?? "",
+          answer: answer ?? "",
+          enunciadosId: enunciadoData.id,
+        },
+        checkbox: {},
+      } as any);
+      return created?.singleChoice?.id;
+    },
 
-    const response = await createResponse(responseData);
-  };
-
+    update: (value, id) => updateSingleChoiceResponse(value, id),
+  });
   const answersHasTexts = singleChoiceResponse.some(
-    (item: any) => item.singleChoice.answer.length > 0
+    (item: any) => item.singleChoice.answer.length > 0,
   );
 
   return (
@@ -191,9 +194,11 @@ export default function QuestionRadioField({
                     </FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder=""
-                        defaultValue={field.value}
-                        onChange={(value) => handleTextChange(value)}
+                        value={field.value}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          handleTextChange(e);
+                        }}
                       />
                     </FormControl>
                   </FormItem>
@@ -228,7 +233,7 @@ export default function QuestionRadioField({
                               >
                                 {response.singleChoice?.answer}
                               </CarouselItem>
-                            ) : null
+                            ) : null,
                         )}
                     </CarouselContent>
                   </Carousel>

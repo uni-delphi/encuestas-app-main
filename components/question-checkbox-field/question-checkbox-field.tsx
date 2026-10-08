@@ -31,6 +31,8 @@ import {
 import { useForm } from "react-hook-form";
 import { createResponse, updateCheckboxResponse } from "@/lib/actions";
 
+import { useSaveOnce } from "@/hooks/use-save-once";
+
 const formSchema = z.object({
   items: z.array(z.string()).max(3),
   type: z.enum(["all", "mentions", "none"], {
@@ -64,7 +66,7 @@ export default function QuestionCheckboxField({
   const [current, setCurrent] = useState<number>(0);
   const [count, setCount] = useState<number>(0);
   const [debouncedValue, setDebouncedValue] = useState<string>(
-    form.getValues("textField")
+    form.getValues("textField"),
   );
   const timerRef = useRef<number | undefined>();
 
@@ -115,37 +117,33 @@ export default function QuestionCheckboxField({
     }, 1500);
   };
 
-  const updateDatabase = async (value: any) => {
-    if (values.responses.length > 0) {
-      const response = await updateCheckboxResponse(
-        value,
-        values.responses[0]?.checkbox.id
-      );
-      return;
-    }
+  // Dentro del componente, en lugar de la función updateDatabase actual:
+  const updateDatabase = useSaveOnce<{ choices?: string[]; answer?: string }>({
+    initialId: values.responses[0]?.checkbox?.id,
 
-    const { choices, answer } = value;
-
-    const responseData: any = {
-      respondentId: user.id,
-      questionId: values.id,
-      enunciadosId: enunciadoData.id,
-      responseType: values.type,
-      answer: "",
-      singleChoice: {},
-      checkbox: {
+    create: async ({ choices, answer }) => {
+      const created = await createResponse({
+        respondentId: user.id,
         questionId: values.id,
-        choices: choices ?? [],
-        answer: answer ?? "",
         enunciadosId: enunciadoData.id,
-      },
-    };
+        responseType: values.type,
+        answer: "",
+        singleChoice: {},
+        checkbox: {
+          questionId: values.id,
+          choices: choices ?? [],
+          answer: answer ?? "",
+          enunciadosId: enunciadoData.id,
+        },
+      } as any);
+      return created?.checkbox?.id;
+    },
 
-    const response = await createResponse(responseData);
-  };
+    update: (value, id) => updateCheckboxResponse(value, id),
+  });
 
   const answersHasTexts = checkboxResponse.some(
-    (item: any) => item.checkbox.answer.length > 0
+    (item: any) => item.checkbox.answer.length > 0,
   );
 
   return (
@@ -251,7 +249,7 @@ export default function QuestionCheckboxField({
                             >
                               {response.checkbox?.answer}
                             </CarouselItem>
-                          ) : null
+                          ) : null,
                         )}
                     </CarouselContent>
                   </Carousel>

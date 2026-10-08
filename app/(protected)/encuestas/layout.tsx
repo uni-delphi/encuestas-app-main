@@ -20,7 +20,7 @@ export default async function ResearcherLayout({
   if (ROLE_HIERARCHY[session.user.role] < ROLE_HIERARCHY["USER"]) redirect(redirectStrategy[session.user.role] || "/encuestas");
 
   return (
-    <main className="max-w-[1440px] mx-auto">
+    <main className="mx-auto">
       {/*<NavBar
         encuesta={[]}
         user={session.user}
