@@ -1,6 +1,6 @@
 "use server";
 import { cache } from "react";
-import { unstable_cache, revalidatePath, revalidateTag } from "next/cache";
+import { unstable_cache, revalidatePath, revalidateTag, updateTag } from "next/cache";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/auth.config";
 import { redirect } from "next/navigation";
@@ -377,6 +377,7 @@ export async function createResponse(data: any) {
   try {
     const response = await Respuestas.createResponse(data);
     revalidatePath("/");
+    updateTag("enunciados");
     return response;
   } catch (error) {
     throw new Error(`Error creando el createResponse: ${error}`);
@@ -386,6 +387,7 @@ export async function createResponse(data: any) {
 export async function updateSingleChoiceResponse(data: any, responseId: number) {
   try {
     const response = await Respuestas.updateSingleChoiceResponse(responseId, data);
+    updateTag("enunciados");
     revalidatePath("/");
     return response;
   } catch (error) {
@@ -396,6 +398,7 @@ export async function updateSingleChoiceResponse(data: any, responseId: number) 
 export async function updateCheckboxResponse(data: any, responseId: number) {
   try {
     const response = await Respuestas.updateCheckboxResponse(responseId, data);
+    updateTag("enunciados");
     revalidatePath("/");
     return response;
   } catch (error) {

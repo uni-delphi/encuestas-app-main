@@ -26,6 +26,8 @@ import { createResponse, updateSingleChoiceResponse } from "@/lib/actions";
 import { IDATAQUESTION, IQUESTION, IENUNCIADOPROPS } from "@/types/encuestas";
 import { User } from "next-auth";
 
+import { useSaveOnce } from "@/hooks/use-save-once";
+
 const formSchema = z.object({
   items: z.array(z.string()),
   type: z.enum(["Any"], {
@@ -108,38 +110,29 @@ export default function QuestionRadioField({
   );
   const creating = useRef<Promise<any> | null>(null);
 
-  const updateDatabase = async (value: {
-    choice?: string;
-    answer?: string;
-  }) => {
-    // Si hay un create en curso, esperarlo para obtener el id
-    if (!singleChoiceId.current && creating.current) {
-      await creating.current;
-    }
+  const updateDatabase = useSaveOnce<{ choice?: string; answer?: string }>({
+    initialId: values.responses[0]?.singleChoice?.id,
 
-    if (singleChoiceId.current) {
-      await updateSingleChoiceResponse(value, singleChoiceId.current);
-      return;
-    }
-
-    creating.current = createResponse({
-      respondentId: user.id,
-      questionId: values.id,
-      enunciadosId: enunciadoData.id,
-      responseType: values.type,
-      answer: "",
-      singleChoice: {
+    create: async ({ choice, answer }) => {
+      const created = await createResponse({
+        respondentId: user.id,
         questionId: values.id,
-        choice: value.choice ?? "",
-        answer: value.answer ?? "",
         enunciadosId: enunciadoData.id,
-      },
-      checkbox: {},
-    });
+        responseType: values.type,
+        answer: "",
+        singleChoice: {
+          questionId: values.id,
+          choice: choice ?? "",
+          answer: answer ?? "",
+          enunciadosId: enunciadoData.id,
+        },
+        checkbox: {},
+      } as any);
+      return created?.singleChoice?.id;
+    },
 
-    const created = await creating.current;
-    singleChoiceId.current = created?.singleChoice?.id;
-  };
+    update: (value, id) => updateSingleChoiceResponse(value, id),
+  });
   const answersHasTexts = singleChoiceResponse.some(
     (item: any) => item.singleChoice.answer.length > 0,
   );

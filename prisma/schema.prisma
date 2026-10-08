@@ -120,7 +120,7 @@ model Response {
   respondent     User                  @relation(fields: [respondentId], references: [id])
   respondentId   String
   question       Question?             @relation(fields: [questionId], references: [id])
-  questionId     Int?
+  questionId     Int
   enunciados     Enunciados            @relation(fields: [enunciadosId], references: [id], onDelete: Cascade)
   enunciadosId   Int
   answer         String // You may adjust this based on the type of answers expected
@@ -136,6 +136,7 @@ model Response {
   @@index([enunciadosId])
   @@index([questionId])
   @@index([respondentId, enunciadosId])
+  @@unique([respondentId, enunciadosId, questionId])
 }
 
 // Enum to define the types of responses

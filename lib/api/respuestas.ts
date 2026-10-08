@@ -133,7 +133,7 @@ export async function getAllMyResponses(surveySlug: string) {
     },
   });
 }
-
+/*
 export async function createResponse(newResponseData: any) {
   const data: any = {
     respondentId: newResponseData.respondentId,
@@ -169,6 +169,49 @@ export async function createResponse(newResponseData: any) {
       singleChoice: true,
       checkbox: true,
     },
+  });
+}*/
+
+export async function createResponse(newResponseData: any) {
+  const data: any = {
+    respondentId: newResponseData.respondentId,
+    questionId: newResponseData.questionId,
+    enunciadosId: newResponseData.enunciadosId,
+    responseType: newResponseData.responseType,
+    answer: newResponseData.answer,
+  };
+
+  if (newResponseData.responseType === "SINGLE_CHOICE") {
+    data.singleChoice = {
+      create: {
+        choice: newResponseData.singleChoice.choice,
+        answer: newResponseData.singleChoice.answer,
+        questionId: newResponseData.questionId,
+        // sin enunciadosId (ese campo tiene @unique)
+      },
+    };
+  } else if (newResponseData.responseType === "CHECKBOX") {
+    data.checkbox = {
+      create: {
+        choices: { set: newResponseData.checkbox.choices },
+        answer: newResponseData.checkbox.answer,
+        questionId: newResponseData.questionId,
+      },
+    };
+  }
+
+  // 👇 aquí: upsert en lugar de create
+  return await prisma.response.upsert({
+    where: {
+      respondentId_enunciadosId_questionId: {
+        respondentId: data.respondentId,
+        enunciadosId: data.enunciadosId,
+        questionId: data.questionId,
+      },
+    },
+    update: {}, // si ya existe, lo devuelve sin tocarlo
+    create: data,
+    include: { singleChoice: true, checkbox: true },
   });
 }
 
