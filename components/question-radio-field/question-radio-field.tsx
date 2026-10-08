@@ -47,6 +47,8 @@ export default function QuestionRadioField({
   singleChoiceResponse: any;
   user: User;
 }) {
+  console.log("🚀 ~ QuestionRadioField ~ values:", values);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -60,7 +62,7 @@ export default function QuestionRadioField({
   const [count, setCount] = useState<number>(0);
 
   const [debouncedValue, setDebouncedValue] = useState<string>(
-    form.getValues("textField")
+    form.getValues("textField"),
   );
   const timerRef = useRef<number | undefined>();
 
@@ -101,18 +103,26 @@ export default function QuestionRadioField({
     }, 1500);
   };
 
-  const updateDatabase = async (value: any) => {
-    if (values.responses.length > 0) {
-      const response = await updateSingleChoiceResponse(
-        value,
-        values.responses[0]?.singleChoice.id
-      );
+  const singleChoiceId = useRef<number | undefined>(
+    values.responses[0]?.singleChoice?.id,
+  );
+  const creating = useRef<Promise<any> | null>(null);
+
+  const updateDatabase = async (value: {
+    choice?: string;
+    answer?: string;
+  }) => {
+    // Si hay un create en curso, esperarlo para obtener el id
+    if (!singleChoiceId.current && creating.current) {
+      await creating.current;
+    }
+
+    if (singleChoiceId.current) {
+      await updateSingleChoiceResponse(value, singleChoiceId.current);
       return;
     }
 
-    const { choice, answer } = value;
-
-    const responseData: any = {
+    creating.current = createResponse({
       respondentId: user.id,
       questionId: values.id,
       enunciadosId: enunciadoData.id,
@@ -120,18 +130,18 @@ export default function QuestionRadioField({
       answer: "",
       singleChoice: {
         questionId: values.id,
-        choice: choice ?? "",
-        answer: answer ?? "",
+        choice: value.choice ?? "",
+        answer: value.answer ?? "",
         enunciadosId: enunciadoData.id,
       },
       checkbox: {},
-    };
+    });
 
-    const response = await createResponse(responseData);
+    const created = await creating.current;
+    singleChoiceId.current = created?.singleChoice?.id;
   };
-
   const answersHasTexts = singleChoiceResponse.some(
-    (item: any) => item.singleChoice.answer.length > 0
+    (item: any) => item.singleChoice.answer.length > 0,
   );
 
   return (
@@ -191,9 +201,11 @@ export default function QuestionRadioField({
                     </FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder=""
-                        defaultValue={field.value}
-                        onChange={(value) => handleTextChange(value)}
+                        value={field.value}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          handleTextChange(e);
+                        }}
                       />
                     </FormControl>
                   </FormItem>
@@ -228,7 +240,7 @@ export default function QuestionRadioField({
                               >
                                 {response.singleChoice?.answer}
                               </CarouselItem>
-                            ) : null
+                            ) : null,
                         )}
                     </CarouselContent>
                   </Carousel>
