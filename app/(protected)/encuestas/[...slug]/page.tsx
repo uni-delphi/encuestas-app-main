@@ -78,7 +78,6 @@ export default async function Page({
   let dataEnunciadoId = enunciadoElegido?.id ?? techElegida.enunciados[0].id;
 
   const enunciados = await getEnunciado(dataSlug, dataUserId, dataEnunciadoId);
-  //console.log("🚀 ~ Page ~ enunciados:", enunciados)
 
   return (
     <main className="relative">
@@ -92,8 +91,8 @@ export default async function Page({
 
       <div className="py-5 overflow-hidden">
         <div className="shadow-lg border-b-4 border-gray-300">
-          <h2 className="pt-20 mt-5 pb-2 text-center text-md font-semibold">
-            {enunciadoElegido?.title ?? techElegida.enunciados[0].title}
+          <h2 className="pt-20 mt-5 pb-2 px-4 text-center text-md font-semibold">
+            {enunciadoElegido?.description ?? techElegida.enunciados[0].description}
           </h2>
         </div>
         <Suspense

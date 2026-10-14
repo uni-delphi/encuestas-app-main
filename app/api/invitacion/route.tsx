@@ -4,7 +4,6 @@ import { prisma } from "@/lib/prisma"
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
-  console.log("🚀 ~ GET ~ searchParams:", searchParams)
   const token = searchParams.get("t")
 
   if (!token) {

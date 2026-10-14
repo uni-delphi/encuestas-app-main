@@ -19,6 +19,7 @@ export default function NavBar({
   title: string;
   slugs: any[];
 }) {
+  
   return (
     <header className="fixed grid h-20 w-full z-40 bg-transparent">
       {encuesta?.tecnologias?.length > 0 && (

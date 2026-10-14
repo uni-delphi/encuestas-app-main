@@ -49,7 +49,6 @@ export default function QuestionRadioField({
   singleChoiceResponse: any;
   user: User;
 }) {
-  console.log("🚀 ~ QuestionRadioField ~ values:", values);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
