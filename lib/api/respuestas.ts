@@ -133,6 +133,26 @@ export async function getAllMyResponses(surveySlug: string) {
     },
   });
 }
+
+export async function getMyResponsesForProgress(surveySlug: string) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user) throw new Error("No autenticado");
+
+  return await prisma.response.findMany({
+    where: {
+      respondentId: session.user.id,
+      enunciados: {
+        tecnologia: {
+          survey: { slug: surveySlug },
+        },
+      },
+    },
+    select: {
+      enunciadosId: true,
+      questionId: true,
+    },
+  });
+}
 /*
 export async function createResponse(newResponseData: any) {
   const data: any = {

@@ -219,14 +219,26 @@ export const getEncuestaBySlug = userCache(
 );
 
 export const getFullEncuestaBySlug = userCache(
-  async (_userId: string, slug: string) => {
+  async (_userId: string, slug: string, options?: { withQuestions?: boolean }) => {
     try {
-      return await Encuestas.getFullEncuestaBySlugAction(slug);
+      return await Encuestas.getFullEncuestaBySlugAction(slug, options);
     } catch (error: any) {
       throw new Error(`Error getFullEncuestaBySlug: ${error}`);
     }
   },
   "full-encuesta-by-slug",
+  ["encuestas"]
+);
+
+export const getSurveyWithQuestions = userCache(
+  async (_userId: string, slug: string) => {
+    try {
+      return await Encuestas.getSurveyWithQuestions(slug);
+    } catch (error: any) {
+      throw new Error(`Error getSurveyWithQuestions: ${error}`);
+    }
+  },
+  "survey-with-questions",
   ["encuestas"]
 );
 

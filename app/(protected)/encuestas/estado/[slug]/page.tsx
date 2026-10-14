@@ -7,6 +7,7 @@ import {
   getAllMyResponses,
   getEncuestaBySlug,
   getFullEncuestaBySlug,
+  getSurveyWithQuestions,
 } from "@/lib/actions";
 
 import NavBar from "@/components/nav-bar/nav-bar";
@@ -16,7 +17,8 @@ import { IENUNCIADO, ISURVEY } from "@/types/encuestas";
 import { Survey, Tecnologias, Enunciados } from "@/generated/prisma";
 
 import { calculateRemainingDays, surveyHasEnded } from "@/utils/date-formatter";
-import { calculateResponsesPercents } from "@/utils/text-helper";
+import { calculateResponsesPercents, getSurveyProgress } from "@/utils/text-helper";
+import { getMyResponsesForProgress } from "@/lib/api/respuestas";
 
 export default async function Page({ params }: { params: { slug: string } }) {
   const session: Session | null = await getServerSession(authOptions);
@@ -24,18 +26,20 @@ export default async function Page({ params }: { params: { slug: string } }) {
   const { name, lastName } = session.user;
   const surveySlug: any = await params;
 
-  const [encuesta, responses, ] = await Promise.all([
-    getFullEncuestaBySlug(surveySlug.slug),
-    getAllMyResponses(surveySlug.slug),//refactor
-  ]);
-  // get encuesta by slug, if not found redirect to estado
+  const [encuesta, responses] = await Promise.all([
+  getSurveyWithQuestions(surveySlug.slug),
+  getMyResponsesForProgress(surveySlug.slug),
+]);
   
   const { title, tecnologias, endDate, hasEnded, isActive, ...props }: any =
-    encuesta;//ref
+  encuesta;
+  
   if (surveyHasEnded({ endDate, isActive, hasEnded })) {
     redirect(`/encuestas/finalizado/${surveySlug.slug}`);
   }
 
+  const progress = getSurveyProgress(tecnologias ?? [], responses);
+  
   return (
     <>
       <NavBar
@@ -53,7 +57,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
             </span>
             <span className="block line-clamp-2">
               Tu contribución a {title} es del{" "}
-              {/*calculateResponsesPercents(tecnologias.enunciados ?? [])*/}%
+              {progress.percent}%
             </span>
           </h2>
           <div className="mt-4">

@@ -29,7 +29,7 @@ const COMPLETION_LEVELS: { [key: string]: IComponentProps } = {
 
 const levelOfCompletion = (responses: number | undefined): IComponentProps => {
   if (!responses || responses === 0) return COMPLETION_LEVELS.empty;
-  if (responses >= 8) return COMPLETION_LEVELS.complete;
+  if (responses >= 6) return COMPLETION_LEVELS.complete;
   return COMPLETION_LEVELS.partial;
 };
 
@@ -40,9 +40,9 @@ export default function Enunciado({
 }: {
   encuesta: string;
   tecnologia: Tecnologias;
-  enunciado: Enunciados & { response: any };//ref
+  enunciado: Enunciados & { questionsEnunciados: any };//ref
 }) {
-  const index = enunciado.response?.length ?? 0;
+  const index = enunciado.questionsEnunciados?.length ?? 0;
   const level = levelOfCompletion(index);
   //agregar en la prop de enunciado el numero de respuestas para cada pregunta, en base a la cantidad de preguntas que tiene el enunciado.
   return (

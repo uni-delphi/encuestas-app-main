@@ -38,7 +38,7 @@ export default function TemasSelect({
 
   const index: number = slugs.find(
     (item: any) => item.enunciadoSlug === enunciadoSlug
-  ).index;
+  )?.index ?? 0;
 
   return (
     <div className="flex justify-center gap-4 items-center bg-white px-2">

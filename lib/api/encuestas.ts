@@ -173,7 +173,7 @@ export async function getEncuestaBySlugAction(slug: string) {
   });
 }
 
-export async function getFullEncuestaBySlugAction(slug: string) {
+/*export async function getFullEncuestaBySlugAction(slug: string) {
   return await prisma.survey.findUnique({
     where: {
       slug,
@@ -183,9 +183,7 @@ export async function getFullEncuestaBySlugAction(slug: string) {
         include: {
           enunciados: true,
         },
-        orderBy: {
-          createdAt: "desc",
-        },
+        orderBy: { id: "asc" },
       },
       createdBy: {
         select: {
@@ -194,6 +192,57 @@ export async function getFullEncuestaBySlugAction(slug: string) {
           lastName: true,
           email: true,
         },
+      },
+    },
+  });
+}*/
+
+export async function getFullEncuestaBySlugAction(
+  slug: string,
+  options?: { withQuestions?: boolean }
+) {
+  return await prisma.survey.findUnique({
+    where: { slug },
+    include: {
+      tecnologias: {
+        include: {
+          enunciados: options?.withQuestions
+            ? {
+                include: {
+                  questionsEnunciados: {
+                    where: { isActive: true, question: { isActive: true } },
+                    select: { questionId: true, isActive: true },
+                  },
+                },
+              }
+            : true,
+        },
+        orderBy: { createdAt: "asc" },
+      },
+      createdBy: {
+        select: { id: true, name: true, lastName: true, email: true },
+      },
+    },
+  });
+}
+
+export async function getSurveyWithQuestions(slug: string) {
+  return await prisma.survey.findUnique({
+    where: { slug },
+    include: {
+      tecnologias: {
+        include: {
+          enunciados: {
+            include: {
+              questionsEnunciados: {
+                where: { isActive: true, question: { isActive: true } },
+                select: { questionId: true, isActive: true },
+              },
+            },
+            orderBy: { id: "asc" },
+          },
+        },
+        orderBy: [{ createdAt: "asc" }, { id: "asc" }],
       },
     },
   });

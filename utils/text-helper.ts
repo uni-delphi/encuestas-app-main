@@ -15,7 +15,7 @@ export const makeTitle = (slug: string) => {
 
 export const calculateResponsesPercents = (
   enunciados: { response: any[]; _count: { questionsEnunciados: number } }[]
-): number => {
+): number => {  
   const totalQuestions = enunciados.reduce(
     (acc, enunciado) => acc + enunciado._count.questionsEnunciados,
     0
@@ -29,6 +29,102 @@ export const calculateResponsesPercents = (
 
   return +((totalResponses * 100) / totalQuestions).toFixed(2);
 };
+
+type QuestionLink = {
+  questionId: number;
+  isActive: boolean;
+};
+
+type EnunciadoIn = {
+  id: number;
+  questionsEnunciados: QuestionLink[];
+};
+
+type TecnologiaIn = {
+  id: number;
+  enunciados: EnunciadoIn[];
+};
+
+type MyResponse = {
+  enunciadosId: number;
+  questionId: number;
+};
+
+export type Progress = {
+  total: number;
+  answered: number;
+  percent: number;
+};
+
+export type EnunciadoProgress = Progress & {
+  enunciadoId: number;
+  pendingQuestionIds: number[];
+};
+
+export type TecnologiaProgress = Progress & {
+  tecnologiaId: number;
+  enunciados: EnunciadoProgress[];
+};
+
+export type SurveyProgress = Progress & {
+  tecnologias: TecnologiaProgress[];
+};
+
+const toPercent = (answered: number, total: number) =>
+  total === 0 ? 0 : +((answered * 100) / total).toFixed(2);
+
+export function getSurveyProgress(
+  tecnologias: TecnologiaIn[],
+  myResponses: MyResponse[]
+): SurveyProgress {
+  // Clave única: la misma que el @@unique del schema (sin respondentId)
+  const answeredSet = new Set(
+    myResponses.map((r) => `${r.enunciadosId}-${r.questionId}`)
+  );
+
+  const tecnologiasProgress: TecnologiaProgress[] = tecnologias.map((tec) => {
+    const enunciados: EnunciadoProgress[] = (tec.enunciados ?? []).map((e) => {
+      const activeQuestions = (e.questionsEnunciados ?? []).filter(
+        (q) => q.isActive
+      );
+      const pendingQuestionIds = activeQuestions
+        .filter((q) => !answeredSet.has(`${e.id}-${q.questionId}`))
+        .map((q) => q.questionId);
+
+      const total = activeQuestions.length;
+      const answered = total - pendingQuestionIds.length;
+
+      return {
+        enunciadoId: e.id,
+        total,
+        answered,
+        percent: toPercent(answered, total),
+        pendingQuestionIds,
+      };
+    });
+
+    const total = enunciados.reduce((acc, e) => acc + e.total, 0);
+    const answered = enunciados.reduce((acc, e) => acc + e.answered, 0);
+
+    return {
+      tecnologiaId: tec.id,
+      total,
+      answered,
+      percent: toPercent(answered, total),
+      enunciados,
+    };
+  });
+
+  const total = tecnologiasProgress.reduce((acc, t) => acc + t.total, 0);
+  const answered = tecnologiasProgress.reduce((acc, t) => acc + t.answered, 0);
+
+  return {
+    total,
+    answered,
+    percent: toPercent(answered, total),
+    tecnologias: tecnologiasProgress,
+  };
+} 
 
 export function generateSlug(text: string): string {
   return text
