@@ -28,23 +28,23 @@ export const data: Record<string, any> = {
     answers: [
       {
         id: "1",
-        name: "0 = Ningún conocimiento y/o experiencia",
+        name: "0 = Ningún conocimiento ni experiencia",
       },
       {
         id: "2",
-        name: "1–3 = Bajo nivel de conocimiento",
+        name: "1–3 = Conocimiento básico o exploratorio",
       },
       {
         id: "3",
-        name: "4–6 = Nivel medio",
+        name: "4–6 = Conocimiento intermedio, con experiencia indirecta",
       },
       {
         id: "4",
-        name: "7–9 = Alto nivel",
+        name: "7–9 = Conocimiento avanzado y experiencia aplicada en el sector",
       },
       {
         id: "5",
-        name: "10 = Experto/a",
+        name: "10 = Experto/a con experiencia directa en la tecnología evaluada",
       },
     ],
   },
@@ -61,7 +61,7 @@ export const data: Record<string, any> = {
       },
       {
         id: "8",
-        name: "4–6 = Importancia media ",
+        name: "4–6 = Importancia media",
       },
       {
         id: "9",
@@ -69,7 +69,7 @@ export const data: Record<string, any> = {
       },
       {
         id: "10",
-        name: "10 = Totalmente importante ",
+        name: "10 = Importancia crítica o transformadora",
       },
     ],
   },
@@ -78,7 +78,7 @@ export const data: Record<string, any> = {
     answers: [
       {
         id: "11",
-        name: "2025",
+        name: "2026",
       },
       {
         id: "12",
@@ -90,11 +90,19 @@ export const data: Record<string, any> = {
       },
       {
         id: "14",
-        name: "2035",
+        name: "2033",
       },
       {
         id: "15",
-        name: "2040",
+        name: "2035",
+      },
+      {
+        id: "16",
+        name: "Después de 2035 – Adopción posterior al horizonte considerado",
+      },
+      {
+        id: "17",
+        name: "No se prevé su adopción en el sector",
       },
     ],
   },
@@ -102,141 +110,165 @@ export const data: Record<string, any> = {
     order: "d",
     answers: [
       {
-        id: "16",
-        name: "Capacidades científico-tecnológicas (I+D)",
-      },
-      {
-        id: "17",
-        name: "Infraestructura productiva",
-      },
-      {
         id: "18",
-        name: "Capital humano calificado",
+        name: "Capacidades científico-tecnológicas y de investigación aplicada (INTA, universidades y centros de I+D)",
       },
       {
         id: "19",
-        name: "Redes de articulación público-privada",
+        name: "Infraestructura productiva y tecnológica para cultivo, cosecha, henificación y procesamiento",
       },
       {
         id: "20",
-        name: "Marco normativo favorable",
+        name: "Capital humano especializado y experiencia técnica de productores, contratistas y empresas",
       },
       {
         id: "21",
-        name: "Acceso a financiamiento",
+        name: "Articulación público-privada y cooperación entre actores de la cadena",
       },
       {
         id: "22",
-        name: "Desarrollo de proveedores locales",
+        name: "Marco normativo, regulatorio y de certificación favorable",
       },
       {
         id: "23",
-        name: "Digitalización y tecnologías emergentes",
+        name: "Acceso a financiamiento e instrumentos de inversión tecnológica",
       },
       {
         id: "24",
-        name: "Inserción internacional / mercados",
+        name: "Disponibilidad de proveedores de maquinaria, equipamiento y servicios tecnológicos",
       },
       {
         id: "25",
-        name: "Otras (especificar)",
+        name: "Conectividad rural, digitalización y acceso a tecnologías emergentes",
       },
+      {
+        id: "26",
+        name: "Capacidad exportadora, acceso a mercados internacionales y redes comerciales",
+      },
+      {
+        id: "27",
+        name: "Capacidades de formación profesional, capacitación continua y transferencia tecnológica",
+      },
+      {
+        id: "28",
+        name: "Otras (especificar)",
+      }
     ],
   },
   "BARRERAS": {
     order: "e",
     answers: [
       {
-        id: "26",
-        name: "Inestabilidad macroeconómica",
-      },
-      {
-        id: "27",
-        name: "Falta de financiamiento",
-      },
-      {
-        id: "28",
-        name: "Débil articulación institucional",
-      },
-      {
         id: "29",
-        name: "Limitaciones tecnológicas",
+        name: "Elevados costos de inversión en maquinaria, equipamiento y tecnologías",
       },
       {
         id: "30",
-        name: "Brechas de capital humano",
+        name: "Acceso limitado al financiamiento y al crédito productivo",
       },
       {
         id: "31",
-        name: "Marco regulatorio inadecuado",
+        name: "Insuficiente conectividad rural e infraestructura digital",
       },
       {
         id: "32",
-        name: "Baja adopción tecnológica",
+        name: "Escasez de personal especializado y competencias tecnológicas",
       },
       {
         id: "33",
-        name: "Problemas logísticos / infraestructura",
+        name: "Brechas de capacitación y formación profesional",
       },
       {
         id: "34",
-        name: "Restricciones ambientales",
+        name: "Limitaciones de escala productiva y rentabilidad económica",
       },
       {
         id: "35",
-        name: "Falta de información estratégica",
+        name: "Resistencia al cambio y baja cultura de innovación",
       },
       {
         id: "36",
-        name: "Otras (especificar)",
+        name: "Débil articulación institucional y coordinación entre actores",
       },
+      {
+        id: "37",
+        name: "Restricciones normativas, regulatorias o de certificación",
+      },
+      {
+        id: "38",
+        name: "Problemas logísticos, de transporte e infraestructura industrial",
+      },
+      {
+        id: "39",
+        name: "Limitaciones en la disponibilidad y gestión de recursos hídricos",
+      },
+      {
+        id: "40",
+        name: "Incertidumbre climática, económica y de los mercados",
+      },
+      {
+        id: "41",
+        name: "Falta de información estratégica y asesoramiento tecnológico",
+      },
+      {
+        id: "42",
+        name: "Otras (especificar)",
+      }
     ],
   },
   "AREAS": {
     order: "f",
     answers: [
       {
-        id: "37",
-        name: "Productividad y eficiencia",
-      },
-      {
-        id: "38",
-        name: "Competitividad sectorial",
-      },
-      {
-        id: "39",
-        name: "Generación de empleo",
-      },
-      {
-        id: "40",
-        name: "Desarrollo territorial",
-      },
-      {
-        id: "41",
-        name: "Sustentabilidad ambiental",
-      },
-      {
-        id: "42",
-        name: "Innovación tecnológica",
-      },
-      {
         id: "43",
-        name: "Exportaciones / inserción internacional",
+        name: "Productividad y eficiencia de los sistemas productivos",
       },
       {
         id: "44",
-        name: "Inclusión de PyMEs",
+        name: "Competitividad y posicionamiento comercial de la cadena",
       },
       {
         id: "45",
-        name: "Seguridad alimentaria",
+        name: "Generación de empleo y nuevas oportunidades ocupacionales",
       },
       {
         id: "46",
-        name: "Diversificación productiva",
+        name: "Transformación de perfiles profesionales y competencias laborales",
       },
       {
         id: "47",
+        name: "Calidad, inocuidad y trazabilidad de los productos",
+      },
+      {
+        id: "48",
+        name: "Innovación tecnológica y digitalización de procesos",
+      },
+      {
+        id: "49",
+        name: "Automatización y eficiencia de la maquinaria y los procesos industriales",
+      },
+      {
+        id: "50",
+        name: "Sostenibilidad ambiental y eficiencia en el uso del agua y otros recursos",
+      },
+      {
+        id: "51",
+        name: "Agregado de valor, diversificación productiva y nuevos usos de los productos",
+      },
+      {
+        id: "52",
+        name: "Exportaciones e inserción en mercados internacionales",
+      },
+      {
+        id: "53",
+        name: "Desarrollo territorial y fortalecimiento de economías regionales",
+      },
+      {
+        id: "54",
+        name: "Seguridad y condiciones de trabajo",
+      },
+      {
+        id: "55",
         name: "Otras (especificar)",
       },
     ],
