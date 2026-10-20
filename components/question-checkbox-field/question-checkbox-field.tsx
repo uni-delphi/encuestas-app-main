@@ -32,7 +32,7 @@ import { useForm } from "react-hook-form";
 import { createResponse, updateCheckboxResponse } from "@/lib/actions";
 
 import { useSaveOnce } from "@/hooks/use-save-once";
-import { Question } from "@/generated/prisma/wasm";
+import { Question } from "@/generated/prisma/client";
 
 const formSchema = z.object({
   items: z.array(z.string()).max(3),
