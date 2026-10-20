@@ -78,23 +78,23 @@ export const data: Record<string, any> = {
     answers: [
       {
         id: "11",
-        name: "2026",
+        name: "2026 – Ya se encuentra implementada o en proceso de consolidación",
       },
       {
         id: "12",
-        name: "2027",
+        name: "2027 – Corto plazo",
       },
       {
         id: "13",
-        name: "2030",
+        name: "2030 – Mediano plazo",
       },
       {
         id: "14",
-        name: "2033",
+        name: "2033 – Largo plazo, dentro del horizonte prospectivo",
       },
       {
         id: "15",
-        name: "2035",
+        name: "2035 – Al finalizar el horizonte del estudio",
       },
       {
         id: "16",
