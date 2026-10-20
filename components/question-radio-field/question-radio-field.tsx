@@ -24,6 +24,7 @@ import {
 import { useForm } from "react-hook-form";
 import { createResponse, updateSingleChoiceResponse } from "@/lib/actions";
 import { IDATAQUESTION, IQUESTION, IENUNCIADOPROPS } from "@/types/encuestas";
+import { Question } from "@/generated/prisma";
 import { User } from "next-auth";
 
 import { useSaveOnce } from "@/hooks/use-save-once";
@@ -44,7 +45,7 @@ export default function QuestionRadioField({
   singleChoiceResponse,
 }: {
   data: IDATAQUESTION;
-  values: IQUESTION;
+  values: Question & { isVisibleInEnunciado?: boolean, inputType?: string, responses: any[] };
   enunciadoData: IENUNCIADOPROPS;
   singleChoiceResponse: any;
   user: User;

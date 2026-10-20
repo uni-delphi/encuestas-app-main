@@ -32,6 +32,7 @@ import { useForm } from "react-hook-form";
 import { createResponse, updateCheckboxResponse } from "@/lib/actions";
 
 import { useSaveOnce } from "@/hooks/use-save-once";
+import { Question } from "@/generated/prisma/wasm";
 
 const formSchema = z.object({
   items: z.array(z.string()).max(3),
@@ -49,7 +50,7 @@ export default function QuestionCheckboxField({
   user,
 }: {
   data: IDATAQUESTION;
-  values: IQUESTION;
+  values: Question & { isVisibleInEnunciado?: boolean, inputType?: string, responses: any[] };
   enunciadoData: IENUNCIADOPROPS;
   checkboxResponse: any;
   user: User;
