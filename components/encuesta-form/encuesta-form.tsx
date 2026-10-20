@@ -24,16 +24,18 @@ export default async function EncuestaForm({
     "CHECKBOX",
   );
 
-  const { questions, ...props }: any = enunciado;
+  type QuestionProps = Question & { isVisibleInEnunciado?: boolean, inputType?: string, responses: any[] };
+
+  const { questions, ...props }: QuestionProps & any  = enunciado;
 
   return (
     <>
       {questions &&
-        questions.filter((question: any) => question.isVisibleInEnunciado !== false).map((question: any) =>
+        questions.filter((question: QuestionProps) => question.isVisibleInEnunciado !== false).map((question: QuestionProps) =>
           question.type === "SINGLE_CHOICE" ? (
             <QuestionRadioField
               key={question.id}
-              data={data[question.inputType]}
+              data={data[question.inputType!]}
               values={question}
               enunciadoData={props}
               user={user}
@@ -42,7 +44,7 @@ export default async function EncuestaForm({
           ) : (
             <QuestionCheckboxField
               key={question.id}
-              data={data[question.inputType]}
+              data={data[question.inputType!]}
               values={question}
               enunciadoData={props}
               user={user}
