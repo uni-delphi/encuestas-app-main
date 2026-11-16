@@ -528,10 +528,10 @@ export async function getFullEncuestaByIdAction(params: { id: number }) {
                   question: true,
                 },
               },
-              questionsEnunciados: {
+             /* questionsEnunciados: {
                 orderBy: { questionId: "asc" },
                 include: { question: true },
-              },
+              },*/
             },
           },
         },
@@ -564,10 +564,10 @@ export async function getFullEncuestaByIdAction(params: { id: number }) {
       ...t,
       enunciados: t.enunciados.map((e) => ({
         ...e,
-        questions: e.questionsEnunciados.map((qe) => ({
+       /* questions: e.questionsEnunciados.map((qe) => ({
           ...qe.question,
           isVisibleInEnunciado: qe.isActive, // 👈 agregás esto
-        })),
+        })),*/
       })),
     })),
   };
