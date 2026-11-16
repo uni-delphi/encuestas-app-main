@@ -94,7 +94,12 @@ export async function createInvitation(surveyId: number, email: string) {
 
 export async function assignUserToSurvey(surveyId: number, userId: string) {
   try {
-    return Users.assignUserToSurvey(surveyId, userId);
+    const response = await Users.assignUserToSurvey(surveyId, userId);
+    updateTag(`user-${userId}`); // read-your-writes dentro de server action
+    revalidatePath("/admin/encuestas");
+    revalidatePath("/investigador");
+    revalidatePath("/encuestas");
+    return response;
   } catch (error) {
     throw new Error(`Error en assignUserToSurvey: ${error}`);
   }
@@ -102,12 +107,16 @@ export async function assignUserToSurvey(surveyId: number, userId: string) {
 
 export async function removeUserFromSurvey(surveyId: number, userId: string) {
   try {
-    return Users.removeUserFromSurvey(surveyId, userId);
+    const response = await Users.removeUserFromSurvey(surveyId, userId);
+    updateTag(`user-${userId}`);
+    revalidatePath("/admin/encuestas");
+    revalidatePath("/investigador");
+    revalidatePath("/encuestas");
+    return response;
   } catch (error) {
     throw new Error(`Error en removeUserFromSurvey: ${error}`);
   }
 }
-
 // — Encuestas globales ————————————————————————————————————
 
 export const getAllEncuestasInfo = unstable_cache(

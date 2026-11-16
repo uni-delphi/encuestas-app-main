@@ -41,8 +41,8 @@ export default async function Page({ params }: { params: { id: number } }) {
   const enunciadosLabels = enunciados.map((enunciado: any) => ({
     label: enunciado.title,
     porcents:
-      (enunciado.response.length /
-        (enunciado.questions.length * assignedUsers.length)) *
+      (enunciado.response?.length /
+        (enunciado.questions?.length * assignedUsers?.length)) *
       100,
   }));
 

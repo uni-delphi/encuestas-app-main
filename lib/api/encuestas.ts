@@ -1,4 +1,4 @@
-import { Enunciados, Survey, Tecnologias } from "@/generated/prisma";
+import { Enunciados, Prisma, Survey, Tecnologias } from "@/generated/prisma";
 import { prisma } from "../prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/auth.config";
@@ -75,11 +75,15 @@ export async function getMyEncuestas(userId: any, page:number = 0, pageSize:numb
   if (!session?.user) throw new Error("No autenticado");
 
   const { id: userId, role } = session.user;*/
+  const where: Prisma.SurveyWhereInput = {
+    OR: [
+      { createdById: userId },
+      { assignedUsers: { some: { id: userId } } },
+    ],
+  };
   const [encuestas, total] = await Promise.all([
     prisma.survey.findMany({
-      where: {
-        createdById: userId,
-      },
+      where,
       orderBy: { createdAt: "desc" },
       include: {
         tecnologias: {
@@ -564,10 +568,10 @@ export async function getFullEncuestaByIdAction(params: { id: number }) {
       ...t,
       enunciados: t.enunciados.map((e) => ({
         ...e,
-        questions: e.questionsEnunciados.map((qe) => ({
+       /* questions: e.questionsEnunciados.map((qe) => ({
           ...qe.question,
           isVisibleInEnunciado: qe.isActive, // 👈 agregás esto
-        })),
+        })),*/
       })),
     })),
   };

@@ -42,7 +42,7 @@ export default async function Page({ params }: { params: { id: number } }) {
     label: enunciado.title,
     porcents:
       (enunciado.response.length /
-        (enunciado.questions.length * assignedUsers.length)) *
+        (enunciado.questions?.length * assignedUsers.length)) *
       100,
   }));
 
