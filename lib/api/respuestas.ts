@@ -4,25 +4,23 @@ import { authOptions } from "@/auth.config";
 
 export async function getSampleRespuestasByEnunciado(
   enunciadosId: number,
+  questionId: number,
   respondentId: string,
   responseType: any,
 ) {
   return await prisma.response.findMany({
     where: {
       enunciadosId,
+      questionId,
       responseType,
-      NOT: {
-        respondentId,
-      },
+      NOT: { respondentId },
     },
     include: {
       singleChoice: true,
       checkbox: true,
     },
-    orderBy: {
-      id: "desc",
-    },
-    take: 15, // Limita a 5 respuestas de single choice por pregunta
+    orderBy: { id: "desc" },
+    take: 15,
   });
 }
 

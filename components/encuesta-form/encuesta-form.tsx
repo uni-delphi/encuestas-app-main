@@ -10,48 +10,51 @@ export default async function EncuestaForm({
   enunciado,
   user,
 }: {
-  enunciado: Enunciados;
+  enunciado: Enunciados & { questionsEnunciados: QuestionEnunciado & { questions: Question[] } };
   user: User;
 }) {
-  const singleChoice = await getSampleRespuestasByEnunciado(
-    enunciado.id,
-    user.id,
-    "SINGLE_CHOICE",
-  );
-  const checkbox = await getSampleRespuestasByEnunciado(
-    enunciado.id,
-    user.id,
-    "CHECKBOX",
+  const { questions, ...props }: any = enunciado;
+
+  const visibleQuestions: any[] = (questions ?? []).filter(
+    (q: any) => q.isVisibleInEnunciado !== false,
   );
 
-  type QuestionProps = Question & { isVisibleInEnunciado?: boolean, inputType?: string, responses: any[] };
+  const samples = await Promise.all(
+    visibleQuestions.map(async (q) => {
+      const sample = await getSampleRespuestasByEnunciado(
+        enunciado.id,
+        q.id,
+        user.id,
+        q.type,
+      );
+      return [q.id, sample] as const;
+    }),
+  );
+  const samplesByQuestion = new Map(samples);
 
-  const { questions, ...props }: QuestionProps & any  = enunciado;
-
-  return (
+   return (
     <>
-      {questions &&
-        questions.filter((question: QuestionProps) => question.isVisibleInEnunciado !== false).map((question: QuestionProps) =>
-          question.type === "SINGLE_CHOICE" ? (
-            <QuestionRadioField
-              key={question.id}
-              data={data[question.inputType!]}
-              values={question}
-              enunciadoData={props}
-              user={user}
-              singleChoiceResponse={singleChoice}
-            />
-          ) : (
-            <QuestionCheckboxField
-              key={question.id}
-              data={data[question.inputType!]}
-              values={question}
-              enunciadoData={props}
-              user={user}
-              checkboxResponse={checkbox}
-            />
-          ),
-        )}
+      {visibleQuestions.map((question) =>
+        question.type === "SINGLE_CHOICE" ? (
+          <QuestionRadioField
+            key={question.id}
+            data={data[question.inputType!]}
+            values={question}
+            enunciadoData={props}
+            user={user}
+            singleChoiceResponse={samplesByQuestion.get(question.id) ?? []}
+          />
+        ) : (
+          <QuestionCheckboxField
+            key={question.id}
+            data={data[question.inputType!]}
+            values={question}
+            enunciadoData={props}
+            user={user}
+            checkboxResponse={samplesByQuestion.get(question.id) ?? []}
+          />
+        ),
+      )}
     </>
   );
 }

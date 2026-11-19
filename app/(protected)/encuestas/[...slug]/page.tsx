@@ -69,8 +69,8 @@ export default async function Page({
     slug: encuestaSlug,
   } = encuesta;
 
-  if (surveyHasEnded({ endDate, isActive, hasEnded })) {
-    redirect(`/encuestas/finalizado/${encuesta.slug}`);
+  if (surveyHasEnded({ endDate, isActive, hasEnded })) {    
+   // redirect(`/encuestas/finalizado/${encuesta.slug}`);
   }
 
   let dataSlug = enunciadoElegido?.slug! ?? techElegida.enunciados[0].slug!;
@@ -78,6 +78,7 @@ export default async function Page({
   let dataEnunciadoId = enunciadoElegido?.id ?? techElegida.enunciados[0].id;
 
   const enunciados = await getEnunciado(dataSlug, dataUserId, dataEnunciadoId);
+  console.log("🚀 ~ Page ~ enunciados:", enunciados)
 
   return (
     <main className="relative">
@@ -123,6 +124,7 @@ export default async function Page({
           <EncuestaForm
             enunciado={enunciados as any}
             user={session.user as User}
+            
           />
         </Suspense>
         <RedirectButtons
