@@ -69,7 +69,7 @@ export default async function Page({
     slug: encuestaSlug,
   } = encuesta;
 
-  if (surveyHasEnded({ endDate, isActive, hasEnded })) {
+  if (surveyHasEnded({ endDate, isActive, hasEnded })) {    
     redirect(`/encuestas/finalizado/${encuesta.slug}`);
   }
 
@@ -123,6 +123,7 @@ export default async function Page({
           <EncuestaForm
             enunciado={enunciados as any}
             user={session.user as User}
+            
           />
         </Suspense>
         <RedirectButtons

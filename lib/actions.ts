@@ -374,11 +374,12 @@ export async function deleteEnunciado(enunciadoId: number) {
 
 export async function getSampleRespuestasByEnunciado(
   enunciadosId: number,
+  questionId: number,
   respondentId: string,
   responseType: any,
 ) {
   try {
-    return await Respuestas.getSampleRespuestasByEnunciado(enunciadosId, respondentId, responseType);
+    return await Respuestas.getSampleRespuestasByEnunciado(enunciadosId, questionId, respondentId, responseType);
   } catch (error: any) {
     throw new Error(`Error getSampleRespuestasByEnunciado: ${error}`);
   }
